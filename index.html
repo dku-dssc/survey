@@ -334,14 +334,7 @@
         transition: var(--transition);
         animation: cardAppear 0.5s ease-out;
       }
-      .glass-card:hover {
-        transform: translateY(-3px);
-        box-shadow:
-          0 18px 55px rgba(0, 0, 0, 0.08),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.3),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4),
-          0 0 20px rgba(255, 255, 255, 0.08);
-      }
+      /* glass-card: no hover effect on outer boxes */
       @keyframes cardAppear {
         from {
           opacity: 0;
@@ -357,16 +350,16 @@
       .section-header {
         background: linear-gradient(
           145deg,
-          rgba(40, 140, 255, 0.3),
-          rgba(60, 210, 255, 0.15)
+          rgba(40, 140, 255, 0.22),
+          rgba(60, 210, 255, 0.12)
         );
-        backdrop-filter: blur(24px) saturate(200%);
-        -webkit-backdrop-filter: blur(24px) saturate(200%);
-        border: 1px solid rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(28px) saturate(200%);
+        -webkit-backdrop-filter: blur(28px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
         box-shadow:
-          0 18px 55px rgba(0, 0, 0, 0.08),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.25);
+          0 8px 32px rgba(0, 0, 0, 0.05),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
         border-radius: var(--radius-lg);
         padding: 28px 32px;
         margin-bottom: 16px;
@@ -463,6 +456,9 @@
       textarea.form-input {
         resize: vertical;
         min-height: 80px;
+        overflow-x: hidden;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
       .form-input.error {
         border-color: var(--danger);
@@ -486,8 +482,8 @@
       }
       .option-item {
         display: flex;
-        align-items: flex-start;
-        gap: 12px;
+        align-items: center;
+        gap: 10px;
         padding: 12px 16px;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.25);
@@ -499,8 +495,9 @@
         user-select: none;
       }
       .option-item:hover {
-        background: rgba(40, 140, 255, 0.1);
-        border-color: rgba(40, 140, 255, 0.3);
+        background: rgba(40, 140, 255, 0.08);
+        border-color: rgba(40, 140, 255, 0.25);
+        box-shadow: inset 0 0 16px rgba(200, 220, 255, 0.15);
       }
       .option-item.selected {
         background: linear-gradient(
@@ -523,7 +520,8 @@
         justify-content: center;
         flex-shrink: 0;
         transition: var(--transition);
-        margin-top: 1px;
+        margin: 0;
+        position: relative;
       }
       .custom-checkbox {
         border-radius: 6px;
@@ -553,6 +551,8 @@
         font-size: 14px;
         color: var(--text-primary);
         line-height: 1.5;
+        display: flex;
+        align-items: center;
       }
 
       /* Checkbox grid for many options */
@@ -599,8 +599,8 @@
         font-weight: 600;
         padding: 12px 28px;
         border-radius: var(--radius-sm);
-        background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(220, 230, 245, 0.45);
+        border: 1px solid rgba(180, 200, 230, 0.5);
         backdrop-filter: blur(14px) saturate(180%);
         -webkit-backdrop-filter: blur(14px) saturate(180%);
         cursor: pointer;
@@ -614,8 +614,8 @@
         text-align: center;
       }
       .btn:hover {
-        background: rgba(255, 255, 255, 0.35);
-        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(255, 255, 255, 0.25), 0 0 16px rgba(255, 255, 255, 0.15);
+        background: rgba(200, 218, 240, 0.6);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), inset 0 0 12px rgba(255, 255, 255, 0.2);
       }
       .btn-primary {
         background: linear-gradient(
@@ -630,10 +630,10 @@
           inset 0 0 12px rgba(255, 255, 255, 0.2);
       }
       .btn-primary:hover {
-        transform: translateY(-1px);
         box-shadow:
-          0 10px 26px rgba(17, 100, 177, 0.32),
-          inset 0 0 14px rgba(255, 255, 255, 0.25);
+          0 6px 20px rgba(17, 100, 177, 0.3),
+          inset 0 0 20px rgba(255, 255, 255, 0.25),
+          0 0 12px rgba(100, 160, 255, 0.2);
       }
       .btn-secondary {
         background: rgba(255, 255, 255, 0.1);
@@ -643,8 +643,8 @@
         color: var(--text-secondary);
       }
       .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.22);
-        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.15), 0 0 12px rgba(255, 255, 255, 0.08);
+        background: rgba(220, 230, 245, 0.35);
+        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.2), 0 0 8px rgba(200, 220, 255, 0.15);
       }
       .btn-submit {
         background: linear-gradient(
@@ -791,14 +791,13 @@
         font-family: var(--font);
       }
       .landing-btn:hover {
-        transform: translateY(-3px);
+        transform: translateY(-2px);
         box-shadow:
-          0 18px 50px rgba(0, 0, 0, 0.1),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.3),
-          inset 0 0 30px rgba(255, 255, 255, 0.2),
-          0 0 20px rgba(255, 255, 255, 0.12);
-        border-color: rgba(17, 100, 177, 0.4);
-        background: rgba(255, 255, 255, 0.22);
+          0 8px 24px rgba(0, 0, 0, 0.06),
+          inset 0 0 24px rgba(255, 255, 255, 0.25),
+          0 0 12px rgba(200, 220, 255, 0.2);
+        border-color: rgba(17, 100, 177, 0.35);
+        background: rgba(255, 255, 255, 0.2);
       }
       .landing-btn .landing-btn-icon {
         font-size: 40px;
@@ -839,21 +838,19 @@
         position: relative;
       }
       .autocomplete-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        max-height: 300px;
+        position: relative;
+        max-height: 320px;
         overflow-y: auto;
         background: rgba(255, 255, 255, 0.96);
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
         border: 1px solid rgba(0, 0, 0, 0.1);
         border-radius: var(--radius-sm);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         z-index: 50;
         display: none;
-        margin-top: 4px;
+        margin-top: 8px;
+        margin-bottom: 16px;
       }
       .autocomplete-dropdown.show {
         display: block;
@@ -975,8 +972,12 @@
         }
       }
       .admin-toggle:hover {
-        transform: scale(1.08);
-        box-shadow: 0 4px 20px rgba(17, 100, 177, 0.25), inset 0 0 16px rgba(255, 255, 255, 0.2), 0 0 12px rgba(255, 255, 255, 0.15);
+        box-shadow: 0 4px 20px rgba(17, 100, 177, 0.35), inset 0 0 20px rgba(255, 255, 255, 0.3), 0 0 16px rgba(200, 220, 255, 0.25);
+        background: linear-gradient(
+          135deg,
+          rgba(17, 100, 177, 0.95),
+          rgba(72, 118, 239, 0.85)
+        );
       }
 
       .admin-panel {
@@ -1112,10 +1113,10 @@
         border-radius: 6px;
         padding: 2px 6px;
         cursor: pointer;
-        display: inline;
+        display: inline-block;
         transition: all 0.2s;
-        position: relative;
         line-height: 1.6;
+        vertical-align: baseline;
       }
       .diff-modified-word:hover {
         background: rgba(0, 113, 227, 0.18);
@@ -1126,9 +1127,10 @@
         border-radius: 6px;
         padding: 2px 6px;
         cursor: pointer;
-        display: inline;
+        display: inline-block;
         transition: all 0.2s;
         line-height: 1.6;
+        vertical-align: baseline;
       }
       .diff-original-word:hover {
         background: rgba(0, 0, 0, 0.14);
@@ -1263,9 +1265,14 @@
         font-weight: 500;
         z-index: 400;
         transition: bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        width: 200px;
+        width: 340px;
+        max-width: 90vw;
         text-align: center;
-        white-space: nowrap;
+        white-space: normal;
+        word-break: keep-all;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .toast.show {
         bottom: 100px;
@@ -1742,12 +1749,13 @@
             <label class="form-label"
               >생년월일 <span class="required">*</span></label
             >
-            <input
-              type="date"
-              class="form-input"
-              data-name="birthdate"
-              data-required="true"
-            />
+            <div style="display:flex;gap:8px;align-items:center;" class="birthdate-group" data-name="birthdate" data-required="true">
+              <input type="text" class="form-input" id="birthYear" inputmode="numeric" maxlength="4" placeholder="년(4자리)" style="flex:2;text-align:center;" />
+              <span style="color:var(--text-tertiary);font-weight:500;">.</span>
+              <input type="text" class="form-input" id="birthMonth" inputmode="numeric" maxlength="2" placeholder="월" style="flex:1;text-align:center;" />
+              <span style="color:var(--text-tertiary);font-weight:500;">.</span>
+              <input type="text" class="form-input" id="birthDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" />
+            </div>
             <div class="error-msg">생년월일을 입력해주세요.</div>
           </div>
           <div class="form-group">
@@ -3101,8 +3109,9 @@
       id="adminToggle"
       onclick="toggleAdmin()"
       title="관리자 패널"
+      aria-label="관리자 패널"
     >
-      ⚙
+      <span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;line-height:1;">⚙</span>
     </button>
 
     <!-- Overlay -->
@@ -3381,11 +3390,25 @@
 
       function goToLanding() {
         currentPage = 0;
+        isEditMode = false;
+        editingDbId = -1;
+        originalEditData = null;
+        resetFormData();
         document
           .querySelectorAll('.survey-page')
           .forEach((p) => p.classList.remove('active'));
         document.querySelector('[data-page="0"]').classList.add('active');
         hideProgressBar();
+        // Also reset verify fields
+        var vn = document.getElementById('verifyName');
+        var vb = document.getElementById('verifyBirthdate');
+        var vs = document.getElementById('verifyStudentId');
+        if (vn) vn.value = '';
+        if (vb) vb.value = '';
+        if (vs) vs.value = '';
+        verifyGender = '';
+        var ve = document.getElementById('verifyError');
+        if (ve) ve.classList.remove('show');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
@@ -3455,6 +3478,26 @@
         for (const key in formData) {
           delete formData[key];
         }
+        // Clear all form input DOM values
+        document.querySelectorAll('.form-input[data-name]').forEach(function(input) {
+          if (input.tagName === 'SELECT') {
+            input.selectedIndex = 0;
+          } else {
+            input.value = '';
+          }
+          input.classList.remove('error');
+        });
+        // Clear radio/checkbox selections
+        document.querySelectorAll('.option-item.selected').forEach(function(item) {
+          item.classList.remove('selected');
+        });
+        // Clear split birthdate fields
+        ['birthYear', 'birthMonth', 'birthDay'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) { el.value = ''; el.classList.remove('error'); }
+        });
+        // Clear department auto-fill state
+        for (var k in deptAutoFilled) { delete deptAutoFilled[k]; }
       }
 
       function populateFormFromData(data) {
@@ -3466,6 +3509,25 @@
               input.value = data[name];
             }
           }
+        });
+
+        // Populate split birthdate fields
+        if (data.birthdate) {
+          var parts = String(data.birthdate).split('-');
+          if (parts.length === 3) {
+            var bY = document.getElementById('birthYear');
+            var bM = document.getElementById('birthMonth');
+            var bD = document.getElementById('birthDay');
+            if (bY) bY.value = parts[0];
+            if (bM) bM.value = parseInt(parts[1], 10).toString();
+            if (bD) bD.value = parseInt(parts[2], 10).toString();
+          }
+        }
+
+        // Mark department inputs as auto-filled if populated
+        ['deptInput', 'minorInput'].forEach(function(id) {
+          var inp = document.getElementById(id);
+          if (inp && inp.value) deptAutoFilled[id] = inp.value;
         });
 
         // Populate radio groups
@@ -3629,6 +3691,23 @@
             }
           });
 
+        // Validate birthdate group (split year/month/day)
+        pageEl.querySelectorAll('.birthdate-group[data-required="true"]').forEach(function(group) {
+          var bY = group.querySelector('#birthYear');
+          var bM = group.querySelector('#birthMonth');
+          var bD = group.querySelector('#birthDay');
+          if (bY && bM && bD) {
+            var hasError = false;
+            if (!bY.value || bY.value.length !== 4) { bY.classList.add('error'); hasError = true; } else { bY.classList.remove('error'); }
+            if (!bM.value || parseInt(bM.value) < 1 || parseInt(bM.value) > 12) { bM.classList.add('error'); hasError = true; } else { bM.classList.remove('error'); }
+            if (!bD.value || parseInt(bD.value) < 1 || parseInt(bD.value) > 31) { bD.classList.add('error'); hasError = true; } else { bD.classList.remove('error'); }
+            if (hasError) valid = false;
+            else {
+              formData.birthdate = bY.value + '-' + bM.value.padStart(2,'0') + '-' + bD.value.padStart(2,'0');
+            }
+          }
+        });
+
         // Validate radio groups
         pageEl
           .querySelectorAll(
@@ -3685,6 +3764,13 @@
             formData[input.dataset.name] = input.value;
           }
         });
+        // Collect split birthdate
+        var _bY = document.getElementById('birthYear');
+        var _bM = document.getElementById('birthMonth');
+        var _bD = document.getElementById('birthDay');
+        if (_bY && _bM && _bD && _bY.value && _bM.value && _bD.value) {
+          formData.birthdate = _bY.value + '-' + _bM.value.padStart(2,'0') + '-' + _bD.value.padStart(2,'0');
+        }
 
         try {
           showToast('제출 중...');
@@ -3828,6 +3914,7 @@
 
           adminToken = result.token;
           showToast('관리자 로그인 성공!');
+          showAdminTab('responses');
           await loadAdminResponses();
         } catch (err) {
           showToast('서버 연결 실패');
@@ -4331,20 +4418,37 @@
         const dropdown = document.getElementById(dropdownId);
 
         input.addEventListener('input', function () {
+          // If auto-filled and value changed at all, clear entirely
+          if (deptAutoFilled[inputId] && this.value !== deptAutoFilled[inputId]) {
+            this.value = '';
+            delete deptAutoFilled[inputId];
+            delete formData[input.dataset.name];
+          }
+
           const query = this.value.trim();
           if (query.length === 0) {
-            // Show all departments grouped by college
             showAllDepartments(dropdown, inputId);
             return;
           }
           filterDepartments(query, dropdown, inputId);
         });
 
+        input.addEventListener('keydown', function (e) {
+          // If auto-filled and user presses backspace/delete, clear entirely
+          if (deptAutoFilled[inputId] && (e.key === 'Backspace' || e.key === 'Delete')) {
+            e.preventDefault();
+            this.value = '';
+            delete deptAutoFilled[inputId];
+            delete formData[input.dataset.name];
+            showAllDepartments(dropdown, inputId);
+          }
+        });
+
         input.addEventListener('focus', function () {
           const query = this.value.trim();
           if (query.length === 0) {
             showAllDepartments(dropdown, inputId);
-          } else {
+          } else if (!deptAutoFilled[inputId]) {
             filterDepartments(query, dropdown, inputId);
           }
         });
@@ -4388,6 +4492,17 @@
           '.autocomplete-item[data-college="' + college + '"]',
         );
         const isVisible = items[0] && items[0].style.display !== 'none';
+
+        // Accordion: close all other colleges first
+        dropdown.querySelectorAll('.autocomplete-college').forEach(function(otherEl) {
+          const otherCollege = otherEl.textContent.replace(' ▸', '').replace(' ▾', '');
+          if (otherCollege !== college) {
+            dropdown.querySelectorAll('.autocomplete-item[data-college="' + otherCollege + '"]').forEach(function(item) {
+              item.style.display = 'none';
+            });
+            otherEl.textContent = otherCollege + ' ▸';
+          }
+        });
 
         items.forEach((item) => {
           item.style.display = isVisible ? 'none' : 'block';
@@ -4433,15 +4548,14 @@
         dropdown.classList.add('show');
       }
 
+      // Track which department inputs have been auto-filled
+      const deptAutoFilled = {};
+
       function selectDepartment(dept, inputId) {
         const input = document.getElementById(inputId);
         input.value = dept;
         formData[input.dataset.name] = dept;
-        const dropdown =
-          input.nextElementSibling.nextElementSibling ||
-          document.getElementById(inputId.replace('Input', 'Dropdown'));
-        if (dropdown) dropdown.classList.remove('show');
-        // Also close via wrapper
+        deptAutoFilled[inputId] = dept; // mark as auto-filled
         const wrapper = input.closest('.autocomplete-wrapper');
         if (wrapper) {
           const dd = wrapper.querySelector('.autocomplete-dropdown');
@@ -4648,6 +4762,38 @@
         }
       });
 
+      // ===== Birthday auto-advance =====
+      (function() {
+        var bY = document.getElementById('birthYear');
+        var bM = document.getElementById('birthMonth');
+        var bD = document.getElementById('birthDay');
+        if (!bY || !bM || !bD) return;
+
+        function numOnly(e) { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }
+
+        bY.addEventListener('input', function() {
+          numOnly({target: this});
+          if (this.value.length === 4) bM.focus();
+          updateBirthdate();
+        });
+        bM.addEventListener('input', function() {
+          numOnly({target: this});
+          if (this.value.length === 2) bD.focus();
+          updateBirthdate();
+        });
+        bD.addEventListener('input', function() {
+          numOnly({target: this});
+          updateBirthdate();
+        });
+
+        function updateBirthdate() {
+          var y = bY.value, m = bM.value.padStart(2,'0'), d = bD.value.padStart(2,'0');
+          if (y.length === 4 && bM.value.length >= 1 && bD.value.length >= 1) {
+            formData.birthdate = y + '-' + m + '-' + d;
+          }
+        }
+      })();
+
       // ===== Accessibility Controls =====
       let currentFontSizeLevel = 0; // -3 to +3
       let currentFontWeightLevel = 0; // -1 to +2
@@ -4665,33 +4811,46 @@
       function applyA11yStyles() {
         var css = '';
         if (currentFontSizeLevel !== 0) {
-          var baseSize = 15 + currentFontSizeLevel * 2;
-          css += '* { font-size: inherit !important; }\n';
-          css += 'body { font-size: ' + baseSize + 'px !important; }\n';
-          css += '.form-label { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
-          css += '.form-input { font-size: ' + Math.max(14, baseSize) + 'px !important; }\n';
-          css += '.section-header h2 { font-size: ' + (baseSize + 7) + 'px !important; }\n';
-          css += '.section-header p { font-size: ' + Math.max(12, baseSize - 1) + 'px !important; }\n';
-          css += '.header-logo span { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
-          css += '.option-item label { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
-          css += '.btn { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
-          css += '.intro-hero h1 { font-size: ' + (baseSize + 13) + 'px !important; }\n';
-          css += '.intro-hero p { font-size: ' + Math.max(14, baseSize) + 'px !important; }\n';
-          css += '.stat-value { font-size: ' + (baseSize + 9) + 'px !important; }\n';
-          css += '.response-card .name { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
-          css += '.response-card .meta { font-size: ' + Math.max(11, baseSize - 3) + 'px !important; }\n';
+          var delta = currentFontSizeLevel * 2; // -6 to +6 px
+          css += ':root { --a11y-size-delta: ' + delta + 'px; }\n';
+          // Apply to all elements using a calc-based approach
+          css += 'html { font-size: ' + (15 + delta) + 'px !important; }\n';
+          css += 'body, body * { font-size: inherit; }\n';
+          // Override specific elements that have their own font-size
+          var overrides = {
+            'body': 15, '.form-label': 15, '.form-input': 15, '.option-label': 14,
+            '.btn': 15, '.a11y-btn': 13, '.a11y-label': 12, '.header-logo span': 15,
+            '.header-badge': 11, '.section-header h2': 22, '.section-header p': 14,
+            '.section-icon': 32, '.intro-hero h1': 26, '.intro-hero .subtitle': 15,
+            '.intro-info': 14, '.intro-info .notice': 13, '.intro-info .contact': 13,
+            '.landing-btn .landing-btn-label': 16, '.landing-btn .landing-btn-desc': 12,
+            '.landing-btn .landing-btn-icon': 40,
+            '.consent-box': 13, '.consent-box h4': 14,
+            '.progress-text': 12, '.error-msg': 12,
+            '.stat-value': 28, '.stat-card .stat-label': 12,
+            '.response-card .name': 15, '.response-card .meta': 12,
+            '.modified-badge': 11, '.toast': 14,
+            '.autocomplete-college': 12, '.autocomplete-item': 14,
+            '.autocomplete-no-result': 13, '.diff-mode-label': 11,
+            '.diff-view-btn': 12,
+            '.completion-page h2': 24, '.completion-page p': 15,
+            '.letter-preview': 14, '.letter-preview h4': 18,
+            '.admin-panel h3': 20, '.admin-close': 24,
+            '.verify-error': 14
+          };
+          for (var sel in overrides) {
+            css += sel + ' { font-size: ' + Math.max(10, overrides[sel] + delta) + 'px !important; }\n';
+          }
         }
         if (currentFontWeightLevel !== 0) {
-          var weightOffset = currentFontWeightLevel * 200;
-          css += 'body, body * { font-weight-adjust: initial; }\n';
-          css += 'body { --a11y-weight-offset: ' + weightOffset + '; }\n';
-          // Apply weight changes: add offset to existing weight
           var weights = { '-1': 300, 0: 400, 1: 600, 2: 800 };
-          var baseWeight = weights[String(currentFontWeightLevel)];
-          css += '* { font-weight: ' + baseWeight + ' !important; }\n';
-          // Preserve relative differences: bold elements should stay bolder
+          var baseWeight = weights[String(currentFontWeightLevel)] || 400;
+          css += 'body, body * { font-weight: ' + baseWeight + ' !important; }\n';
+          // Preserve relative weight differences for bold elements
           var boldWeight = Math.min(900, baseWeight + 200);
-          css += 'strong, b, .form-label, h1, h2, h3, h4, .section-header h2, .stat-value, .response-card .name { font-weight: ' + boldWeight + ' !important; }\n';
+          var extraBoldWeight = Math.min(900, baseWeight + 300);
+          css += 'strong, b, .form-label, h1, h2, h3, h4, .section-header h2, .stat-value, .response-card .name, .intro-hero h1, .landing-btn .landing-btn-label, .header-logo span { font-weight: ' + boldWeight + ' !important; }\n';
+          css += '.section-header h2, .intro-hero h1, h1 { font-weight: ' + extraBoldWeight + ' !important; }\n';
         }
         getA11yStyleEl().textContent = css;
       }
