@@ -15,11 +15,11 @@
       }
 
       :root {
-        --glass-bg: rgba(255, 255, 255, 0.18);
-        --glass-border: rgba(255, 255, 255, 0.35);
+        --glass-bg: rgba(255, 255, 255, 0.12);
+        --glass-border: rgba(255, 255, 255, 0.4);
         --glass-shadow:
-          0 8px 32px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
-        --glass-blur: 24px;
+          0 8px 32px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        --glass-blur: 28px;
         --primary: #0071e3;
         --primary-hover: #0077ed;
         --primary-light: rgba(0, 113, 227, 0.08);
@@ -83,23 +83,7 @@
         font-size: var(--base-font-size);
       }
 
-      @keyframes liquidJelly {
-        0% {
-          transform: scale(1);
-        }
-        30% {
-          transform: scale(1.04, 0.96);
-        }
-        50% {
-          transform: scale(0.98, 1.02);
-        }
-        70% {
-          transform: scale(1.01, 0.99);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
+      /* Removed liquidJelly animation - replaced with glass glow hover */
 
       /* ===== Animated Background ===== */
       .bg-decoration {
@@ -165,11 +149,11 @@
 
       /* ===== Header ===== */
       .header {
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(24px) saturate(200%);
-        -webkit-backdrop-filter: blur(24px) saturate(200%);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(30px) saturate(220%);
+        -webkit-backdrop-filter: blur(30px) saturate(220%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), inset 0 -1px 0 rgba(255, 255, 255, 0.2);
         position: sticky;
         top: 0;
         z-index: 100;
@@ -178,9 +162,9 @@
 
       /* ===== Accessibility Bar ===== */
       .a11y-bar {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(24px) saturate(200%);
+        -webkit-backdrop-filter: blur(24px) saturate(200%);
         border-bottom: 1px solid rgba(255, 255, 255, 0.25);
         padding: 6px 24px;
         position: sticky;
@@ -211,17 +195,18 @@
         font-weight: 600;
         padding: 4px 10px;
         border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        background: rgba(255, 255, 255, 0.22);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px) saturate(160%);
+        -webkit-backdrop-filter: blur(10px) saturate(160%);
         cursor: pointer;
         color: var(--text-primary);
         transition: all 0.2s;
         white-space: nowrap;
       }
       .a11y-btn:hover {
-        background: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.2), 0 0 8px rgba(255, 255, 255, 0.1);
         transform: translateY(-1px);
       }
       .a11y-btn:active {
@@ -335,14 +320,15 @@
 
       /* ===== Glass Card ===== */
       .glass-card {
-        background: rgba(255, 255, 255, 0.18);
-        backdrop-filter: blur(24px) saturate(180%);
-        -webkit-backdrop-filter: blur(24px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(28px) saturate(200%);
+        -webkit-backdrop-filter: blur(28px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
         border-radius: var(--radius-lg);
         box-shadow:
-          0 12px 40px rgba(0, 0, 0, 0.08),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+          0 12px 40px rgba(0, 0, 0, 0.06),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
         padding: 32px;
         margin-bottom: 16px;
         transition: var(--transition);
@@ -351,8 +337,10 @@
       .glass-card:hover {
         transform: translateY(-3px);
         box-shadow:
-          0 18px 55px rgba(0, 0, 0, 0.12),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+          0 18px 55px rgba(0, 0, 0, 0.08),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.4),
+          0 0 20px rgba(255, 255, 255, 0.08);
       }
       @keyframes cardAppear {
         from {
@@ -369,15 +357,16 @@
       .section-header {
         background: linear-gradient(
           145deg,
-          rgba(40, 140, 255, 0.38),
-          rgba(60, 210, 255, 0.22)
+          rgba(40, 140, 255, 0.3),
+          rgba(60, 210, 255, 0.15)
         );
-        backdrop-filter: blur(18px) saturate(170%);
-        -webkit-backdrop-filter: blur(18px) saturate(170%);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(24px) saturate(200%);
+        -webkit-backdrop-filter: blur(24px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.35);
         box-shadow:
-          0 18px 55px rgba(0, 0, 0, 0.12),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+          0 18px 55px rgba(0, 0, 0, 0.08),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.25);
         border-radius: var(--radius-lg);
         padding: 28px 32px;
         margin-bottom: 16px;
@@ -453,10 +442,10 @@
         font-size: 15px;
         font-family: var(--font);
         color: var(--text-primary);
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
         border-radius: var(--radius-sm);
         transition: var(--transition);
         outline: none;
@@ -500,17 +489,17 @@
         align-items: flex-start;
         gap: 12px;
         padding: 12px 16px;
-        background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px) saturate(160%);
+        -webkit-backdrop-filter: blur(10px) saturate(160%);
         border-radius: var(--radius-sm);
         cursor: pointer;
         transition: var(--transition);
         user-select: none;
       }
       .option-item:hover {
-        background: rgba(40, 140, 255, 0.14);
+        background: rgba(40, 140, 255, 0.1);
         border-color: rgba(40, 140, 255, 0.3);
       }
       .option-item.selected {
@@ -610,20 +599,23 @@
         font-weight: 600;
         padding: 12px 28px;
         border-radius: var(--radius-sm);
-        background: rgba(255, 255, 255, 0.22);
-        border: 1px solid rgba(255, 255, 255, 0.32);
-        backdrop-filter: blur(12px) saturate(160%);
-        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(14px) saturate(180%);
+        -webkit-backdrop-filter: blur(14px) saturate(180%);
         cursor: pointer;
         transition: var(--transition);
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 6px;
         letter-spacing: -0.2px;
         color: var(--text-primary);
+        text-align: center;
       }
       .btn:hover {
-        animation: liquidJelly 600ms cubic-bezier(0.16, 1, 0.3, 1);
+        background: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(255, 255, 255, 0.25), 0 0 16px rgba(255, 255, 255, 0.15);
       }
       .btn-primary {
         background: linear-gradient(
@@ -644,14 +636,15 @@
           inset 0 0 14px rgba(255, 255, 255, 0.25);
       }
       .btn-secondary {
-        background: rgba(255, 255, 255, 0.16);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        backdrop-filter: blur(10px) saturate(150%);
-        -webkit-backdrop-filter: blur(10px) saturate(150%);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(12px) saturate(170%);
+        -webkit-backdrop-filter: blur(12px) saturate(170%);
         color: var(--text-secondary);
       }
       .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.22);
+        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.15), 0 0 12px rgba(255, 255, 255, 0.08);
       }
       .btn-submit {
         background: linear-gradient(
@@ -785,24 +778,27 @@
         width: 220px;
         height: 160px;
         border-radius: var(--radius-lg);
-        border: 1px solid rgba(255, 255, 255, 0.32);
-        background: rgba(255, 255, 255, 0.16);
-        backdrop-filter: blur(24px) saturate(180%);
-        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.38);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(28px) saturate(200%);
+        -webkit-backdrop-filter: blur(28px) saturate(200%);
         box-shadow:
-          0 12px 40px rgba(0, 0, 0, 0.08),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+          0 12px 40px rgba(0, 0, 0, 0.06),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
         cursor: pointer;
         transition: var(--transition);
         font-family: var(--font);
       }
       .landing-btn:hover {
-        transform: translateY(-4px);
+        transform: translateY(-3px);
         box-shadow:
-          0 18px 50px rgba(0, 0, 0, 0.12),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.25);
-        border-color: rgba(17, 100, 177, 0.5);
-        animation: liquidJelly 600ms cubic-bezier(0.16, 1, 0.3, 1);
+          0 18px 50px rgba(0, 0, 0, 0.1),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+          inset 0 0 30px rgba(255, 255, 255, 0.2),
+          0 0 20px rgba(255, 255, 255, 0.12);
+        border-color: rgba(17, 100, 177, 0.4);
+        background: rgba(255, 255, 255, 0.22);
       }
       .landing-btn .landing-btn-icon {
         font-size: 40px;
@@ -979,8 +975,8 @@
         }
       }
       .admin-toggle:hover {
-        transform: scale(1.1);
-        animation: liquidJelly 600ms cubic-bezier(0.16, 1, 0.3, 1);
+        transform: scale(1.08);
+        box-shadow: 0 4px 20px rgba(17, 100, 177, 0.25), inset 0 0 16px rgba(255, 255, 255, 0.2), 0 0 12px rgba(255, 255, 255, 0.15);
       }
 
       .admin-panel {
@@ -989,9 +985,9 @@
         right: -500px;
         width: 480px;
         height: 100vh;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(30px) saturate(200%);
-        -webkit-backdrop-filter: blur(30px) saturate(200%);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(36px) saturate(220%);
+        -webkit-backdrop-filter: blur(36px) saturate(220%);
         border-left: 1px solid rgba(255, 255, 255, 0.3);
         box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
         z-index: 300;
@@ -1021,10 +1017,10 @@
       }
 
       .response-card {
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(10px) saturate(160%);
-        -webkit-backdrop-filter: blur(10px) saturate(160%);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
         border-radius: var(--radius-md);
         padding: 16px;
         margin-bottom: 12px;
@@ -1087,10 +1083,10 @@
         margin-bottom: 24px;
       }
       .stat-card {
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(10px) saturate(160%);
-        -webkit-backdrop-filter: blur(10px) saturate(160%);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
         border-radius: var(--radius-md);
         padding: 16px;
         text-align: center;
@@ -1107,21 +1103,19 @@
       }
 
       /* ===== Diff Tracking Styles (Admin) ===== */
-      .diff-changed {
-        background: rgba(0, 113, 227, 0.08) !important;
-        color: var(--primary) !important;
-      }
+      /* diff-changed: no background highlight on whole field — only changed words are marked */
 
       /* Word-level diff comparison styles */
       .diff-modified-word {
         color: #0071e3;
         background: rgba(0, 113, 227, 0.1);
-        border-radius: 4px;
-        padding: 1px 4px;
+        border-radius: 6px;
+        padding: 2px 6px;
         cursor: pointer;
         display: inline;
         transition: all 0.2s;
         position: relative;
+        line-height: 1.6;
       }
       .diff-modified-word:hover {
         background: rgba(0, 113, 227, 0.18);
@@ -1129,44 +1123,29 @@
       .diff-original-word {
         color: #1d1d1f;
         background: rgba(0, 0, 0, 0.08);
-        border-radius: 4px;
-        padding: 1px 4px;
+        border-radius: 6px;
+        padding: 2px 6px;
         cursor: pointer;
         display: inline;
         transition: all 0.2s;
+        line-height: 1.6;
       }
       .diff-original-word:hover {
         background: rgba(0, 0, 0, 0.14);
       }
-      .diff-deleted-space {
-        display: inline-block;
-        width: 2px;
-        height: 1em;
-        background: rgba(0, 113, 227, 0.35);
-        vertical-align: middle;
-        margin: 0 1px;
-        border-radius: 1px;
-      }
-      .diff-added-space {
-        display: inline-block;
-        width: 0.5em;
-        height: 1.2em;
-        background: rgba(0, 113, 227, 0.12);
-        border-radius: 3px;
-        vertical-align: middle;
-        margin: 0 1px;
-      }
       .diff-deleted-text {
         display: inline-block;
         background: rgba(0, 113, 227, 0.1);
-        border-radius: 4px;
-        padding: 1px 8px;
+        border-radius: 6px;
+        padding: 2px 6px;
         cursor: pointer;
         color: #0071e3;
         font-weight: 600;
-        min-width: 2em;
+        min-width: 1.6em;
         text-align: center;
         transition: all 0.2s;
+        line-height: 1.6;
+        vertical-align: baseline;
       }
       .diff-deleted-text:hover {
         background: rgba(0, 113, 227, 0.18);
@@ -1175,9 +1154,10 @@
         display: inline;
         color: #1d1d1f;
         background: rgba(0, 0, 0, 0.08);
-        border-radius: 4px;
-        padding: 1px 4px;
+        border-radius: 6px;
+        padding: 2px 6px;
         cursor: pointer;
+        line-height: 1.6;
       }
       .diff-view-controls {
         display: flex;
@@ -1189,10 +1169,10 @@
         font-size: 12px;
         padding: 5px 12px;
         border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px) saturate(160%);
+        -webkit-backdrop-filter: blur(10px) saturate(160%);
         cursor: pointer;
         font-family: var(--font);
         font-weight: 500;
@@ -1200,7 +1180,8 @@
         transition: all 0.2s;
       }
       .diff-view-btn:hover {
-        background: rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.22);
+        box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.2), 0 0 8px rgba(255, 255, 255, 0.1);
       }
       .diff-view-btn.active {
         background: linear-gradient(
@@ -1215,10 +1196,10 @@
         width: 28px;
         height: 28px;
         border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px) saturate(160%);
+        -webkit-backdrop-filter: blur(10px) saturate(160%);
         cursor: pointer;
         display: inline-flex;
         align-items: center;
@@ -1227,8 +1208,8 @@
         transition: all 0.2s;
       }
       .diff-tool-icon:hover {
-        background: rgba(255, 255, 255, 0.35);
-        transform: scale(1.05);
+        background: rgba(255, 255, 255, 0.22);
+        box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.2), 0 0 8px rgba(255, 255, 255, 0.1);
       }
       .diff-tool-icon.active {
         background: linear-gradient(
@@ -1282,6 +1263,9 @@
         font-weight: 500;
         z-index: 400;
         transition: bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        width: 200px;
+        text-align: center;
+        white-space: nowrap;
       }
       .toast.show {
         bottom: 100px;
@@ -3146,10 +3130,10 @@
       <!-- Tabs -->
       <div style="display: flex; gap: 8px; margin-bottom: 16px">
         <button
-          class="btn btn-secondary"
+          class="btn btn-primary"
           onclick="showAdminTab('responses')"
           id="tabResponses"
-          style="flex: 1; font-size: 13px"
+          style="flex: 1; font-size: 13px; justify-content: center; text-align: center"
         >
           응답 목록
         </button>
@@ -3157,7 +3141,7 @@
           class="btn btn-secondary"
           onclick="showAdminTab('letter')"
           id="tabLetter"
-          style="flex: 1; font-size: 13px"
+          style="flex: 1; font-size: 13px; justify-content: center; text-align: center"
         >
           레터링 생성
         </button>
@@ -3997,45 +3981,27 @@
         }
       }
 
-      // ===== Word-level diff engine =====
+      // ===== Word-level diff engine (no space tracking) =====
       function computeWordDiff(original, modified) {
-        // Tokenize: split into words and spaces, preserving space positions
+        // Tokenize: split by whitespace into words only (spaces are NOT tracked)
         function tokenize(text) {
-          const tokens = [];
-          let i = 0;
-          while (i < text.length) {
-            if (text[i] === ' ') {
-              tokens.push({ type: 'space', value: ' ' });
-              i++;
-            } else {
-              let word = '';
-              while (i < text.length && text[i] !== ' ') {
-                word += text[i];
-                i++;
-              }
-              tokens.push({ type: 'word', value: word });
-            }
-          }
-          return tokens;
+          return text.split(/\s+/).filter(function(w) { return w.length > 0; });
         }
 
-        const origTokens = tokenize(original);
-        const modTokens = tokenize(modified);
+        const origWords = tokenize(original);
+        const modWords = tokenize(modified);
 
-        // LCS-based diff on tokens
-        const m = origTokens.length;
-        const n = modTokens.length;
+        // LCS-based diff on words
+        const m = origWords.length;
+        const n = modWords.length;
 
         // Build LCS table
         const dp = Array(m + 1)
           .fill(null)
-          .map(() => Array(n + 1).fill(0));
+          .map(function() { return Array(n + 1).fill(0); });
         for (let i = 1; i <= m; i++) {
           for (let j = 1; j <= n; j++) {
-            if (
-              origTokens[i - 1].type === modTokens[j - 1].type &&
-              origTokens[i - 1].value === modTokens[j - 1].value
-            ) {
+            if (origWords[i - 1] === modWords[j - 1]) {
               dp[i][j] = dp[i - 1][j - 1] + 1;
             } else {
               dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
@@ -4044,47 +4010,28 @@
         }
 
         // Backtrack to find diff operations
-        let i = m,
-          j = n;
+        let i = m, j = n;
         const ops = [];
 
         while (i > 0 || j > 0) {
-          if (
-            i > 0 &&
-            j > 0 &&
-            origTokens[i - 1].type === modTokens[j - 1].type &&
-            origTokens[i - 1].value === modTokens[j - 1].value
-          ) {
-            ops.unshift({
-              op: 'equal',
-              orig: origTokens[i - 1],
-              mod: modTokens[j - 1],
-            });
-            i--;
-            j--;
+          if (i > 0 && j > 0 && origWords[i - 1] === modWords[j - 1]) {
+            ops.unshift({ op: 'equal', value: modWords[j - 1] });
+            i--; j--;
           } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
-            ops.unshift({ op: 'insert', mod: modTokens[j - 1] });
+            ops.unshift({ op: 'insert', value: modWords[j - 1] });
             j--;
           } else {
-            ops.unshift({ op: 'delete', orig: origTokens[i - 1] });
+            ops.unshift({ op: 'delete', value: origWords[i - 1] });
             i--;
           }
         }
 
-        // Merge consecutive same-type operations for cleaner display
-        // Group adjacent deletes+inserts as "replace" when they're both words
+        // Merge adjacent delete+insert into "replace"
         const merged = [];
         let k = 0;
         while (k < ops.length) {
-          if (
-            ops[k].op === 'delete' &&
-            k + 1 < ops.length &&
-            ops[k + 1].op === 'insert' &&
-            ops[k].orig.type === 'word' &&
-            ops[k + 1].mod.type === 'word'
-          ) {
-            // Word replacement
-            merged.push({ op: 'replace', orig: ops[k].orig, mod: ops[k + 1].mod });
+          if (ops[k].op === 'delete' && k + 1 < ops.length && ops[k + 1].op === 'insert') {
+            merged.push({ op: 'replace', orig: ops[k].value, mod: ops[k + 1].value });
             k += 2;
           } else {
             merged.push(ops[k]);
@@ -4118,45 +4065,39 @@
 
         const ops = computeWordDiff(String(original), String(modified));
         let html = '';
+        let first = true;
 
         for (const op of ops) {
+          if (!first) html += ' ';
+          first = false;
+
           switch (op.op) {
             case 'equal':
-              html += op.mod.type === 'space' ? ' ' : escapeHTML(op.mod.value);
+              html += escapeHTML(op.value);
               break;
             case 'replace':
               html +=
                 '<span class="diff-modified-word" onclick="toggleModifiedWord(this)" data-original="' +
-                escapeHTML(op.orig.value) +
+                escapeHTML(op.orig) +
                 '" data-modified="' +
-                escapeHTML(op.mod.value) +
+                escapeHTML(op.mod) +
                 '">' +
-                escapeHTML(op.mod.value) +
+                escapeHTML(op.mod) +
                 '</span>';
               break;
             case 'insert':
-              if (op.mod.type === 'space') {
-                html +=
-                  '<span class="diff-added-space" title="추가된 띄어쓰기"></span>';
-              } else {
-                html +=
-                  '<span class="diff-modified-word" onclick="toggleModifiedWord(this)" data-original="" data-modified="' +
-                  escapeHTML(op.mod.value) +
-                  '">' +
-                  escapeHTML(op.mod.value) +
-                  '</span>';
-              }
+              html +=
+                '<span class="diff-modified-word" onclick="toggleModifiedWord(this)" data-original="" data-modified="' +
+                escapeHTML(op.value) +
+                '">' +
+                escapeHTML(op.value) +
+                '</span>';
               break;
             case 'delete':
-              if (op.orig.type === 'space') {
-                html +=
-                  '<span class="diff-deleted-space" title="삭제된 띄어쓰기"></span>';
-              } else {
-                html +=
-                  '<span class="diff-deleted-text" onclick="toggleDeletedText(this)" data-original="' +
-                  escapeHTML(op.orig.value) +
-                  '">X</span>';
-              }
+              html +=
+                '<span class="diff-deleted-text" onclick="toggleDeletedText(this)" data-original="' +
+                escapeHTML(op.value) +
+                '">X</span>';
               break;
           }
         }
@@ -4274,7 +4215,6 @@
           if (diffSkipKeys.includes(k)) continue;
           const label = fieldLabelsMap[k] || k;
           const isModified = hasModifications && r.modifiedFields.includes(k);
-          const changedClass = isModified ? ' diff-changed' : '';
 
           const currentVal = Array.isArray(v) ? v.join(', ') : v;
           const origRaw =
@@ -4309,9 +4249,7 @@
           }
 
           details +=
-            '<div class="' +
-            changedClass +
-            '" style="padding:4px 8px;border-radius:6px;margin-bottom:2px;">' +
+            '<div style="padding:4px 8px;border-radius:6px;margin-bottom:2px;">' +
             '<strong>' +
             label +
             ':</strong> ' +
@@ -4341,23 +4279,27 @@
         renderResponseView(currentViewingIndex, currentViewingResponse);
       }
 
+      function toggleOriginalModified() {
+        if (currentDiffMode === 'original') {
+          setDiffMode('modified');
+        } else {
+          setDiffMode('original');
+        }
+      }
+
       function renderResponseView(idx, r) {
         const hasModifications =
           r.modifiedFields && r.modifiedFields.length > 0;
 
         let controls = '';
         if (hasModifications) {
+          var toggleLabel = currentDiffMode === 'original' ? '수정본' : '원본';
           controls =
             '<div class="diff-view-controls">' +
-            '<button class="diff-view-btn' +
-            (currentDiffMode === 'modified' ? ' active' : '') +
-            '" onclick="setDiffMode(\'modified\')">수정본</button>' +
-            '<button class="diff-view-btn' +
+            '<button class="diff-view-btn" onclick="toggleOriginalModified()" id="btnToggleView" style="justify-content:center;text-align:center;">' + toggleLabel + '</button>' +
+            '<button class="diff-tool-icon' +
             (currentDiffMode === 'diff' ? ' active' : '') +
-            '" onclick="setDiffMode(\'diff\')">비교(Diff)</button>' +
-            '<button class="diff-view-btn' +
-            (currentDiffMode === 'original' ? ' active' : '') +
-            '" onclick="setDiffMode(\'original\')">원본</button>' +
+            '" onclick="setDiffMode(currentDiffMode===\'diff\'?\'modified\':\'diff\')" title="변경 비교">🔧</button>' +
             '<span class="diff-mode-label">' +
             r.modifiedFields.length +
             '개 항목 수정됨</span>' +
@@ -4370,7 +4312,7 @@
         list.innerHTML =
           '<button class="btn btn-secondary" onclick="updateAdminPanel()" style="margin-bottom:12px;font-size:13px;">← 목록으로</button>' +
           controls +
-          '<div style="background:rgba(255,255,255,0.5);border-radius:var(--radius-md);padding:20px;font-size:13px;line-height:2;">' +
+          '<div style="background:rgba(255,255,255,0.12);backdrop-filter:blur(12px) saturate(160%);-webkit-backdrop-filter:blur(12px) saturate(160%);border:1px solid rgba(255,255,255,0.3);border-radius:var(--radius-md);padding:20px;font-size:13px;line-height:2;">' +
           details +
           '</div>';
       }
@@ -4677,13 +4619,16 @@
       }
 
       // ===== Toast =====
+      var toastTimer = null;
       function showToast(msg) {
         const toast = document.getElementById('toast');
         toast.textContent = msg;
+        if (toastTimer) clearTimeout(toastTimer);
         toast.classList.add('show');
-        setTimeout(function () {
+        toastTimer = setTimeout(function () {
           toast.classList.remove('show');
-        }, 3000);
+          toastTimer = null;
+        }, 2000);
       }
 
       // ===== Remove error on input =====
@@ -4704,20 +4649,56 @@
       });
 
       // ===== Accessibility Controls =====
-      let currentFontSizeLevel = 0; // -2 to +3
+      let currentFontSizeLevel = 0; // -3 to +3
       let currentFontWeightLevel = 0; // -1 to +2
+      let a11yStyleEl = null;
+
+      function getA11yStyleEl() {
+        if (!a11yStyleEl) {
+          a11yStyleEl = document.createElement('style');
+          a11yStyleEl.id = 'a11y-dynamic-styles';
+          document.head.appendChild(a11yStyleEl);
+        }
+        return a11yStyleEl;
+      }
+
+      function applyA11yStyles() {
+        var css = '';
+        if (currentFontSizeLevel !== 0) {
+          var baseSize = 15 + currentFontSizeLevel * 2;
+          css += '* { font-size: inherit !important; }\n';
+          css += 'body { font-size: ' + baseSize + 'px !important; }\n';
+          css += '.form-label { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
+          css += '.form-input { font-size: ' + Math.max(14, baseSize) + 'px !important; }\n';
+          css += '.section-header h2 { font-size: ' + (baseSize + 7) + 'px !important; }\n';
+          css += '.section-header p { font-size: ' + Math.max(12, baseSize - 1) + 'px !important; }\n';
+          css += '.header-logo span { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
+          css += '.option-item label { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
+          css += '.btn { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
+          css += '.intro-hero h1 { font-size: ' + (baseSize + 13) + 'px !important; }\n';
+          css += '.intro-hero p { font-size: ' + Math.max(14, baseSize) + 'px !important; }\n';
+          css += '.stat-value { font-size: ' + (baseSize + 9) + 'px !important; }\n';
+          css += '.response-card .name { font-size: ' + Math.max(13, baseSize) + 'px !important; }\n';
+          css += '.response-card .meta { font-size: ' + Math.max(11, baseSize - 3) + 'px !important; }\n';
+        }
+        if (currentFontWeightLevel !== 0) {
+          var weightOffset = currentFontWeightLevel * 200;
+          css += 'body, body * { font-weight-adjust: initial; }\n';
+          css += 'body { --a11y-weight-offset: ' + weightOffset + '; }\n';
+          // Apply weight changes: add offset to existing weight
+          var weights = { '-1': 300, 0: 400, 1: 600, 2: 800 };
+          var baseWeight = weights[String(currentFontWeightLevel)];
+          css += '* { font-weight: ' + baseWeight + ' !important; }\n';
+          // Preserve relative differences: bold elements should stay bolder
+          var boldWeight = Math.min(900, baseWeight + 200);
+          css += 'strong, b, .form-label, h1, h2, h3, h4, .section-header h2, .stat-value, .response-card .name { font-weight: ' + boldWeight + ' !important; }\n';
+        }
+        getA11yStyleEl().textContent = css;
+      }
 
       function adjustFontSize(dir) {
-        currentFontSizeLevel = Math.max(
-          -2,
-          Math.min(3, currentFontSizeLevel + dir),
-        );
-        const baseSize = 15 + currentFontSizeLevel * 2;
-        document.documentElement.style.setProperty(
-          '--base-font-size',
-          baseSize + 'px',
-        );
-        document.body.style.fontSize = baseSize + 'px';
+        currentFontSizeLevel = Math.max(-3, Math.min(3, currentFontSizeLevel + dir));
+        applyA11yStyles();
         showToast(
           '글자 크기: ' +
             (currentFontSizeLevel > 0 ? '+' : '') +
@@ -4726,24 +4707,17 @@
       }
 
       function adjustFontWeight(dir) {
-        currentFontWeightLevel = Math.max(
-          -1,
-          Math.min(2, currentFontWeightLevel + dir),
-        );
-        const weights = { '-1': 300, 0: 400, 1: 600, 2: 800 };
-        const weight = weights[String(currentFontWeightLevel)];
-        document.body.style.fontWeight = weight;
-        const labels = { '-1': '얇게', 0: '기본', 1: '굵게', 2: '매우 굵게' };
+        currentFontWeightLevel = Math.max(-1, Math.min(2, currentFontWeightLevel + dir));
+        applyA11yStyles();
+        var labels = { '-1': '얇게', 0: '기본', 1: '굵게', 2: '매우 굵게' };
         showToast('글자 두께: ' + labels[String(currentFontWeightLevel)]);
       }
 
       function resetAccessibility() {
         currentFontSizeLevel = 0;
         currentFontWeightLevel = 0;
-        document.body.style.fontSize = '';
-        document.body.style.fontWeight = '';
-        document.documentElement.style.removeProperty('--base-font-size');
-        showToast('접근성 설정이 초기화되었습니다.');
+        applyA11yStyles();
+        showToast('설정 초기화');
       }
 
       // ===== Initialize =====
