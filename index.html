@@ -43,6 +43,172 @@
         --base-font-size: 15px;
       }
 
+      /* ===== Dark Mode ===== */
+      body.dark-mode {
+        --glass-bg: rgba(30, 30, 40, 0.45);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        --primary: #4a9eff;
+        --primary-hover: #5aabff;
+        --primary-light: rgba(74, 158, 255, 0.12);
+        --text-primary: #e8e8ed;
+        --text-secondary: #a1a1a6;
+        --text-tertiary: #8e8e93;
+        --bg-page: #1a1a2e;
+        --bg-gradient-1: #0a1628;
+        --bg-gradient-2: #1a3a5c;
+        --danger: #ff453a;
+        --success: #30d158;
+        --warning: #ff9f0a;
+      }
+      body.dark-mode {
+        background: #1a1a2e;
+      }
+      body.dark-mode .bg-decoration::before {
+        background: radial-gradient(circle, rgba(40, 100, 200, 0.2) 0%, transparent 70%);
+      }
+      body.dark-mode .bg-decoration::after {
+        background: radial-gradient(circle, rgba(60, 150, 220, 0.15) 0%, transparent 70%);
+      }
+      body.dark-mode .header {
+        background: rgba(30, 30, 45, 0.7);
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+      }
+      body.dark-mode .a11y-bar {
+        background: rgba(30, 30, 45, 0.5);
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+      }
+      body.dark-mode .a11y-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+        color: var(--text-primary);
+      }
+      body.dark-mode .a11y-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+      body.dark-mode .glass-card {
+        background: rgba(30, 35, 50, 0.6) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
+      }
+      body.dark-mode .section-header {
+        background: linear-gradient(135deg, rgba(30, 60, 100, 0.6), rgba(40, 70, 120, 0.4)) !important;
+        border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+      }
+      body.dark-mode .section-header h2,
+      body.dark-mode .section-header p {
+        color: var(--text-primary) !important;
+      }
+      body.dark-mode .form-input,
+      body.dark-mode textarea {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+        color: var(--text-primary) !important;
+      }
+      body.dark-mode .form-input:focus,
+      body.dark-mode textarea:focus {
+        border-color: var(--primary) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+      }
+      body.dark-mode .form-input::placeholder,
+      body.dark-mode textarea::placeholder {
+        color: var(--text-tertiary) !important;
+      }
+      body.dark-mode .option-item {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+      }
+      body.dark-mode .option-item:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+      }
+      body.dark-mode .option-item.selected {
+        background: rgba(74, 158, 255, 0.15) !important;
+        border-color: var(--primary) !important;
+      }
+      body.dark-mode .btn {
+        background: rgba(50, 60, 80, 0.5) !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+        color: var(--text-primary) !important;
+      }
+      body.dark-mode .btn-primary,
+      body.dark-mode .btn-submit {
+        background: linear-gradient(135deg, rgba(17, 100, 177, 0.9), rgba(72, 118, 239, 0.8)) !important;
+        color: white !important;
+      }
+      body.dark-mode .notice {
+        background: rgba(255, 200, 100, 0.1) !important;
+        border-color: rgba(255, 200, 100, 0.25) !important;
+      }
+      body.dark-mode .notice p,
+      body.dark-mode .notice li {
+        color: var(--text-secondary) !important;
+      }
+      body.dark-mode .admin-panel {
+        background: rgba(25, 30, 45, 0.95) !important;
+      }
+      body.dark-mode .autocomplete-dropdown {
+        background: rgba(30, 35, 50, 0.95) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+      }
+      body.dark-mode .autocomplete-dropdown .dept-item:hover,
+      body.dark-mode .autocomplete-dropdown .dept-item.highlighted {
+        background: rgba(74, 158, 255, 0.2) !important;
+      }
+      body.dark-mode .email-domain-dropdown {
+        background: rgba(30, 35, 50, 0.95) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+      }
+      body.dark-mode .email-domain-item:hover,
+      body.dark-mode .email-domain-item.highlighted {
+        background: rgba(74, 158, 255, 0.2) !important;
+      }
+      body.dark-mode .progress-bar {
+        background: rgba(255, 255, 255, 0.08) !important;
+      }
+      body.dark-mode .step-dot {
+        background: rgba(255, 255, 255, 0.15) !important;
+      }
+      body.dark-mode .step-dot.active {
+        background: var(--primary) !important;
+      }
+      body.dark-mode .save-draft-modal {
+        background: rgba(30, 35, 50, 0.95) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+      }
+      body.dark-mode .save-draft-modal-text {
+        color: var(--text-primary) !important;
+      }
+      body.dark-mode .save-draft-modal-sub {
+        color: var(--text-secondary) !important;
+      }
+      body.dark-mode .save-draft-no {
+        background: rgba(50, 60, 80, 0.5) !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+        color: var(--text-primary) !important;
+      }
+      body.dark-mode .form-label {
+        color: var(--text-primary) !important;
+      }
+      body.dark-mode .custom-radio {
+        border-color: rgba(255, 255, 255, 0.2) !important;
+      }
+      body.dark-mode .option-item.selected .custom-radio {
+        border-color: var(--primary) !important;
+      }
+      body.dark-mode .custom-checkbox {
+        border-color: rgba(255, 255, 255, 0.2) !important;
+      }
+      body.dark-mode .option-item.selected .custom-checkbox {
+        border-color: var(--primary) !important;
+        background: var(--primary) !important;
+      }
+      body.dark-mode .landing-card {
+        background: rgba(30, 35, 50, 0.6) !important;
+      }
+      body.dark-mode .intro-info .notice {
+        background: rgba(255, 200, 100, 0.08) !important;
+      }
+
       /* ===== Cross-browser normalize ===== */
       html {
         scroll-behavior: smooth;
@@ -224,6 +390,204 @@
         background: rgba(0, 0, 0, 0.1);
         margin: 0 2px;
       }
+      body.dark-mode .a11y-divider {
+        background: rgba(255, 255, 255, 0.15);
+      }
+      /* Dark mode toggle */
+      .dark-mode-toggle {
+        position: relative;
+      }
+      .dark-mode-icon {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+      /* High contrast toggle (알약 형태) */
+      .high-contrast-toggle {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        user-select: none;
+        flex-shrink: 0;
+      }
+      .high-contrast-toggle input {
+        display: none;
+      }
+      .hc-toggle-track {
+        width: 44px;
+        height: 24px;
+        border-radius: 12px;
+        background: rgba(120, 120, 128, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        transition: background 0.3s ease, border-color 0.3s ease;
+        flex-shrink: 0;
+      }
+      .hc-toggle-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease;
+      }
+      .high-contrast-toggle input:checked + .hc-toggle-track {
+        background: var(--primary);
+        border-color: var(--primary);
+      }
+      .high-contrast-toggle input:checked + .hc-toggle-track .hc-toggle-thumb {
+        transform: translateX(20px);
+      }
+      .hc-toggle-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        white-space: nowrap;
+      }
+
+      /* ===== High Contrast Mode ===== */
+      body.high-contrast {
+        --glass-bg: rgba(0, 0, 0, 0.9);
+        --glass-border: #ffffff;
+        --text-primary: #ffffff;
+        --text-secondary: #ffffff;
+        --text-tertiary: #e0e0e0;
+        --bg-page: #000000;
+        --primary: #4dabff;
+      }
+      body.high-contrast {
+        background: #000000 !important;
+      }
+      body.high-contrast .bg-decoration::before,
+      body.high-contrast .bg-decoration::after {
+        display: none;
+      }
+      body.high-contrast .header {
+        background: #000000 !important;
+        border-bottom: 2px solid #ffffff !important;
+      }
+      body.high-contrast .a11y-bar {
+        background: #000000 !important;
+        border-bottom: 2px solid #ffffff !important;
+      }
+      body.high-contrast .a11y-btn {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+        color: #ffffff !important;
+      }
+      body.high-contrast .glass-card {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+      }
+      body.high-contrast .section-header {
+        background: #000000 !important;
+        border-bottom: 2px solid #ffffff !important;
+      }
+      body.high-contrast .section-header h2,
+      body.high-contrast .section-header p {
+        color: #ffffff !important;
+      }
+      body.high-contrast .form-input,
+      body.high-contrast textarea {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+        color: #ffffff !important;
+      }
+      body.high-contrast .form-input::placeholder,
+      body.high-contrast textarea::placeholder {
+        color: #bbbbbb !important;
+      }
+      body.high-contrast .form-label {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+      }
+      body.high-contrast .option-item {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+        color: #ffffff !important;
+      }
+      body.high-contrast .option-item.selected {
+        background: #003366 !important;
+        border-color: #4dabff !important;
+      }
+      body.high-contrast .option-label {
+        color: #ffffff !important;
+      }
+      body.high-contrast .btn {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+        color: #ffffff !important;
+      }
+      body.high-contrast .btn-primary,
+      body.high-contrast .btn-submit {
+        background: #003366 !important;
+        border: 2px solid #4dabff !important;
+        color: #ffffff !important;
+      }
+      body.high-contrast .notice {
+        background: #1a1a00 !important;
+        border: 2px solid #ffcc00 !important;
+      }
+      body.high-contrast .notice p,
+      body.high-contrast .notice li {
+        color: #ffffff !important;
+      }
+      body.high-contrast .custom-radio {
+        border: 2px solid #ffffff !important;
+      }
+      body.high-contrast .option-item.selected .custom-radio {
+        border-color: #4dabff !important;
+      }
+      body.high-contrast .custom-radio::after {
+        background: #4dabff !important;
+      }
+      body.high-contrast .custom-checkbox {
+        border: 2px solid #ffffff !important;
+      }
+      body.high-contrast .option-item.selected .custom-checkbox {
+        background: #4dabff !important;
+        border-color: #4dabff !important;
+      }
+      body.high-contrast .progress-bar {
+        background: #333333 !important;
+        border: 1px solid #ffffff !important;
+      }
+      body.high-contrast .step-dot {
+        background: #333333 !important;
+        border: 1px solid #ffffff !important;
+      }
+      body.high-contrast .step-dot.active {
+        background: #4dabff !important;
+      }
+      body.high-contrast .autocomplete-dropdown,
+      body.high-contrast .email-domain-dropdown {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+      }
+      body.high-contrast .save-draft-modal {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+      }
+      body.high-contrast .save-draft-modal-text,
+      body.high-contrast .save-draft-modal-sub {
+        color: #ffffff !important;
+      }
+      body.high-contrast .landing-card {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+      }
+      body.high-contrast .admin-panel {
+        background: #000000 !important;
+        border-left: 2px solid #ffffff !important;
+      }
+      body.high-contrast .hc-toggle-label {
+        color: #ffffff !important;
+      }
+
       .header-inner {
         max-width: 780px;
         margin: 0 auto;
@@ -423,6 +787,16 @@
         color: var(--text-primary);
         margin-bottom: 8px;
         letter-spacing: -0.2px;
+        transition: color 0.3s ease;
+      }
+      .form-group:focus-within .form-label {
+        color: rgba(17, 100, 177, 0.9);
+      }
+      body.dark-mode .form-group:focus-within .form-label {
+        color: #5aabff !important;
+      }
+      body.high-contrast .form-group:focus-within .form-label {
+        color: #4dabff !important;
       }
       .form-label .required {
         color: var(--danger);
@@ -451,11 +825,11 @@
         outline: none;
       }
       .form-input:focus {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.38);
         border-color: rgba(17, 100, 177, 0.6);
         box-shadow:
           0 0 0 3px rgba(17, 100, 177, 0.12),
-          inset 0 0 8px rgba(255, 255, 255, 0.1);
+          inset 0 0 12px rgba(255, 255, 255, 0.15);
       }
       .form-input::placeholder {
         color: var(--text-tertiary);
@@ -906,8 +1280,12 @@
         cursor: pointer;
         user-select: none;
       }
-      .autocomplete-college:hover {
+      .autocomplete-college:hover,
+      .autocomplete-college.dept-highlighted {
         background: rgba(0, 113, 227, 0.08);
+      }
+      .autocomplete-item.dept-highlighted {
+        background: rgba(0, 113, 227, 0.12);
       }
       .autocomplete-item {
         padding: 10px 16px 10px 28px;
@@ -1059,6 +1437,124 @@
           rgba(17, 100, 177, 0.95),
           rgba(72, 118, 239, 0.85)
         );
+      }
+
+      /* ===== Save Draft Button ===== */
+      .save-draft-toggle {
+        position: fixed;
+        bottom: 92px;
+        right: 24px;
+        z-index: 200;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          rgba(17, 100, 177, 0.85),
+          rgba(72, 118, 239, 0.75)
+        );
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(17, 100, 177, 0.4);
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+      }
+      .save-draft-toggle:hover {
+        box-shadow: 0 4px 20px rgba(17, 100, 177, 0.35), inset 0 0 20px rgba(255, 255, 255, 0.3), 0 0 16px rgba(200, 220, 255, 0.25);
+        background: linear-gradient(
+          135deg,
+          rgba(17, 100, 177, 0.95),
+          rgba(72, 118, 239, 0.85)
+        );
+      }
+
+      /* ===== Save Draft Modal ===== */
+      .save-draft-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(4px);
+        z-index: 9998;
+      }
+      .save-draft-overlay.active { display: block; }
+      .save-draft-modal {
+        display: none;
+        position: fixed;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        z-index: 9999;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(24px) saturate(200%);
+        -webkit-backdrop-filter: blur(24px) saturate(200%);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.3) inset;
+        padding: 36px 32px 28px;
+        text-align: center;
+        max-width: 380px;
+        width: 90vw;
+        opacity: 0;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+      }
+      .save-draft-modal.active {
+        display: block;
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      .save-draft-modal-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+      .save-draft-modal-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+      .save-draft-modal-sub {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 24px;
+        line-height: 1.4;
+      }
+      .save-draft-modal-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+      }
+      .save-draft-modal-btn {
+        padding: 10px 32px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+      }
+      .save-draft-yes {
+        background: linear-gradient(135deg, rgba(17, 100, 177, 0.85), rgba(72, 118, 239, 0.75));
+        color: white;
+        box-shadow: 0 2px 10px rgba(17, 100, 177, 0.3);
+      }
+      .save-draft-yes:hover {
+        background: linear-gradient(135deg, rgba(17, 100, 177, 0.95), rgba(72, 118, 239, 0.85));
+        box-shadow: 0 4px 16px rgba(17, 100, 177, 0.4);
+      }
+      .save-draft-no {
+        background: rgba(220, 230, 245, 0.5);
+        color: #333;
+        border: 1px solid rgba(180, 200, 230, 0.5);
+      }
+      .save-draft-no:hover {
+        background: rgba(220, 230, 245, 0.8);
       }
 
       .admin-panel {
@@ -1332,9 +1828,9 @@
       /* ===== Toast Notification ===== */
       .toast {
         position: fixed;
-        bottom: -60px;
+        bottom: 100px;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%) translateY(20px);
         background: rgba(30, 30, 30, 0.55);
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -1345,7 +1841,7 @@
         font-size: 14px;
         font-weight: 500;
         z-index: 400;
-        transition: bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.4s;
         width: 340px;
         max-width: 90vw;
         text-align: center;
@@ -1354,9 +1850,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
       }
       .toast.show {
-        bottom: 100px;
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+        pointer-events: auto;
       }
 
       /* ===== Responsive ===== */
@@ -1416,12 +1918,35 @@
         .a11y-bar {
           padding: 4px 16px;
         }
+        .a11y-inner {
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+        .a11y-controls {
+          flex-wrap: wrap;
+        }
         .a11y-btn {
           font-size: 12px;
           padding: 3px 8px;
+          width: 32px;
+          height: 32px;
         }
         .a11y-label {
           display: none;
+        }
+        .hc-toggle-label {
+          font-size: 10px;
+        }
+        .hc-toggle-track {
+          width: 38px;
+          height: 20px;
+        }
+        .hc-toggle-thumb {
+          width: 16px;
+          height: 16px;
+        }
+        .high-contrast-toggle input:checked + .hc-toggle-track .hc-toggle-thumb {
+          transform: translateX(18px);
         }
         .landing-btn {
           height: 100px;
@@ -1546,6 +2071,27 @@
           >
             ↺
           </button>
+          <span class="a11y-divider"></span>
+          <!-- 다크모드 토글 -->
+          <button
+            class="a11y-btn dark-mode-toggle"
+            id="darkModeToggle"
+            onclick="toggleDarkMode()"
+            title="다크모드 전환"
+            aria-label="다크모드 전환"
+            type="button"
+          >
+            <svg class="dark-mode-icon moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5c542" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg class="dark-mode-icon sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </button>
+          <!-- 고대비 토글 -->
+          <label class="high-contrast-toggle" title="고대비 모드" aria-label="고대비 모드 전환">
+            <input type="checkbox" id="highContrastToggle" onchange="toggleHighContrast()" />
+            <span class="hc-toggle-track">
+              <span class="hc-toggle-thumb"></span>
+            </span>
+            <span class="hc-toggle-label">고대비</span>
+          </label>
         </div>
       </div>
     </div>
@@ -3187,6 +3733,31 @@
       </div>
     </main>
 
+    <!-- Save Draft Button (위에 저장 버튼) -->
+    <button
+      class="save-draft-toggle"
+      id="saveDraftBtn"
+      onclick="showSaveDraftModal()"
+      title="임시저장"
+      aria-label="설문 임시저장"
+    >
+      <span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;line-height:1;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      </span>
+    </button>
+
+    <!-- Save Draft Modal -->
+    <div class="save-draft-overlay" id="saveDraftOverlay" onclick="closeSaveDraftModal()"></div>
+    <div class="save-draft-modal" id="saveDraftModal">
+      <div class="save-draft-modal-icon">💾</div>
+      <p class="save-draft-modal-text">현재 작성하던 부분까지<br>임시 저장하시겠습니까?</p>
+      <p class="save-draft-modal-sub">다음에 저장된 부분부터 이어서 작성하실 수 있습니다.</p>
+      <div class="save-draft-modal-buttons">
+        <button class="save-draft-modal-btn save-draft-yes" onclick="executeSaveDraft()">네</button>
+        <button class="save-draft-modal-btn save-draft-no" onclick="closeSaveDraftModal()">아니오</button>
+      </div>
+    </div>
+
     <!-- Admin Toggle Button -->
     <button
       class="admin-toggle"
@@ -3451,6 +4022,29 @@
 
       // Admin state
       let adminToken = null;
+      let adminSessionTimer = null;
+      const ADMIN_SESSION_TIMEOUT = 30 * 60 * 1000; // 30분
+
+      function startAdminSessionTimer() {
+        clearAdminSessionTimer();
+        adminSessionTimer = setTimeout(function() {
+          adminToken = null;
+          adminSessionTimer = null;
+          // 로그인 화면으로 전환
+          var loginScreen = document.getElementById('adminLoginScreen');
+          var dashboard = document.getElementById('adminDashboard');
+          if (loginScreen) loginScreen.style.display = '';
+          if (dashboard) dashboard.style.display = 'none';
+          showToast('30분이 경과하여 자동 로그아웃되었습니다.');
+        }, ADMIN_SESSION_TIMEOUT);
+      }
+
+      function clearAdminSessionTimer() {
+        if (adminSessionTimer) {
+          clearTimeout(adminSessionTimer);
+          adminSessionTimer = null;
+        }
+      }
 
       // Verify page gender
       let verifyGender = '';
@@ -3623,7 +4217,17 @@
           const name = input.dataset.name;
           if (data[name] !== undefined && data[name] !== null) {
             if (!Array.isArray(data[name])) {
-              input.value = data[name];
+              // 연락처는 하이픈 포맷으로 표시
+              if (name === 'phone') {
+                var digits = String(data[name]).replace(/[^0-9]/g, '');
+                if (digits.length === 11) {
+                  input.value = digits.substring(0, 3) + '-' + digits.substring(3, 7) + '-' + digits.substring(7);
+                } else {
+                  input.value = data[name];
+                }
+              } else {
+                input.value = data[name];
+              }
             }
           }
         });
@@ -3889,7 +4493,12 @@
         // Collect text inputs
         pageEl.querySelectorAll('.form-input').forEach((input) => {
           if (input.dataset.name && input.value) {
-            formData[input.dataset.name] = input.value;
+            // 연락처는 숫자만 저장 (하이픈 제거)
+            if (input.dataset.name === 'phone') {
+              formData[input.dataset.name] = input.value.replace(/[^0-9]/g, '');
+            } else {
+              formData[input.dataset.name] = input.value;
+            }
           }
         });
 
@@ -3903,7 +4512,11 @@
         // Collect all remaining data
         document.querySelectorAll('.form-input').forEach((input) => {
           if (input.dataset.name && input.value) {
-            formData[input.dataset.name] = input.value;
+            if (input.dataset.name === 'phone') {
+              formData[input.dataset.name] = input.value.replace(/[^0-9]/g, '');
+            } else {
+              formData[input.dataset.name] = input.value;
+            }
           }
         });
         // Collect split birthdate
@@ -4000,6 +4613,8 @@
             currentPage = 7;
             showPage(7);
             showToast('설문이 성공적으로 제출되었습니다!');
+            // 임시저장 데이터 삭제
+            try { localStorage.removeItem('dku_survey_draft'); } catch(e) {}
           }
         } catch (err) {
           console.error('Submit error:', err);
@@ -4063,6 +4678,7 @@
           }
 
           adminToken = result.token;
+          startAdminSessionTimer();
           showToast('관리자 로그인 성공!');
           showAdminContent();
           showAdminTab('responses');
@@ -4455,17 +5071,27 @@
           const label = fieldLabelsMap[k] || k;
           const isModified = hasModifications && r.modifiedFields.includes(k);
 
-          const currentVal = Array.isArray(v) ? v.join(', ') : v;
+          let currentVal = Array.isArray(v) ? v.join(', ') : v;
+          // 연락처 하이픈 포맷 표시
+          if (k === 'phone' && typeof currentVal === 'string') {
+            var ph = currentVal.replace(/[^0-9]/g, '');
+            if (ph.length === 11) currentVal = ph.substring(0,3)+'-'+ph.substring(3,7)+'-'+ph.substring(7);
+          }
           const origRaw =
             r.originalData && r.originalData[k] !== undefined
               ? r.originalData[k]
               : undefined;
-          const origVal =
+          let origVal =
             origRaw !== undefined
               ? Array.isArray(origRaw)
                 ? origRaw.join(', ')
                 : origRaw
               : undefined;
+          // 원본 연락처도 하이픈 포맷
+          if (k === 'phone' && typeof origVal === 'string') {
+            var oph = origVal.replace(/[^0-9]/g, '');
+            if (oph.length === 11) origVal = oph.substring(0,3)+'-'+oph.substring(3,7)+'-'+oph.substring(7);
+          }
 
           let displayHTML;
           if (mode === 'original') {
@@ -4593,6 +5219,39 @@
             delete deptAutoFilled[inputId];
             delete formData[input.dataset.name];
             showAllDepartments(dropdown, inputId);
+          }
+          // 방향키로 드롭다운 탐색
+          if (dropdown.classList.contains('show')) {
+            var allItems = dropdown.querySelectorAll('.autocomplete-college, .autocomplete-item[style*="block"], .autocomplete-item:not([style*="none"])');
+            var visibleItems = Array.from(allItems).filter(function(item) {
+              return item.offsetParent !== null;
+            });
+            var currentIdx = -1;
+            var focused = dropdown.querySelector('.dept-highlighted');
+            if (focused) currentIdx = visibleItems.indexOf(focused);
+
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              if (focused) focused.classList.remove('dept-highlighted');
+              currentIdx = Math.min(currentIdx + 1, visibleItems.length - 1);
+              if (visibleItems[currentIdx]) {
+                visibleItems[currentIdx].classList.add('dept-highlighted');
+                visibleItems[currentIdx].scrollIntoView({ block: 'nearest' });
+              }
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              if (focused) focused.classList.remove('dept-highlighted');
+              currentIdx = Math.max(currentIdx - 1, 0);
+              if (visibleItems[currentIdx]) {
+                visibleItems[currentIdx].classList.add('dept-highlighted');
+                visibleItems[currentIdx].scrollIntoView({ block: 'nearest' });
+              }
+            } else if (e.key === 'Enter' && focused) {
+              e.preventDefault();
+              focused.click();
+            } else if (e.key === 'Escape') {
+              dropdown.classList.remove('show');
+            }
           }
         });
 
@@ -4975,14 +5634,140 @@
         }
         if (phoneInput) {
           phoneInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value.length === 11 && emailInput) {
+            // 숫자만 추출
+            var digits = this.value.replace(/[^0-9]/g, '');
+            if (digits.length > 11) digits = digits.substring(0, 11);
+            // 하이픈 자동 삽입 (010-1234-5678 형태)
+            var formatted = '';
+            if (digits.length <= 3) {
+              formatted = digits;
+            } else if (digits.length <= 7) {
+              formatted = digits.substring(0, 3) + '-' + digits.substring(3);
+            } else {
+              formatted = digits.substring(0, 3) + '-' + digits.substring(3, 7) + '-' + digits.substring(7);
+            }
+            this.value = formatted;
+            if (digits.length === 11 && emailInput) {
               emailInput.focus();
             }
           });
         }
       }
       setupFieldAutoAdvance();
+
+      // ===== Save Draft (임시저장) =====
+      var DRAFT_KEY = 'dku_survey_draft';
+
+      function showSaveDraftModal() {
+        // 랜딩 페이지이거나 관리자 패널일 때는 무시
+        if (currentPage < 0) {
+          showToast('설문을 시작한 후 임시저장할 수 있습니다.');
+          return;
+        }
+        document.getElementById('saveDraftOverlay').classList.add('active');
+        var modal = document.getElementById('saveDraftModal');
+        modal.style.display = 'block';
+        // Force reflow for animation
+        modal.offsetHeight;
+        modal.classList.add('active');
+      }
+
+      function closeSaveDraftModal() {
+        document.getElementById('saveDraftOverlay').classList.remove('active');
+        var modal = document.getElementById('saveDraftModal');
+        modal.classList.remove('active');
+        setTimeout(function() { modal.style.display = 'none'; }, 250);
+      }
+
+      function collectCurrentDraft() {
+        var draft = { page: currentPage, data: {} };
+        // Collect all text inputs
+        document.querySelectorAll('.form-input[data-name]').forEach(function(input) {
+          if (input.dataset.name && input.value) {
+            if (input.dataset.name === 'phone') {
+              draft.data[input.dataset.name] = input.value.replace(/[^0-9]/g, '');
+            } else {
+              draft.data[input.dataset.name] = input.value;
+            }
+          }
+        });
+        // Collect birthdate
+        var bY = document.getElementById('birthYear');
+        var bM = document.getElementById('birthMonth');
+        var bD = document.getElementById('birthDay');
+        if (bY && bM && bD && bY.value && bM.value && bD.value) {
+          draft.data.birthdate = bY.value + '-' + bM.value.padStart(2,'0') + '-' + bD.value.padStart(2,'0');
+        }
+        // Collect radio selections
+        document.querySelectorAll('.option-group[data-type="radio"]').forEach(function(group) {
+          var name = group.dataset.name;
+          var selected = group.querySelector('.option-item.selected');
+          if (selected) draft.data[name] = selected.dataset.value;
+        });
+        // Collect checkbox selections
+        document.querySelectorAll('.option-group[data-type="checkbox"]').forEach(function(group) {
+          var name = group.dataset.name;
+          var items = group.querySelectorAll('.option-item.selected');
+          if (items.length > 0) {
+            draft.data[name] = Array.from(items).map(function(i) { return i.dataset.value; });
+          }
+        });
+        // Collect textareas
+        document.querySelectorAll('textarea[data-name]').forEach(function(ta) {
+          if (ta.dataset.name && ta.value) draft.data[ta.dataset.name] = ta.value;
+        });
+        draft.savedAt = new Date().toISOString();
+        return draft;
+      }
+
+      function executeSaveDraft() {
+        try {
+          var draft = collectCurrentDraft();
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+          closeSaveDraftModal();
+          showToast('임시 저장되었습니다. 같은 브라우저로 다시 접속하면 이어서 작성할 수 있습니다.');
+        } catch(e) {
+          closeSaveDraftModal();
+          showToast('임시 저장에 실패했습니다. 브라우저 설정을 확인해주세요.');
+        }
+      }
+
+      function checkAndRestoreDraft() {
+        try {
+          var saved = localStorage.getItem(DRAFT_KEY);
+          if (!saved) return;
+          var draft = JSON.parse(saved);
+          if (!draft || !draft.data || typeof draft.page !== 'number') return;
+
+          // 랜딩 페이지에서 '새로 작성하기' 클릭 시 복원 여부 물어봄
+          var _origStartNew = startNewSurvey;
+          startNewSurvey = function() {
+            if (confirm('이전에 작성하던 설문이 있습니다. 이어서 작성하시겠습니까?\n\n취소를 누르면 새로 작성합니다.')) {
+              // Restore draft
+              _origStartNew();
+              Object.assign(formData, draft.data);
+              populateFormFromData(draft.data);
+              // Navigate to saved page
+              if (draft.page > 1) {
+                currentPage = draft.page;
+                showPage(draft.page);
+              }
+              showToast('이전에 저장한 설문을 불러왔습니다.');
+              // 복원 후 원래 함수로 복귀
+              startNewSurvey = _origStartNew;
+            } else {
+              localStorage.removeItem(DRAFT_KEY);
+              startNewSurvey = _origStartNew;
+              _origStartNew();
+            }
+          };
+        } catch(e) {
+          // localStorage 접근 불가 시 무시
+        }
+      }
+
+      // 페이지 로드 시 임시저장 체크
+      checkAndRestoreDraft();
 
       // ===== Email Domain Autocomplete =====
       (function() {
@@ -5139,7 +5924,111 @@
         currentFontSizeLevel = 0;
         currentFontWeightLevel = 0;
         applyA11yStyles();
+        // 다크모드와 고대비는 초기화에서 끄지 않음 (별도 토글)
         showToast('설정 초기화');
+      }
+
+      // ===== Dark Mode Toggle =====
+      function toggleDarkMode() {
+        var body = document.body;
+        var isDark = body.classList.toggle('dark-mode');
+        var moonIcon = document.querySelector('.moon-icon');
+        var sunIcon = document.querySelector('.sun-icon');
+        if (isDark) {
+          moonIcon.style.display = 'none';
+          sunIcon.style.display = 'block';
+        } else {
+          moonIcon.style.display = 'block';
+          sunIcon.style.display = 'none';
+        }
+        try { localStorage.setItem('dku_dark_mode', isDark ? '1' : '0'); } catch(e) {}
+      }
+
+      // ===== High Contrast Toggle =====
+      function toggleHighContrast() {
+        var isOn = document.getElementById('highContrastToggle').checked;
+        document.body.classList.toggle('high-contrast', isOn);
+        try { localStorage.setItem('dku_high_contrast', isOn ? '1' : '0'); } catch(e) {}
+        if (isOn) {
+          showToast('고대비 모드가 켜졌습니다.');
+        } else {
+          showToast('고대비 모드가 꺼졌습니다.');
+        }
+      }
+
+      // Restore dark mode & high contrast on load
+      (function() {
+        try {
+          if (localStorage.getItem('dku_dark_mode') === '1') {
+            document.body.classList.add('dark-mode');
+            var moonIcon = document.querySelector('.moon-icon');
+            var sunIcon = document.querySelector('.sun-icon');
+            if (moonIcon) moonIcon.style.display = 'none';
+            if (sunIcon) sunIcon.style.display = 'block';
+          }
+          if (localStorage.getItem('dku_high_contrast') === '1') {
+            document.body.classList.add('high-contrast');
+            var toggle = document.getElementById('highContrastToggle');
+            if (toggle) toggle.checked = true;
+          }
+        } catch(e) {}
+      })();
+
+      // ===== Keyboard Navigation =====
+      // 모든 option-item에 tabindex, role, 키보드 이벤트 추가
+      document.querySelectorAll('.option-item').forEach(function(item) {
+        item.setAttribute('tabindex', '0');
+        var group = item.closest('.option-group');
+        var type = group ? group.dataset.type : 'radio';
+        item.setAttribute('role', type === 'checkbox' ? 'checkbox' : 'radio');
+        item.setAttribute('aria-checked', item.classList.contains('selected') ? 'true' : 'false');
+
+        item.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            item.click();
+          }
+          // 방향키로 같은 그룹 내 이동
+          if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            var next = item.nextElementSibling;
+            while (next && !next.classList.contains('option-item')) next = next.nextElementSibling;
+            if (next) next.focus();
+          }
+          if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            var prev = item.previousElementSibling;
+            while (prev && !prev.classList.contains('option-item')) prev = prev.previousElementSibling;
+            if (prev) prev.focus();
+          }
+        });
+      });
+
+      // 선택 시 aria-checked 업데이트
+      var origSelectOption = selectOption;
+      selectOption = function(el) {
+        origSelectOption(el);
+        var group = el.closest('.option-group');
+        group.querySelectorAll('.option-item').forEach(function(item) {
+          item.setAttribute('aria-checked', item.classList.contains('selected') ? 'true' : 'false');
+        });
+      };
+      var origToggleCheckbox = toggleCheckbox;
+      toggleCheckbox = function(el) {
+        origToggleCheckbox(el);
+        el.setAttribute('aria-checked', el.classList.contains('selected') ? 'true' : 'false');
+      };
+
+      // 다음/이전/제출 버튼에 명시적 포커스 가능 보장
+      document.querySelectorAll('.btn, .landing-btn').forEach(function(btn) {
+        if (!btn.getAttribute('tabindex')) btn.setAttribute('tabindex', '0');
+      });
+
+      // 토스트에 aria-live 추가
+      var toastEl = document.getElementById('toast');
+      if (toastEl) {
+        toastEl.setAttribute('role', 'alert');
+        toastEl.setAttribute('aria-live', 'polite');
       }
 
       // ===== Initialize =====
