@@ -490,7 +490,6 @@
       .option-item {
         display: flex;
         align-items: center;
-        justify-content: center;
         gap: 12px;
         padding: 12px 16px;
         background: rgba(255, 255, 255, 0.08);
@@ -646,11 +645,12 @@
       .btn-primary:hover {
         background: linear-gradient(
           135deg,
-          rgba(17, 100, 177, 0.92),
-          rgba(72, 118, 239, 0.82)
+          rgba(20, 110, 195, 0.95),
+          rgba(80, 130, 245, 0.88)
         );
         box-shadow:
-          0 4px 14px rgba(17, 100, 177, 0.22);
+          0 6px 18px rgba(17, 100, 177, 0.3),
+          inset 0 0 10px rgba(255, 255, 255, 0.06);
       }
       .btn-secondary {
         background: rgba(220, 230, 245, 0.35);
@@ -682,11 +682,12 @@
         transform: translateY(-1px);
         background: linear-gradient(
           135deg,
-          rgba(17, 100, 177, 0.92),
-          rgba(72, 118, 239, 0.82)
+          rgba(20, 110, 195, 0.95),
+          rgba(80, 130, 245, 0.88)
         );
         box-shadow:
-          0 6px 18px rgba(17, 100, 177, 0.28);
+          0 8px 22px rgba(17, 100, 177, 0.32),
+          inset 0 0 10px rgba(255, 255, 255, 0.06);
       }
       .btn:disabled {
         opacity: 0.5;
@@ -3689,6 +3690,9 @@
       // ===== Page Navigation =====
       function showPage(page, direction) {
         direction = direction || 'forward';
+        // 먼저 스크롤을 즉시 맨 위로 (애니메이션 없이)
+        window.scrollTo({ top: 0, behavior: 'instant' });
+
         document
           .querySelectorAll('.survey-page')
           .forEach((p) => p.classList.remove('active'));
@@ -3708,8 +3712,6 @@
           showProgressBar();
           updateProgress();
         }
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
       function nextPage() {
