@@ -193,7 +193,12 @@
         font-family: var(--font);
         font-size: 13px;
         font-weight: 600;
-        padding: 4px 10px;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.35);
         background: rgba(255, 255, 255, 0.1);
@@ -203,6 +208,7 @@
         color: var(--text-primary);
         transition: all 0.2s;
         white-space: nowrap;
+        flex-shrink: 0;
       }
       .a11y-btn:hover {
         background: rgba(255, 255, 255, 0.25);
@@ -231,8 +237,8 @@
         gap: 10px;
       }
       .header-logo img {
-        width: 28px;
-        height: 28px;
+        width: 36px;
+        height: 36px;
         flex-shrink: 0;
         object-fit: contain;
       }
@@ -484,7 +490,7 @@
       .option-item {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         padding: 12px 16px;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.25);
@@ -514,6 +520,8 @@
       .custom-checkbox {
         width: 20px;
         height: 20px;
+        min-width: 20px;
+        min-height: 20px;
         border-radius: 50%;
         border: 2px solid rgba(0, 0, 0, 0.2);
         display: flex;
@@ -523,6 +531,7 @@
         transition: var(--transition);
         margin: 0;
         position: relative;
+        box-sizing: border-box;
       }
       .custom-checkbox {
         border-radius: 6px;
@@ -536,6 +545,10 @@
         height: 10px;
         border-radius: 50%;
         background: var(--primary);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
       .option-item.selected .custom-checkbox {
         border-color: var(--primary);
@@ -546,14 +559,14 @@
         color: white;
         font-size: 12px;
         font-weight: 700;
+        line-height: 1;
       }
 
       .option-label {
         font-size: 14px;
         color: var(--text-primary);
         line-height: 1.5;
-        display: flex;
-        align-items: center;
+        flex: 1;
       }
 
       /* Checkbox grid for many options */
@@ -632,8 +645,8 @@
       }
       .btn-primary:hover {
         box-shadow:
-          0 6px 20px rgba(17, 100, 177, 0.3),
-          inset 0 0 14px rgba(255, 255, 255, 0.15);
+          0 4px 14px rgba(17, 100, 177, 0.2),
+          inset 0 0 8px rgba(255, 255, 255, 0.08);
       }
       .btn-secondary {
         background: rgba(220, 230, 245, 0.35);
@@ -662,10 +675,10 @@
           inset 0 0 14px rgba(255, 255, 255, 0.2);
       }
       .btn-submit:hover {
-        transform: translateY(-2px);
+        transform: translateY(-1px);
         box-shadow:
-          0 14px 36px rgba(17, 100, 177, 0.4),
-          inset 0 0 16px rgba(255, 255, 255, 0.25);
+          0 8px 22px rgba(17, 100, 177, 0.25),
+          inset 0 0 8px rgba(255, 255, 255, 0.1);
       }
       .btn:disabled {
         opacity: 0.5;
@@ -682,15 +695,24 @@
       /* ===== Page (Section) ===== */
       .survey-page {
         display: none;
-        animation: pageSlideIn 0.4s ease-out;
       }
       .survey-page.active {
         display: block;
       }
-      @keyframes pageSlideIn {
+      @keyframes pageSlideInRight {
         from {
           opacity: 0;
-          transform: translateX(30px);
+          transform: translateX(60px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes pageSlideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-60px);
         }
         to {
           opacity: 1;
@@ -749,12 +771,14 @@
         font-weight: 600;
       }
       .intro-info .notice {
-        background: rgba(255, 149, 0, 0.08);
+        background: rgba(255, 200, 100, 0.25);
         border-left: 3px solid var(--warning);
         padding: 12px 16px;
         border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
         margin: 16px 0;
         font-size: 13px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
       }
       .intro-info .contact {
         text-align: center;
@@ -891,6 +915,46 @@
         font-size: 13px;
         color: var(--text-tertiary);
         text-align: center;
+      }
+
+      /* ===== Email Autocomplete ===== */
+      .email-autocomplete-wrapper {
+        position: relative;
+      }
+      .email-domain-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        max-height: 240px;
+        overflow-y: auto;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: var(--radius-sm);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        z-index: 50;
+        display: none;
+        margin-top: 4px;
+      }
+      .email-domain-dropdown.show {
+        display: block;
+      }
+      .email-domain-item {
+        padding: 10px 16px;
+        font-size: 14px;
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: background 0.15s;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+      }
+      .email-domain-item:hover,
+      .email-domain-item.highlighted {
+        background: var(--primary-light);
+      }
+      .email-domain-item:last-child {
+        border-bottom: none;
       }
 
       /* ===== Completion Page ===== */
@@ -1409,8 +1473,8 @@
     <!-- Header -->
     <header class="header">
       <div class="header-inner">
-        <div class="header-logo">
-          <img src="logo.png" alt="단국대학교 로고" width="28" height="28" style="object-fit:contain;" />
+        <div class="header-logo" id="headerLogoLink" onclick="handleHeaderHomeClick()" style="cursor:pointer;">
+          <img src="logo.png" alt="단국대학교 로고" width="36" height="36" style="object-fit:contain;" />
           <span>단국대학교 장애학생지원센터</span>
         </div>
         <span class="header-badge">2026-2학기</span>
@@ -1873,13 +1937,18 @@
             <label class="form-label"
               >이메일 <span class="required">*</span></label
             >
-            <input
-              type="email"
-              class="form-input"
-              data-name="email"
-              data-required="true"
-              placeholder="example@dankook.ac.kr"
-            />
+            <div class="email-autocomplete-wrapper">
+              <input
+                type="email"
+                class="form-input"
+                id="emailInput"
+                data-name="email"
+                data-required="true"
+                placeholder="example@dankook.ac.kr"
+                autocomplete="off"
+              />
+              <div class="email-domain-dropdown" id="emailDomainDropdown"></div>
+            </div>
             <div class="error-msg">올바른 이메일을 입력해주세요.</div>
           </div>
           <div class="form-group">
@@ -3410,6 +3479,16 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
+      function handleHeaderHomeClick() {
+        // 관리자 패널 열려있으면 무시
+        var panel = document.getElementById('adminPanel');
+        if (panel && panel.classList.contains('open')) return;
+        // 설문 진행 중(페이지 1~7)이면 무시
+        if (currentPage >= 1 && currentPage <= 7) return;
+        // 나머지 경우(랜딩, 완료, 수정확인 페이지 등)만 홈으로 이동
+        goToLanding();
+      }
+
       function goToLanding() {
         currentPage = 0;
         isEditMode = false;
@@ -3596,16 +3675,18 @@
       }
 
       // ===== Page Navigation =====
-      function showPage(page) {
+      function showPage(page, direction) {
+        direction = direction || 'forward';
         document
           .querySelectorAll('.survey-page')
           .forEach((p) => p.classList.remove('active'));
         const target = document.querySelector('[data-page="' + page + '"]');
         if (target) {
           target.classList.add('active');
+          var animName = direction === 'back' ? 'pageSlideInLeft' : 'pageSlideInRight';
           target.style.animation = 'none';
           target.offsetHeight;
-          target.style.animation = '';
+          target.style.animation = animName + ' 0.4s ease-out';
         }
 
         // Show/hide progress bar
@@ -3623,14 +3704,14 @@
         if (!validatePage(currentPage)) return;
         if (currentPage < 7) {
           currentPage++;
-          showPage(currentPage);
+          showPage(currentPage, 'forward');
         }
       }
 
       function prevPage() {
         if (currentPage > 1) {
           currentPage--;
-          showPage(currentPage);
+          showPage(currentPage, 'back');
         } else if (currentPage === 1) {
           goToLanding();
         }
@@ -3742,6 +3823,16 @@
               valid = false;
               showToast('학과(부)를 목록에서 선택해주세요.');
             }
+          }
+        });
+
+        // Validate phone: exactly 11 digits (숫자만)
+        pageEl.querySelectorAll('.form-input[data-name="phone"]').forEach(function(input) {
+          var digits = input.value.replace(/[^0-9]/g, '');
+          if (digits.length !== 11) {
+            input.classList.add('error');
+            valid = false;
+            showToast('연락처는 숫자 11자리를 입력해주세요.');
           }
         });
 
@@ -4846,10 +4937,108 @@
         });
         newBD.addEventListener('input', function() {
           numOnly(this);
+          if (this.value.length === 2) {
+            this.blur(); // 모바일: 키보드 내림, PC: 커서 제거
+          }
           updateBirthdate();
         });
       }
       setupBirthdateAutoAdvance();
+
+      // ===== Auto-advance: studentId → phone → email =====
+      function setupFieldAutoAdvance() {
+        var studentIdInput = document.querySelector('.form-input[data-name="studentId"]');
+        var phoneInput = document.querySelector('.form-input[data-name="phone"]');
+        var emailInput = document.querySelector('.form-input[data-name="email"]');
+
+        if (studentIdInput) {
+          studentIdInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length === 8 && phoneInput) {
+              phoneInput.focus();
+            }
+          });
+        }
+        if (phoneInput) {
+          phoneInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length === 11 && emailInput) {
+              emailInput.focus();
+            }
+          });
+        }
+      }
+      setupFieldAutoAdvance();
+
+      // ===== Email Domain Autocomplete =====
+      (function() {
+        var EMAIL_DOMAINS = [
+          'gmail.com', 'naver.com', 'kakao.com', 'daum.net', 'hanmail.net',
+          'outlook.com', 'icloud.com', 'nate.com', 'dankook.ac.kr', 'hotmail.com', 'yahoo.com'
+        ];
+        var emailInput = document.getElementById('emailInput');
+        var dropdown = document.getElementById('emailDomainDropdown');
+        if (!emailInput || !dropdown) return;
+
+        var highlightIndex = -1;
+
+        function showDomains(prefix) {
+          var atIdx = emailInput.value.indexOf('@');
+          if (atIdx < 0) { dropdown.classList.remove('show'); return; }
+          var localPart = emailInput.value.substring(0, atIdx);
+          var typedDomain = emailInput.value.substring(atIdx + 1).toLowerCase();
+          var filtered = EMAIL_DOMAINS.filter(function(d) {
+            return d.indexOf(typedDomain) === 0;
+          });
+          if (filtered.length === 0 || (filtered.length === 1 && filtered[0] === typedDomain)) {
+            dropdown.classList.remove('show');
+            return;
+          }
+          dropdown.innerHTML = '';
+          highlightIndex = -1;
+          filtered.forEach(function(domain, i) {
+            var item = document.createElement('div');
+            item.className = 'email-domain-item';
+            item.textContent = localPart + '@' + domain;
+            item.addEventListener('mousedown', function(e) {
+              e.preventDefault();
+              emailInput.value = localPart + '@' + domain;
+              formData.email = emailInput.value;
+              dropdown.classList.remove('show');
+            });
+            dropdown.appendChild(item);
+          });
+          dropdown.classList.add('show');
+        }
+
+        emailInput.addEventListener('input', function() {
+          showDomains();
+        });
+        emailInput.addEventListener('focus', function() {
+          if (this.value.indexOf('@') >= 0) showDomains();
+        });
+        emailInput.addEventListener('blur', function() {
+          setTimeout(function() { dropdown.classList.remove('show'); }, 150);
+        });
+        emailInput.addEventListener('keydown', function(e) {
+          var items = dropdown.querySelectorAll('.email-domain-item');
+          if (!dropdown.classList.contains('show') || items.length === 0) return;
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            highlightIndex = Math.min(highlightIndex + 1, items.length - 1);
+            items.forEach(function(it, i) { it.classList.toggle('highlighted', i === highlightIndex); });
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            highlightIndex = Math.max(highlightIndex - 1, 0);
+            items.forEach(function(it, i) { it.classList.toggle('highlighted', i === highlightIndex); });
+          } else if (e.key === 'Enter' && highlightIndex >= 0) {
+            e.preventDefault();
+            items[highlightIndex].dispatchEvent(new MouseEvent('mousedown'));
+          } else if (e.key === 'Escape') {
+            dropdown.classList.remove('show');
+          }
+        });
+      })();
 
       // ===== Accessibility Controls =====
       // Font size: base 15px, range 9~21 (step 2pt). Level 0 = 15px.
@@ -4909,7 +5098,7 @@
         }
         // Always exclude a11y bar from changes (highest specificity at end)
         css += '#a11yBar .a11y-label { font-size: 12px !important; font-weight: 600 !important; }\n';
-        css += '#a11yBar .a11y-btn { font-size: 13px !important; font-weight: 600 !important; }\n';
+        css += '#a11yBar .a11y-btn { font-size: 13px !important; font-weight: 600 !important; width: 36px !important; height: 36px !important; }\n';
         // Preserve inline styles on a11y button child spans
         css += '#a11yBar .a11y-btn span[style*="font-size:11px"] { font-size: 11px !important; font-weight: 300 !important; }\n';
         css += '#a11yBar .a11y-btn span[style*="font-size:17px"] { font-size: 17px !important; font-weight: 600 !important; }\n';
@@ -4921,15 +5110,15 @@
       function adjustFontSize(dir) {
         currentFontSizeLevel = Math.max(-3, Math.min(3, currentFontSizeLevel + dir));
         applyA11yStyles();
-        var actualSize = 15 + (currentFontSizeLevel * 2);
-        showToast('글자 크기: ' + actualSize + 'pt');
+        var sizeLabels = {'-3':'매우 작게','-2':'작게','-1':'약간 작게','0':'기본','1':'약간 크게','2':'크게','3':'매우 크게'};
+        showToast('글자 크기: ' + sizeLabels[String(currentFontSizeLevel)]);
       }
 
       function adjustFontWeight(dir) {
         currentFontWeightLevel = Math.max(-1, Math.min(2, currentFontWeightLevel + dir));
         applyA11yStyles();
-        var actualWeight = 400 + (currentFontWeightLevel * 200);
-        showToast('글자 두께: ' + actualWeight);
+        var weightLabels = {'-1':'얇게','0':'기본','1':'두껍게','2':'매우 두껍게'};
+        showToast('글자 두께: ' + weightLabels[String(currentFontWeightLevel)]);
       }
 
       function resetAccessibility() {
