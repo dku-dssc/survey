@@ -430,25 +430,29 @@
         transform: translate(-50%, -50%);
         transition: none;
       }
-      /* 해가 지는 모션: 중앙 → 오른쪽 아래로 호를 그리며 사라짐 */
-      @keyframes iconSetRight {
-        0%   { transform: translate(-50%, -50%); opacity: 1; }
-        30%  { transform: translate(-20%, -80%); opacity: 1; }
-        60%  { transform: translate(20%, -30%); opacity: 0.6; }
-        100% { transform: translate(50%, 60%); opacity: 0; }
+      /* 해/달이 지는 모션: 중앙 → 왼쪽 아래로 포물선을 그리며 사라짐 */
+      @keyframes iconSetArc {
+        0%   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        15%  { transform: translate(-55%, -55%) scale(1.03); opacity: 1; }
+        40%  { transform: translate(-80%, -15%) scale(0.95); opacity: 0.85; }
+        65%  { transform: translate(-105%, 25%) scale(0.8); opacity: 0.5; }
+        85%  { transform: translate(-120%, 50%) scale(0.65); opacity: 0.2; }
+        100% { transform: translate(-130%, 65%) scale(0.5); opacity: 0; }
       }
-      /* 달/해가 뜨는 모션: 왼쪽 아래 → 호를 그리며 중앙으로 올라옴 */
-      @keyframes iconRiseLeft {
-        0%   { transform: translate(-150%, 60%); opacity: 0; }
-        30%  { transform: translate(-100%, -30%); opacity: 0.6; }
-        60%  { transform: translate(-70%, -80%); opacity: 1; }
-        100% { transform: translate(-50%, -50%); opacity: 1; }
+      /* 해/달이 뜨는 모션: 왼쪽 아래에서 포물선을 그리며 중앙으로 올라옴 */
+      @keyframes iconRiseArc {
+        0%   { transform: translate(-130%, 65%) scale(0.5); opacity: 0; }
+        15%  { transform: translate(-120%, 50%) scale(0.65); opacity: 0.2; }
+        35%  { transform: translate(-105%, 25%) scale(0.8); opacity: 0.5; }
+        60%  { transform: translate(-80%, -15%) scale(0.95); opacity: 0.85; }
+        85%  { transform: translate(-55%, -52%) scale(1.02); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
       }
       .dark-mode-icon.arc-set {
-        animation: iconSetRight 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation: iconSetArc 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       }
       .dark-mode-icon.arc-rise {
-        animation: iconRiseLeft 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        animation: iconRiseArc 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       }
       /* High contrast toggle (알약 형태) */
       .high-contrast-toggle {
@@ -859,10 +863,34 @@
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
-        animation: labelLiquidFlow 1.2s ease-out forwards !important;
+        animation: labelLiquidFlow 1.8s ease-out forwards !important;
+      }
+      /* '*' 필수 표시는 그라데이션 미적용 — 항상 빨간색 유지 */
+      .form-label.label-liquid-active .required {
+        -webkit-text-fill-color: var(--danger) !important;
+        background: none !important;
       }
       .form-label.label-liquid-done {
         color: rgba(17, 100, 177, 0.9) !important;
+        background: none !important;
+        -webkit-text-fill-color: unset !important;
+        animation: none !important;
+      }
+      /* 부연설명(.helper) 순차 그라데이션 */
+      @keyframes helperLiquidFlow {
+        0% { background-position: 200% center; opacity: 0.5; }
+        100% { background-position: 0% center; opacity: 1; }
+      }
+      .form-label .helper.helper-liquid-active {
+        background: linear-gradient(-120deg, #1164B1 15%, #4facfe 50%, #1164B1 85%) !important;
+        background-size: 200% auto !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        animation: helperLiquidFlow 1.4s ease-out forwards !important;
+      }
+      .form-label .helper.helper-liquid-done {
+        color: var(--text-secondary) !important;
         background: none !important;
         -webkit-text-fill-color: unset !important;
         animation: none !important;
@@ -873,7 +901,25 @@
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
-        animation: labelLiquidFlow 1.2s ease-out forwards !important;
+        animation: labelLiquidFlow 1.8s ease-out forwards !important;
+      }
+      body.dark-mode .form-label.label-liquid-active .required {
+        -webkit-text-fill-color: var(--danger) !important;
+        background: none !important;
+      }
+      body.dark-mode .form-label .helper.helper-liquid-active {
+        background: linear-gradient(-120deg, #3a8fd4 15%, #7dd3fc 50%, #3a8fd4 85%) !important;
+        background-size: 200% auto !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        animation: helperLiquidFlow 1.4s ease-out forwards !important;
+      }
+      body.dark-mode .form-label .helper.helper-liquid-done {
+        color: var(--text-secondary) !important;
+        background: none !important;
+        -webkit-text-fill-color: unset !important;
+        animation: none !important;
       }
       body.dark-mode .form-label.label-liquid-done {
         color: #5aabff !important;
@@ -4128,6 +4174,7 @@
       let currentPage = 0;
       const totalSurveyPages = 7; // pages 1-7 (1=consent, 2=personal, ..., 6=final, 7=completion)
       const formData = {};
+      var _skipAutoScroll = false; // 페이지 전환 직후 첫 문항 포커스 시 스크롤 방지
       let responses = []; // 관리자 패널에서 서버로부터 불러온 데이터 캐시
 
       // Edit mode state
@@ -5487,6 +5534,31 @@
           const dd = wrapper.querySelector('.autocomplete-dropdown');
           if (dd) dd.classList.remove('show');
         }
+        // 학과 선택 후: 부전공 필드 포커스 피드백만 (스크롤 없이) + 1초 후 다음 버튼 넛지
+        if (inputId === 'deptInput') {
+          var minorInput = document.getElementById('minorInput');
+          if (minorInput) {
+            // 부전공 form-group의 라벨에 그라데이션 피드백만 주기 (스크롤 X)
+            _skipAutoScroll = true;
+            minorInput.focus();
+            setTimeout(function() { _skipAutoScroll = false; }, 400);
+            // 1초 후 다음 버튼 넛지
+            setTimeout(function() {
+              var pageEl = minorInput.closest('.survey-page');
+              if (pageEl) {
+                var nextBtn = pageEl.querySelector('.btn-primary');
+                if (nextBtn) {
+                  nextBtn.classList.remove('btn-nudge');
+                  void nextBtn.offsetWidth;
+                  nextBtn.classList.add('btn-nudge');
+                  nextBtn.addEventListener('animationend', function() {
+                    nextBtn.classList.remove('btn-nudge');
+                  }, { once: true });
+                }
+              }
+            }, 1000);
+          }
+        }
       }
 
       // ===== Letter Generation =====
@@ -5726,12 +5798,45 @@
         newBD.addEventListener('input', function() {
           numOnly(this);
           if (this.value.length === 2) {
-            this.blur(); // 모바일: 키보드 내림, PC: 커서 제거
+            // 생년월일 완료 → 성별 라디오로 포커스
+            var genderGroup = document.querySelector('.option-group[data-name="gender"]');
+            if (genderGroup) {
+              var firstOption = genderGroup.querySelector('.option-item');
+              if (firstOption) { firstOption.focus(); }
+            } else {
+              this.blur();
+            }
           }
           updateBirthdate();
         });
       }
       setupBirthdateAutoAdvance();
+
+      // ===== 성명 → 생년월일 자동 이동 (Enter/Tab/blur) =====
+      (function() {
+        var nameInput = document.querySelector('.form-input[data-name="name"]');
+        if (!nameInput) return;
+        nameInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === 'Tab') {
+            e.preventDefault();
+            if (this.value.trim()) {
+              var bY = document.getElementById('birthYear');
+              if (bY) bY.focus();
+            }
+          }
+        });
+        nameInput.addEventListener('blur', function() {
+          if (this.value.trim()) {
+            setTimeout(function() {
+              // blur 후 포커스가 생년월일 필드가 아닌 곳으로 갔다면 생년월일로 이동
+              var active = document.activeElement;
+              if (active && (active.id === 'birthYear' || active.id === 'birthMonth' || active.id === 'birthDay')) return;
+              var bY = document.getElementById('birthYear');
+              if (bY && !bY.value) bY.focus();
+            }, 100);
+          }
+        });
+      })();
 
       // ===== Auto-advance: studentId → phone → email =====
       function setupFieldAutoAdvance() {
@@ -5919,6 +6024,14 @@
               emailInput.value = localPart + '@' + domain;
               formData.email = emailInput.value;
               dropdown.classList.remove('show');
+              // 이메일 완료 → 선호 연락 방식으로 이동
+              setTimeout(function() {
+                var contactPrefGroup = document.querySelector('.option-group[data-name="contactPref"]');
+                if (contactPrefGroup) {
+                  var firstOpt = contactPrefGroup.querySelector('.option-item');
+                  if (firstOpt) firstOpt.focus();
+                }
+              }, 150);
             });
             dropdown.appendChild(item);
           });
@@ -5927,6 +6040,25 @@
 
         emailInput.addEventListener('input', function() {
           showDomains();
+          // .com 등 완전한 이메일 수동 입력 시 자동 이동
+          var val = this.value;
+          if (val.indexOf('@') > 0 && !dropdown.classList.contains('show')) {
+            // 드롭다운이 닫혔다 = 도메인이 완전히 입력됨
+            var domainPart = val.substring(val.indexOf('@') + 1);
+            if (domainPart.length >= 4 && domainPart.indexOf('.') > 0) {
+              var afterDot = domainPart.substring(domainPart.lastIndexOf('.') + 1);
+              if (afterDot.length >= 2 && afterDot.length <= 5) {
+                formData.email = val;
+                setTimeout(function() {
+                  var contactPrefGroup = document.querySelector('.option-group[data-name="contactPref"]');
+                  if (contactPrefGroup) {
+                    var firstOpt = contactPrefGroup.querySelector('.option-item');
+                    if (firstOpt) firstOpt.focus();
+                  }
+                }, 300);
+              }
+            }
+          }
         });
         emailInput.addEventListener('focus', function() {
           if (this.value.indexOf('@') >= 0) showDomains();
@@ -6062,14 +6194,14 @@
           sunIcon.style.display = 'block';
           moonIcon.classList.add('arc-set');
           sunIcon.classList.add('arc-rise');
-          setTimeout(function() { moonIcon.style.display = 'none'; }, 700);
+          setTimeout(function() { moonIcon.style.display = 'none'; }, 800);
         } else {
           // 다크→라이트: 태양(sun 아이콘)이 지고, 달(moon 아이콘)이 뜸
           moonIcon.style.display = 'block';
           sunIcon.style.display = 'block';
           sunIcon.classList.add('arc-set');
           moonIcon.classList.add('arc-rise');
-          setTimeout(function() { sunIcon.style.display = 'none'; }, 700);
+          setTimeout(function() { sunIcon.style.display = 'none'; }, 800);
         }
         try { localStorage.setItem('dku_dark_mode', isDark ? '1' : '0'); } catch(e) {}
       }
@@ -6266,13 +6398,26 @@
           if (label.classList.contains('label-liquid-active')) return;
           // 이전 상태 초기화
           label.classList.remove('label-liquid-done');
+          var helper = label.querySelector('.helper');
+          if (helper) {
+            helper.classList.remove('helper-liquid-active', 'helper-liquid-done');
+            if (helper._helperTimer) clearTimeout(helper._helperTimer);
+          }
           // 리퀴드 애니메이션 시작
           label.classList.add('label-liquid-active');
-          // 1.2초 후 단색으로 전환
+          // 메인 라벨 그라데이션 완료(1.8초) 후 단색 전환
           label._liquidTimer = setTimeout(function() {
             label.classList.remove('label-liquid-active');
             label.classList.add('label-liquid-done');
-          }, 1200);
+            // 부연설명(helper)은 메인 라벨 그라데이션 완료 후 순차적으로 시작
+            if (helper) {
+              helper.classList.add('helper-liquid-active');
+              helper._helperTimer = setTimeout(function() {
+                helper.classList.remove('helper-liquid-active');
+                helper.classList.add('helper-liquid-done');
+              }, 1400);
+            }
+          }, 1800);
         });
         document.addEventListener('focusout', function(e) {
           var target = e.target;
@@ -6286,6 +6431,11 @@
             if (!formGroup.contains(document.activeElement)) {
               label.classList.remove('label-liquid-active', 'label-liquid-done');
               if (label._liquidTimer) clearTimeout(label._liquidTimer);
+              var helper = label.querySelector('.helper');
+              if (helper) {
+                helper.classList.remove('helper-liquid-active', 'helper-liquid-done');
+                if (helper._helperTimer) clearTimeout(helper._helperTimer);
+              }
             }
           }, 50);
         });
@@ -6297,24 +6447,31 @@
         var _origShowPage = showPage;
         showPage = function(page, direction) {
           _origShowPage(page, direction);
+          // 페이지 전환 직후 첫 문항 포커스 시 스크롤 방지
+          _skipAutoScroll = true;
           // 약간의 딜레이 후 첫 문항에 포커스
           setTimeout(function() {
             autoFocusFirstField(page);
+            // 포커스 후 스크롤 방지 해제 (약간 딜레이)
+            setTimeout(function() { _skipAutoScroll = false; }, 350);
           }, 400);
         };
 
         function autoFocusFirstField(page) {
           var pageEl = document.querySelector('[data-page="' + page + '"]');
           if (!pageEl) return;
-          // 첫 번째 입력 필드 또는 옵션 그룹 찾기
-          var firstInput = pageEl.querySelector('.form-input, textarea, select');
-          if (firstInput) {
-            firstInput.focus();
+          // DOM 순서대로 첫 번째 form-group 찾기
+          var firstGroup = pageEl.querySelector('.form-group');
+          if (!firstGroup) return;
+          // 해당 그룹 내의 첫 입력 요소 찾기
+          var input = firstGroup.querySelector('.form-input, textarea, select');
+          if (input) {
+            input.focus();
             return;
           }
-          var firstOption = pageEl.querySelector('.option-item');
-          if (firstOption) {
-            firstOption.focus();
+          var option = firstGroup.querySelector('.option-item');
+          if (option) {
+            option.focus();
           }
         }
 
@@ -6322,7 +6479,16 @@
         var _origSelectOption = selectOption;
         selectOption = function(el) {
           _origSelectOption(el);
-          setTimeout(function() { advanceToNextField(el); }, 200);
+          // 현재 그룹의 라벨에 그라데이션이 진행 중이면 끝까지 기다린 후 이동
+          var currentGroup = el.closest('.form-group');
+          var label = currentGroup ? currentGroup.querySelector('.form-label') : null;
+          if (label && label.classList.contains('label-liquid-active')) {
+            // 그라데이션(1.8s) 완료 후 이동
+            var waitTime = 1800;
+            setTimeout(function() { advanceToNextField(el); }, waitTime);
+          } else {
+            setTimeout(function() { advanceToNextField(el); }, 200);
+          }
         };
 
         // toggleCheckbox 래핑은 하지 않음 (체크박스는 여러 개 선택 가능)
@@ -6383,12 +6549,19 @@
       })();
 
       // ===== [4] 주관식 입력 시 해당 문항 상단 자동 스크롤 =====
+      // _disableAutoScroll: 교수·학습지원 분야(page 4) 이후 자동 스크롤 비활성화
+      function isAutoScrollDisabled() {
+        return currentPage >= 4;
+      }
+
       function scrollFieldIntoView(el) {
+        if (_skipAutoScroll) return;
+        if (isAutoScrollDisabled()) return;
         var formGroup = el.closest('.form-group');
         var target = formGroup || el;
-        // 약간의 여유를 두고 스크롤 (a11y 바 높이 고려)
+        // 여유공간을 2~3배로 (기존 16px → 48px)
         var a11yBar = document.getElementById('a11yBar');
-        var offset = a11yBar ? a11yBar.offsetHeight + 16 : 60;
+        var offset = a11yBar ? a11yBar.offsetHeight + 48 : 100;
         var rect = target.getBoundingClientRect();
         var scrollTop = window.pageYOffset + rect.top - offset;
         window.scrollTo({ top: Math.max(0, scrollTop), behavior: 'smooth' });
@@ -6399,6 +6572,8 @@
         document.addEventListener('focusin', function(e) {
           var target = e.target;
           if (!target.matches || !target.matches('.form-input, textarea')) return;
+          if (_skipAutoScroll) return;
+          if (isAutoScrollDisabled()) return;
           // 약간의 딜레이 (키보드 올라오는 시간 고려)
           setTimeout(function() {
             scrollFieldIntoView(target);
