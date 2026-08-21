@@ -429,30 +429,101 @@
         left: 50%;
         transform: translate(-50%, -50%);
         transition: none;
+        will-change: transform;
       }
-      /* 해/달이 지는 모션: 중앙 → 왼쪽 아래로 포물선을 그리며 사라짐 */
+      /* ── 새총 포물선: 지는 모션 ──
+         정중앙이 최고점. 왼쪽+아래로 당김(느리게) → 중앙(최고점) → 오른쪽+아래로 퇴장(빠르게).
+         opacity 없음 — overflow:hidden이 클리핑 처리. */
       @keyframes iconSetArc {
-        0%   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        15%  { transform: translate(-55%, -55%) scale(1.03); opacity: 1; }
-        40%  { transform: translate(-80%, -15%) scale(0.95); opacity: 0.85; }
-        65%  { transform: translate(-105%, 25%) scale(0.8); opacity: 0.5; }
-        85%  { transform: translate(-120%, 50%) scale(0.65); opacity: 0.2; }
-        100% { transform: translate(-130%, 65%) scale(0.5); opacity: 0; }
+        0%   { transform: translate(-50%, -50%); }
+        8%   { transform: translate(-60%, -42%); }
+        16%  { transform: translate(-75%, -30%); }
+        24%  { transform: translate(-90%, -20%); }
+        30%  { transform: translate(-90%, -20%); }
+        38%  { transform: translate(-70%, -40%); }
+        44%  { transform: translate(-50%, -51%); }
+        52%  { transform: translate(-20%, -45%); }
+        60%  { transform: translate(15%, -30%); }
+        70%  { transform: translate(50%, -10%); }
+        82%  { transform: translate(85%, 18%); }
+        100% { transform: translate(110%, 40%); }
       }
-      /* 해/달이 뜨는 모션: 왼쪽 아래에서 포물선을 그리며 중앙으로 올라옴 */
+      /* ── 새총 포물선: 뜨는 모션 ──
+         왼쪽 아래에서 출발 → 포물선 → 정중앙(최고점)에 안착. */
       @keyframes iconRiseArc {
-        0%   { transform: translate(-130%, 65%) scale(0.5); opacity: 0; }
-        15%  { transform: translate(-120%, 50%) scale(0.65); opacity: 0.2; }
-        35%  { transform: translate(-105%, 25%) scale(0.8); opacity: 0.5; }
-        60%  { transform: translate(-80%, -15%) scale(0.95); opacity: 0.85; }
-        85%  { transform: translate(-55%, -52%) scale(1.02); opacity: 1; }
-        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        0%   { transform: translate(-210%, 40%); }
+        8%   { transform: translate(-175%, 15%); }
+        18%  { transform: translate(-140%, -10%); }
+        28%  { transform: translate(-110%, -28%); }
+        38%  { transform: translate(-85%, -40%); }
+        48%  { transform: translate(-68%, -48%); }
+        60%  { transform: translate(-55%, -51%); }
+        72%  { transform: translate(-50%, -51%); }
+        84%  { transform: translate(-49.5%, -50.2%); }
+        100% { transform: translate(-50%, -50%); }
       }
       .dark-mode-icon.arc-set {
-        animation: iconSetArc 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation: iconSetArc 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       }
       .dark-mode-icon.arc-rise {
-        animation: iconRiseArc 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation: iconRiseArc 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      /* ── 구름 (고대비 모드에서 표시) ── */
+      .dm-cloud {
+        position: absolute;
+        pointer-events: none;
+        z-index: 2;
+        display: none;
+      }
+      .dm-cloud.cloud-visible {
+        display: block;
+      }
+      .dm-cloud-small {
+        width: 22px; height: 15px;
+        bottom: 0px; left: 0px;
+      }
+      .dm-cloud-big {
+        width: 34px; height: 21px;
+        top: 15px; right: -7px;
+      }
+      /* 해 모드 (라이트) — 밝은 하늘색 구름 */
+      .dm-cloud.cloud-sun path { fill: #a8d8f0; stroke: rgba(100,180,230,0.5); }
+      /* 달 모드 (다크) — 어두운 회청색 구름 */
+      .dm-cloud.cloud-moon path { fill: #3a4259; stroke: rgba(100,120,170,0.5); }
+      @keyframes dmCloudInLeft {
+        0%   { transform: translateX(-18px); opacity: 0; }
+        30%  { opacity: 1; }
+        100% { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes dmCloudInRight {
+        0%   { transform: translateX(18px); opacity: 0; }
+        30%  { opacity: 1; }
+        100% { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes dmCloudOutLeft {
+        0%   { transform: translateX(0); opacity: 1; }
+        70%  { opacity: 1; }
+        100% { transform: translateX(-18px); opacity: 0; }
+      }
+      @keyframes dmCloudOutRight {
+        0%   { transform: translateX(0); opacity: 1; }
+        70%  { opacity: 1; }
+        100% { transform: translateX(18px); opacity: 0; }
+      }
+      @keyframes dmCloudFloat {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-1.5px); }
+      }
+      .dm-cloud.entering-left  { animation: dmCloudInLeft 0.5s cubic-bezier(0.4,0,0.2,1) forwards; }
+      .dm-cloud.entering-right { animation: dmCloudInRight 0.5s cubic-bezier(0.4,0,0.2,1) forwards; }
+      .dm-cloud.leaving-left   { animation: dmCloudOutLeft 0.4s cubic-bezier(0.4,0,0.2,1) forwards; }
+      .dm-cloud.leaving-right  { animation: dmCloudOutRight 0.4s cubic-bezier(0.4,0,0.2,1) forwards; }
+      .dm-cloud.floating {
+        animation: dmCloudFloat 2.5s ease-in-out infinite;
+      }
+      .dm-cloud-big.floating {
+        animation: dmCloudFloat 3s ease-in-out infinite;
+        animation-delay: 0.4s;
       }
       /* High contrast toggle (알약 형태) */
       .high-contrast-toggle {
@@ -2083,6 +2154,18 @@
           width: 36px !important;
           height: 36px !important;
         }
+        .dark-mode-icon-wrapper {
+          width: 36px;
+          height: 36px;
+        }
+        .dm-cloud-small {
+          width: 18px; height: 12px;
+          bottom: 0px; left: 0px;
+        }
+        .dm-cloud-big {
+          width: 28px; height: 17px;
+          top: 12px; right: -5px;
+        }
         .a11y-label {
           display: none;
         }
@@ -2239,9 +2322,14 @@
             type="button"
           >
             <div class="dark-mode-icon-wrapper">
-              <svg class="dark-mode-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="#f5c542" stroke="#f5c542" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-              <svg class="dark-mode-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="#ff9500" stroke="#ff9500" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5" fill="#ff9500"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              <!-- 해 (라이트 모드 기본) -->
+              <svg class="dark-mode-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="#ff9500" stroke="#ff9500" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5" fill="#ff9500"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              <!-- 달 (다크 모드) -->
+              <svg class="dark-mode-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="#f5c542" stroke="#f5c542" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             </div>
+            <!-- 구름 (고대비 모드에서 표시) -->
+            <svg class="dm-cloud dm-cloud-small cloud-sun" id="dmCloudSmall" viewBox="0 0 36 20"><path d="M4 17 C4 17 1 17 1 13.5 C1 10 4.5 9 6 9.5 C6 6.5 9 3 13 3 C17 3 19.5 6 19.5 9 C22 8 25 10 25 13 C25 16 22.5 17 21 17 Z" stroke-width="0.8"/></svg>
+            <svg class="dm-cloud dm-cloud-big cloud-sun" id="dmCloudBig" viewBox="0 0 44 22"><path d="M5 19 C5 19 1 19 1 14.5 C1 10 5 8.5 7 9 C7.5 5.5 11 2 16 2 C20 2 23 4.5 24 7 C26 5.5 30 6 31 9 C34 8 38 10 38 14 C38 18 34.5 19 32 19 Z" stroke-width="0.8"/></svg>
           </button>
           <!-- 고대비 토글 -->
           <label class="high-contrast-toggle" title="고대비 모드" aria-label="고대비 모드 전환">
@@ -6176,34 +6264,114 @@
       }
 
       // ===== Dark Mode Toggle =====
+      var _dmAnimating = false;
+      var _DM_ANIM_DUR = 600; // ms — CSS와 동일
       function toggleDarkMode() {
+        if (_dmAnimating) return;
+        _dmAnimating = true;
         var body = document.body;
         var isDark = body.classList.toggle('dark-mode');
         var moonIcon = document.querySelector('.moon-icon');
         var sunIcon = document.querySelector('.sun-icon');
-        // Remove old animation classes
+        // 클래스 초기화
         moonIcon.classList.remove('arc-set', 'arc-rise');
         sunIcon.classList.remove('arc-set', 'arc-rise');
-        // Force reflow to restart animation
         void moonIcon.offsetWidth;
         void sunIcon.offsetWidth;
+        // 모드 전환 시 구름 즉시 제거
+        _hideDmClouds();
         if (isDark) {
-          // 라이트→다크: 해(달 아이콘=moon)가 지고, 태양(sun 아이콘)이 뜸
-          // 달 아이콘이 현재 보이고 있으므로 → 지는 모션 (오른쪽 아래로)
-          moonIcon.style.display = 'block';
+          // 라이트→다크: 해가 먼저 지고 → 달이 뜸 (순차)
           sunIcon.style.display = 'block';
-          moonIcon.classList.add('arc-set');
-          sunIcon.classList.add('arc-rise');
-          setTimeout(function() { moonIcon.style.display = 'none'; }, 800);
-        } else {
-          // 다크→라이트: 태양(sun 아이콘)이 지고, 달(moon 아이콘)이 뜸
-          moonIcon.style.display = 'block';
-          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
           sunIcon.classList.add('arc-set');
-          moonIcon.classList.add('arc-rise');
-          setTimeout(function() { sunIcon.style.display = 'none'; }, 800);
+          setTimeout(function() {
+            sunIcon.style.display = 'none';
+            moonIcon.style.display = 'block';
+            moonIcon.classList.add('arc-rise');
+            setTimeout(function() {
+              _dmAnimating = false;
+              _syncDmCloudsWithHighContrast();
+            }, _DM_ANIM_DUR);
+          }, _DM_ANIM_DUR);
+        } else {
+          // 다크→라이트: 달이 먼저 지고 → 해가 뜸 (순차)
+          moonIcon.style.display = 'block';
+          sunIcon.style.display = 'none';
+          moonIcon.classList.add('arc-set');
+          setTimeout(function() {
+            moonIcon.style.display = 'none';
+            sunIcon.style.display = 'block';
+            sunIcon.classList.add('arc-rise');
+            setTimeout(function() {
+              _dmAnimating = false;
+              _syncDmCloudsWithHighContrast();
+            }, _DM_ANIM_DUR);
+          }, _DM_ANIM_DUR);
         }
         try { localStorage.setItem('dku_dark_mode', isDark ? '1' : '0'); } catch(e) {}
+      }
+
+      // ===== 구름 (고대비 연동) =====
+      var _dmCloudsVisible = false;
+      function _getDmClouds() {
+        return {
+          small: document.getElementById('dmCloudSmall'),
+          big: document.getElementById('dmCloudBig')
+        };
+      }
+      function _setDmCloudColor() {
+        var c = _getDmClouds();
+        if (!c.small) return;
+        var isDark = document.body.classList.contains('dark-mode');
+        var add = isDark ? 'cloud-moon' : 'cloud-sun';
+        var rm = isDark ? 'cloud-sun' : 'cloud-moon';
+        c.small.classList.remove(rm); c.small.classList.add(add);
+        c.big.classList.remove(rm); c.big.classList.add(add);
+      }
+      function _showDmClouds() {
+        if (_dmCloudsVisible) return;
+        var c = _getDmClouds();
+        if (!c.small) return;
+        _setDmCloudColor();
+        c.small.classList.remove('entering-left','entering-right','leaving-left','leaving-right','floating');
+        c.big.classList.remove('entering-left','entering-right','leaving-left','leaving-right','floating');
+        c.small.classList.add('cloud-visible');
+        c.big.classList.add('cloud-visible');
+        void c.small.offsetWidth;
+        c.small.classList.add('entering-left');
+        c.big.classList.add('entering-right');
+        setTimeout(function() {
+          c.small.classList.remove('entering-left');
+          c.big.classList.remove('entering-right');
+          c.small.classList.add('floating');
+          c.big.classList.add('floating');
+        }, 500);
+        _dmCloudsVisible = true;
+      }
+      function _hideDmClouds() {
+        if (!_dmCloudsVisible) return;
+        var c = _getDmClouds();
+        if (!c.small) return;
+        c.small.classList.remove('floating','entering-left','entering-right');
+        c.big.classList.remove('floating','entering-left','entering-right');
+        void c.small.offsetWidth;
+        c.small.classList.add('leaving-left');
+        c.big.classList.add('leaving-right');
+        setTimeout(function() {
+          c.small.classList.remove('leaving-left','cloud-visible');
+          c.big.classList.remove('leaving-right','cloud-visible');
+        }, 400);
+        _dmCloudsVisible = false;
+      }
+      function _syncDmCloudsWithHighContrast() {
+        var hcOn = document.getElementById('highContrastToggle');
+        if (hcOn && hcOn.checked) {
+          _setDmCloudColor();
+          if (!_dmCloudsVisible) _showDmClouds();
+        } else {
+          if (_dmCloudsVisible) _hideDmClouds();
+        }
       }
 
       // ===== High Contrast Toggle =====
@@ -6211,9 +6379,12 @@
         var isOn = document.getElementById('highContrastToggle').checked;
         document.body.classList.toggle('high-contrast', isOn);
         try { localStorage.setItem('dku_high_contrast', isOn ? '1' : '0'); } catch(e) {}
+        // 고대비 ON → 구름 등장, OFF → 구름 퇴장
         if (isOn) {
+          _showDmClouds();
           showToast('고대비 모드가 켜졌습니다.');
         } else {
+          _hideDmClouds();
           showToast('고대비 모드가 꺼졌습니다.');
         }
       }
@@ -6223,15 +6394,28 @@
         try {
           if (localStorage.getItem('dku_dark_mode') === '1') {
             document.body.classList.add('dark-mode');
-            var moonIcon = document.querySelector('.moon-icon');
             var sunIcon = document.querySelector('.sun-icon');
-            if (moonIcon) moonIcon.style.display = 'none';
-            if (sunIcon) sunIcon.style.display = 'block';
+            var moonIcon = document.querySelector('.moon-icon');
+            if (sunIcon) sunIcon.style.display = 'none';
+            if (moonIcon) moonIcon.style.display = 'block';
           }
           if (localStorage.getItem('dku_high_contrast') === '1') {
             document.body.classList.add('high-contrast');
             var toggle = document.getElementById('highContrastToggle');
             if (toggle) toggle.checked = true;
+          }
+          // 고대비가 켜져 있으면 구름도 즉시 표시 (애니메이션 없이)
+          if (localStorage.getItem('dku_high_contrast') === '1') {
+            var cs = document.getElementById('dmCloudSmall');
+            var cb = document.getElementById('dmCloudBig');
+            if (cs && cb) {
+              var isDk = document.body.classList.contains('dark-mode');
+              cs.classList.add('cloud-visible', 'floating', isDk ? 'cloud-moon' : 'cloud-sun');
+              cb.classList.add('cloud-visible', 'floating', isDk ? 'cloud-moon' : 'cloud-sun');
+              cs.classList.remove(isDk ? 'cloud-sun' : 'cloud-moon');
+              cb.classList.remove(isDk ? 'cloud-sun' : 'cloud-moon');
+              _dmCloudsVisible = true;
+            }
           }
         } catch(e) {}
       })();
