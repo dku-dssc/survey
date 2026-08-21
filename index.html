@@ -413,48 +413,42 @@
       /* Dark mode toggle — circular with arc animation */
       .dark-mode-toggle {
         position: relative;
-        width: 40px !important;
-        height: 40px !important;
+        width: 42px !important;
+        height: 42px !important;
         border-radius: 50% !important;
         overflow: hidden;
       }
       .dark-mode-icon-wrapper {
         position: relative;
-        width: 20px;
-        height: 20px;
+        width: 42px;
+        height: 42px;
       }
       .dark-mode-icon {
         position: absolute;
-        top: 0;
-        left: 0;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         transition: none;
       }
-      /* Arc animation keyframes */
-      @keyframes sunRise {
-        0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-        50% { transform: translate(0, -10px) rotate(90deg); opacity: 0; }
-        100% { transform: translate(0, 0) rotate(180deg); opacity: 0; }
+      /* 해가 지는 모션: 중앙 → 오른쪽 아래로 호를 그리며 사라짐 */
+      @keyframes iconSetRight {
+        0%   { transform: translate(-50%, -50%); opacity: 1; }
+        30%  { transform: translate(-20%, -80%); opacity: 1; }
+        60%  { transform: translate(20%, -30%); opacity: 0.6; }
+        100% { transform: translate(50%, 60%); opacity: 0; }
       }
-      @keyframes sunSet {
-        0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-        50% { transform: translate(0, -10px) rotate(-90deg); opacity: 1; }
-        100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+      /* 달/해가 뜨는 모션: 왼쪽 아래 → 호를 그리며 중앙으로 올라옴 */
+      @keyframes iconRiseLeft {
+        0%   { transform: translate(-150%, 60%); opacity: 0; }
+        30%  { transform: translate(-100%, -30%); opacity: 0.6; }
+        60%  { transform: translate(-70%, -80%); opacity: 1; }
+        100% { transform: translate(-50%, -50%); opacity: 1; }
       }
-      @keyframes moonRise {
-        0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-        50% { transform: translate(0, -10px) rotate(90deg); opacity: 0; }
-        100% { transform: translate(0, 0) rotate(180deg); opacity: 0; }
+      .dark-mode-icon.arc-set {
+        animation: iconSetRight 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
-      @keyframes moonSet {
-        0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-        50% { transform: translate(0, -10px) rotate(-90deg); opacity: 1; }
-        100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-      }
-      .dark-mode-icon.rise-out {
-        animation: sunRise 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-      }
-      .dark-mode-icon.set-in {
-        animation: sunSet 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      .dark-mode-icon.arc-rise {
+        animation: iconRiseLeft 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
       }
       /* High contrast toggle (알약 형태) */
       .high-contrast-toggle {
@@ -854,6 +848,39 @@
       body.high-contrast .form-group:focus-within .form-label {
         color: #4dabff !important;
       }
+      /* 필드 라벨 리퀴드 그라데이션 1회 애니메이션 */
+      @keyframes labelLiquidFlow {
+        0% { background-position: 200% center; }
+        100% { background-position: 0% center; }
+      }
+      .form-label.label-liquid-active {
+        background: linear-gradient(-120deg, #1164B1 15%, #4facfe 50%, #1164B1 85%) !important;
+        background-size: 200% auto !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        animation: labelLiquidFlow 1.2s ease-out forwards !important;
+      }
+      .form-label.label-liquid-done {
+        color: rgba(17, 100, 177, 0.9) !important;
+        background: none !important;
+        -webkit-text-fill-color: unset !important;
+        animation: none !important;
+      }
+      body.dark-mode .form-label.label-liquid-active {
+        background: linear-gradient(-120deg, #3a8fd4 15%, #7dd3fc 50%, #3a8fd4 85%) !important;
+        background-size: 200% auto !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        animation: labelLiquidFlow 1.2s ease-out forwards !important;
+      }
+      body.dark-mode .form-label.label-liquid-done {
+        color: #5aabff !important;
+        background: none !important;
+        -webkit-text-fill-color: unset !important;
+        animation: none !important;
+      }
       .form-label .required {
         color: var(--danger);
         margin-left: 2px;
@@ -1071,6 +1098,16 @@
         box-shadow:
           0 8px 20px rgba(17, 100, 177, 0.25),
           inset 0 0 12px rgba(255, 255, 255, 0.2);
+      }
+      /* 다음 버튼 넛지 애니메이션 */
+      @keyframes btnNudgePulse {
+        0% { transform: scale(1); }
+        40% { transform: scale(1.08); }
+        70% { transform: scale(0.97); }
+        100% { transform: scale(1); }
+      }
+      .btn-primary.btn-nudge {
+        animation: btnNudgePulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
       .btn-primary:hover {
         background: linear-gradient(
@@ -6013,22 +6050,26 @@
         var moonIcon = document.querySelector('.moon-icon');
         var sunIcon = document.querySelector('.sun-icon');
         // Remove old animation classes
-        moonIcon.classList.remove('rise-out', 'set-in');
-        sunIcon.classList.remove('rise-out', 'set-in');
+        moonIcon.classList.remove('arc-set', 'arc-rise');
+        sunIcon.classList.remove('arc-set', 'arc-rise');
+        // Force reflow to restart animation
+        void moonIcon.offsetWidth;
+        void sunIcon.offsetWidth;
         if (isDark) {
-          // Moon rises out (disappears), Sun sets in (appears)
+          // 라이트→다크: 해(달 아이콘=moon)가 지고, 태양(sun 아이콘)이 뜸
+          // 달 아이콘이 현재 보이고 있으므로 → 지는 모션 (오른쪽 아래로)
           moonIcon.style.display = 'block';
           sunIcon.style.display = 'block';
-          moonIcon.classList.add('rise-out');
-          sunIcon.classList.add('set-in');
-          setTimeout(function() { moonIcon.style.display = 'none'; }, 600);
+          moonIcon.classList.add('arc-set');
+          sunIcon.classList.add('arc-rise');
+          setTimeout(function() { moonIcon.style.display = 'none'; }, 700);
         } else {
-          // Sun rises out (disappears), Moon sets in (appears)
+          // 다크→라이트: 태양(sun 아이콘)이 지고, 달(moon 아이콘)이 뜸
           moonIcon.style.display = 'block';
           sunIcon.style.display = 'block';
-          sunIcon.classList.add('rise-out');
-          moonIcon.classList.add('set-in');
-          setTimeout(function() { sunIcon.style.display = 'none'; }, 600);
+          sunIcon.classList.add('arc-set');
+          moonIcon.classList.add('arc-rise');
+          setTimeout(function() { sunIcon.style.display = 'none'; }, 700);
         }
         try { localStorage.setItem('dku_dark_mode', isDark ? '1' : '0'); } catch(e) {}
       }
@@ -6210,6 +6251,160 @@
 
       // Load demo data automatically
       addDemoData();
+
+      // ===== [2] 필드 라벨 리퀴드 그라데이션 1회 애니메이션 =====
+      (function() {
+        document.addEventListener('focusin', function(e) {
+          var target = e.target;
+          // input, textarea, select 요소에 포커스가 들어올 때
+          if (!target.matches || (!target.matches('.form-input, textarea, select, .option-item') && !target.closest('.option-group'))) return;
+          var formGroup = target.closest('.form-group');
+          if (!formGroup) return;
+          var label = formGroup.querySelector('.form-label');
+          if (!label) return;
+          // 이미 활성 상태면 무시 (같은 포커스 유지 중)
+          if (label.classList.contains('label-liquid-active')) return;
+          // 이전 상태 초기화
+          label.classList.remove('label-liquid-done');
+          // 리퀴드 애니메이션 시작
+          label.classList.add('label-liquid-active');
+          // 1.2초 후 단색으로 전환
+          label._liquidTimer = setTimeout(function() {
+            label.classList.remove('label-liquid-active');
+            label.classList.add('label-liquid-done');
+          }, 1200);
+        });
+        document.addEventListener('focusout', function(e) {
+          var target = e.target;
+          var formGroup = target.closest && target.closest('.form-group');
+          if (!formGroup) return;
+          var label = formGroup.querySelector('.form-label');
+          if (!label) return;
+          // 포커스 아웃 시 리퀴드 상태 초기화 (다음 포커스 시 다시 재생 가능)
+          setTimeout(function() {
+            // focusout 후에도 같은 form-group 내 다른 요소로 이동했는지 확인
+            if (!formGroup.contains(document.activeElement)) {
+              label.classList.remove('label-liquid-active', 'label-liquid-done');
+              if (label._liquidTimer) clearTimeout(label._liquidTimer);
+            }
+          }, 50);
+        });
+      })();
+
+      // ===== [3] 페이지 전환 시 첫 문항 자동포커스 + 답변 완료 시 다음 문항 이동 + 다음버튼 넛지 =====
+      (function() {
+        // showPage를 래핑하여 자동포커스 추가
+        var _origShowPage = showPage;
+        showPage = function(page, direction) {
+          _origShowPage(page, direction);
+          // 약간의 딜레이 후 첫 문항에 포커스
+          setTimeout(function() {
+            autoFocusFirstField(page);
+          }, 400);
+        };
+
+        function autoFocusFirstField(page) {
+          var pageEl = document.querySelector('[data-page="' + page + '"]');
+          if (!pageEl) return;
+          // 첫 번째 입력 필드 또는 옵션 그룹 찾기
+          var firstInput = pageEl.querySelector('.form-input, textarea, select');
+          if (firstInput) {
+            firstInput.focus();
+            return;
+          }
+          var firstOption = pageEl.querySelector('.option-item');
+          if (firstOption) {
+            firstOption.focus();
+          }
+        }
+
+        // selectOption 래핑: 라디오 선택 후 다음 문항으로 이동
+        var _origSelectOption = selectOption;
+        selectOption = function(el) {
+          _origSelectOption(el);
+          setTimeout(function() { advanceToNextField(el); }, 200);
+        };
+
+        // toggleCheckbox 래핑은 하지 않음 (체크박스는 여러 개 선택 가능)
+
+        function advanceToNextField(currentEl) {
+          var currentGroup = currentEl.closest('.form-group');
+          if (!currentGroup) return;
+          var pageEl = currentGroup.closest('.survey-page');
+          if (!pageEl) return;
+          var allGroups = Array.from(pageEl.querySelectorAll('.form-group'));
+          var idx = allGroups.indexOf(currentGroup);
+          if (idx < 0) return;
+
+          // 다음 form-group 찾기
+          for (var i = idx + 1; i < allGroups.length; i++) {
+            var nextGroup = allGroups[i];
+            var nextInput = nextGroup.querySelector('.form-input, textarea, select');
+            if (nextInput) {
+              nextInput.focus();
+              scrollFieldIntoView(nextInput);
+              return;
+            }
+            var nextOption = nextGroup.querySelector('.option-item');
+            if (nextOption) {
+              nextOption.focus();
+              scrollFieldIntoView(nextOption);
+              return;
+            }
+          }
+
+          // 모든 문항 완료 → 다음 버튼 넛지
+          nudgeNextButton(pageEl);
+        }
+
+        function nudgeNextButton(pageEl) {
+          var nextBtn = pageEl.querySelector('.btn-primary');
+          if (!nextBtn) return;
+          nextBtn.classList.remove('btn-nudge');
+          void nextBtn.offsetWidth; // reflow
+          nextBtn.classList.add('btn-nudge');
+          nextBtn.focus();
+          nextBtn.addEventListener('animationend', function() {
+            nextBtn.classList.remove('btn-nudge');
+          }, { once: true });
+        }
+
+        // input 필드 완료 감지 (blur 시 다음으로)
+        document.addEventListener('change', function(e) {
+          var target = e.target;
+          if (!target.matches || !target.matches('.form-input, textarea, select')) return;
+          if (!target.value.trim()) return;
+          // 학번, 전화번호 등 자동 이동은 setupFieldAutoAdvance에서 처리
+          // 여기서는 select(드롭다운) 변경 시에만 다음으로
+          if (target.tagName === 'SELECT') {
+            setTimeout(function() { advanceToNextField(target); }, 200);
+          }
+        });
+      })();
+
+      // ===== [4] 주관식 입력 시 해당 문항 상단 자동 스크롤 =====
+      function scrollFieldIntoView(el) {
+        var formGroup = el.closest('.form-group');
+        var target = formGroup || el;
+        // 약간의 여유를 두고 스크롤 (a11y 바 높이 고려)
+        var a11yBar = document.getElementById('a11yBar');
+        var offset = a11yBar ? a11yBar.offsetHeight + 16 : 60;
+        var rect = target.getBoundingClientRect();
+        var scrollTop = window.pageYOffset + rect.top - offset;
+        window.scrollTo({ top: Math.max(0, scrollTop), behavior: 'smooth' });
+      }
+
+      (function() {
+        // 텍스트 입력(주관식), textarea 포커스 시 자동 스크롤
+        document.addEventListener('focusin', function(e) {
+          var target = e.target;
+          if (!target.matches || !target.matches('.form-input, textarea')) return;
+          // 약간의 딜레이 (키보드 올라오는 시간 고려)
+          setTimeout(function() {
+            scrollFieldIntoView(target);
+          }, 300);
+        });
+      })();
     </script>
   </body>
 </html>
