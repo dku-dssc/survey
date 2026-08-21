@@ -149,11 +149,11 @@
 
       /* ===== Header ===== */
       .header {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(30px) saturate(220%);
-        -webkit-backdrop-filter: blur(30px) saturate(220%);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(30px) saturate(180%);
+        -webkit-backdrop-filter: blur(30px) saturate(180%);
+        border-bottom: 1px solid rgba(200, 210, 230, 0.35);
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.03);
         position: sticky;
         top: 0;
         z-index: 100;
@@ -233,7 +233,7 @@
       .header-logo svg {
         width: 28px;
         height: 28px;
-        fill: var(--primary);
+        flex-shrink: 0;
       }
       .header-logo span {
         font-size: 15px;
@@ -363,7 +363,6 @@
         border-radius: var(--radius-lg);
         padding: 28px 32px;
         margin-bottom: 16px;
-        color: white;
         position: relative;
         overflow: hidden;
       }
@@ -387,10 +386,11 @@
         letter-spacing: -0.5px;
         position: relative;
         z-index: 1;
+        color: #1a2a5e;
       }
       .section-header p {
         font-size: 14px;
-        opacity: 0.85;
+        color: rgba(26, 42, 94, 0.75);
         margin-top: 6px;
         position: relative;
         z-index: 1;
@@ -632,19 +632,18 @@
       .btn-primary:hover {
         box-shadow:
           0 6px 20px rgba(17, 100, 177, 0.3),
-          inset 0 0 20px rgba(255, 255, 255, 0.25),
-          0 0 12px rgba(100, 160, 255, 0.2);
+          inset 0 0 14px rgba(255, 255, 255, 0.15);
       }
       .btn-secondary {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(220, 230, 245, 0.35);
+        border: 1px solid rgba(160, 185, 220, 0.45);
         backdrop-filter: blur(12px) saturate(170%);
         -webkit-backdrop-filter: blur(12px) saturate(170%);
-        color: var(--text-secondary);
+        color: var(--text-primary);
       }
       .btn-secondary:hover {
-        background: rgba(220, 230, 245, 0.35);
-        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.2), 0 0 8px rgba(200, 220, 255, 0.15);
+        background: rgba(220, 230, 245, 0.5);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       }
       .btn-submit {
         background: linear-gradient(
@@ -674,6 +673,10 @@
         box-shadow: none !important;
         animation: none !important;
       }
+      /* Admin tab: selected button no hover change */
+      .admin-panel .btn-primary:hover {
+        box-shadow: 0 8px 20px rgba(17, 100, 177, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.2);
+      }
 
       /* ===== Page (Section) ===== */
       .survey-page {
@@ -702,11 +705,11 @@
       .intro-hero .hero-icon {
         width: 80px;
         height: 80px;
-        background: linear-gradient(
-          135deg,
-          var(--bg-gradient-1),
-          var(--bg-gradient-2)
-        );
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3);
         border-radius: 24px;
         display: flex;
         align-items: center;
@@ -986,11 +989,11 @@
         right: -500px;
         width: 480px;
         height: 100vh;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(36px) saturate(220%);
-        -webkit-backdrop-filter: blur(36px) saturate(220%);
-        border-left: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+        background: rgba(240, 244, 248, 0.92);
+        backdrop-filter: blur(36px) saturate(200%);
+        -webkit-backdrop-filter: blur(36px) saturate(200%);
+        border-left: 1px solid rgba(200, 210, 230, 0.4);
+        box-shadow: -8px 0 32px rgba(0, 0, 0, 0.1);
         z-index: 300;
         transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         overflow-y: auto;
@@ -1406,8 +1409,11 @@
     <header class="header">
       <div class="header-inner">
         <div class="header-logo">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          <svg viewBox="0 0 100 100" width="28" height="28" style="fill:none;">
+            <path d="M50 50 Q50 5, 15 5 Q5 5, 5 15 Q5 50, 50 50Z" fill="#F5A623"/>
+            <path d="M50 50 Q95 50, 95 15 Q95 5, 85 5 Q50 5, 50 50Z" fill="#E74C3C"/>
+            <path d="M50 50 Q50 95, 85 95 Q95 95, 95 85 Q95 50, 50 50Z" fill="#3C3C3C"/>
+            <path d="M50 50 Q5 50, 5 85 Q5 95, 15 95 Q50 95, 50 50Z" fill="#2E86DE"/>
           </svg>
           <span>단국대학교 장애학생지원센터</span>
         </div>
@@ -1419,7 +1425,7 @@
     <div class="a11y-bar" id="a11yBar">
       <div class="a11y-inner">
         <span class="a11y-label">접근성</span>
-        <div class="a11y-controls">
+        <div class="a11y-controls" id="a11yControls">
           <button
             class="a11y-btn"
             onclick="adjustFontSize(-1)"
@@ -1427,7 +1433,7 @@
             aria-label="글자 작게"
             type="button"
           >
-            A-
+            <span style="font-size:11px;font-weight:300;">A</span>
           </button>
           <button
             class="a11y-btn"
@@ -1436,7 +1442,7 @@
             aria-label="글자 크게"
             type="button"
           >
-            A+
+            <span style="font-size:17px;font-weight:600;">A</span>
           </button>
           <span class="a11y-divider"></span>
           <button
@@ -1446,7 +1452,7 @@
             aria-label="글자 얇게"
             type="button"
           >
-            가<span style="font-size: 10px">얇게</span>
+            <span style="font-size:13px;font-weight:200;">가</span>
           </button>
           <button
             class="a11y-btn"
@@ -1455,7 +1461,7 @@
             aria-label="글자 두껍게"
             type="button"
           >
-            가<span style="font-size: 10px">굵게</span>
+            <span style="font-size:13px;font-weight:800;">가</span>
           </button>
           <span class="a11y-divider"></span>
           <button
@@ -1535,12 +1541,12 @@
           </div>
           <div class="landing-buttons">
             <button class="landing-btn" onclick="startNewSurvey()">
-              <span class="landing-btn-icon">📝</span>
+              <span class="landing-btn-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1164b1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
               <span class="landing-btn-label">신규 응답 작성</span>
               <span class="landing-btn-desc">새로운 설문을 작성합니다</span>
             </button>
             <button class="landing-btn" onclick="showVerifyPage()">
-              <span class="landing-btn-icon">✏️</span>
+              <span class="landing-btn-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1164b1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
               <span class="landing-btn-label">기존 응답 수정</span>
               <span class="landing-btn-desc">제출한 응답을 수정합니다</span>
             </button>
@@ -3003,7 +3009,7 @@
           </div>
         </div>
 
-        <div class="glass-card" style="border-left: 3px solid var(--primary)">
+        <div class="glass-card" style="border: 2px solid var(--primary); border-radius: var(--radius-lg);">
           <div class="form-group">
             <label class="form-label" style="font-size: 16px"
               >개인별 교육지원계획 최종 확인 및 동의</label
@@ -3119,61 +3125,81 @@
 
     <!-- Admin Panel -->
     <div class="admin-panel" id="adminPanel">
-      <h3>
-        📊 관리자 패널
-        <button class="admin-close" onclick="toggleAdmin()">✕</button>
-      </h3>
-
-      <!-- Stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value" id="totalResponses">0</div>
-          <div class="stat-label">총 응답 수</div>
+      <!-- Login Screen (shown by default) -->
+      <div id="adminLoginScreen">
+        <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:24px;">
+          <button class="admin-close" onclick="toggleAdmin()">✕</button>
         </div>
-        <div class="stat-card">
-          <div class="stat-value" id="todayResponses">0</div>
-          <div class="stat-label">오늘 응답</div>
+        <div style="text-align:center;padding:60px 0 0;">
+          <div style="font-size:48px;margin-bottom:16px;">🔒</div>
+          <p style="margin-bottom:24px;color:var(--text-secondary);font-size:14px;">관리자 인증이 필요합니다</p>
+          <input type="text" id="adminIdInput" class="form-input" placeholder="아이디"
+            style="max-width:280px;margin:0 auto 10px;display:block;" />
+          <input type="password" id="adminPasswordInput" class="form-input" placeholder="비밀번호"
+            style="max-width:280px;margin:0 auto 14px;display:block;"
+            onkeypress="if(event.key==='Enter')adminLoginSubmit()" />
+          <button class="btn btn-primary" onclick="adminLoginSubmit()" style="font-size:14px;">로그인</button>
         </div>
       </div>
 
-      <!-- Tabs -->
-      <div style="display: flex; gap: 8px; margin-bottom: 16px">
-        <button
-          class="btn btn-primary"
-          onclick="showAdminTab('responses')"
-          id="tabResponses"
-          style="flex: 1; font-size: 13px; justify-content: center; text-align: center"
-        >
-          응답 목록
-        </button>
-        <button
-          class="btn btn-secondary"
-          onclick="showAdminTab('letter')"
-          id="tabLetter"
-          style="flex: 1; font-size: 13px; justify-content: center; text-align: center"
-        >
-          레터링 생성
-        </button>
-      </div>
+      <!-- Admin Content (hidden until login) -->
+      <div id="adminContent" style="display:none;">
+        <h3>
+          📊 관리자 패널
+          <button class="admin-close" onclick="toggleAdmin()">✕</button>
+        </h3>
 
-      <!-- Responses List -->
-      <div id="adminResponses">
-        <div id="responseList"></div>
-      </div>
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="totalResponses">0</div>
+            <div class="stat-label">총 응답 수</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="todayResponses">0</div>
+            <div class="stat-label">오늘 응답</div>
+          </div>
+        </div>
 
-      <!-- Letter Generator -->
-      <div id="adminLetter" style="display: none">
-        <div class="form-group">
-          <label class="form-label">학생 선택</label>
-          <select
-            class="form-input"
-            id="letterStudentSelect"
-            onchange="generateLetter()"
+        <!-- Tabs -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px">
+          <button
+            class="btn btn-primary"
+            onclick="showAdminTab('responses')"
+            id="tabResponses"
+            style="flex: 1; font-size: 13px; justify-content: center; text-align: center"
           >
-            <option value="">학생을 선택하세요</option>
-          </select>
+            응답 목록
+          </button>
+          <button
+            class="btn btn-secondary"
+            onclick="showAdminTab('letter')"
+            id="tabLetter"
+            style="flex: 1; font-size: 13px; justify-content: center; text-align: center"
+          >
+            레터링 생성
+          </button>
         </div>
-        <div id="letterPreviewArea"></div>
+
+        <!-- Responses List -->
+        <div id="adminResponses">
+          <div id="responseList"></div>
+        </div>
+
+        <!-- Letter Generator -->
+        <div id="adminLetter" style="display: none">
+          <div class="form-group">
+            <label class="form-label">학생 선택</label>
+            <select
+              class="form-input"
+              id="letterStudentSelect"
+              onchange="generateLetter()"
+            >
+              <option value="">학생을 선택하세요</option>
+            </select>
+          </div>
+          <div id="letterPreviewArea"></div>
+        </div>
       </div>
     </div>
 
@@ -3463,6 +3489,9 @@
           // Populate all form fields
           populateFormFromData(formData);
 
+          // Re-setup birthdate auto-advance for edit mode
+          setupBirthdateAutoAdvance();
+
           // Navigate to page 1
           currentPage = 1;
           showPage(currentPage);
@@ -3708,6 +3737,18 @@
           }
         });
 
+        // Validate department autocomplete (must be a known department)
+        pageEl.querySelectorAll('.form-input[data-name="department"]').forEach(function(input) {
+          if (input.value.trim()) {
+            var isValid = ALL_DEPARTMENTS.some(function(entry) { return entry.dept === input.value.trim(); });
+            if (!isValid) {
+              input.classList.add('error');
+              valid = false;
+              showToast('학과(부)를 목록에서 선택해주세요.');
+            }
+          }
+        });
+
         // Validate radio groups
         pageEl
           .querySelectorAll(
@@ -3872,30 +3913,38 @@
         panel.classList.toggle('open');
         overlay.classList.toggle('show');
 
-        // 로그인 안 된 상태면 로그인 폼 표시
+        // 로그인 안 된 상태면 로그인 화면 표시
         if (panel.classList.contains('open') && !adminToken) {
           showAdminLogin();
         }
       }
 
       function showAdminLogin() {
-        const list = document.getElementById('responseList');
-        list.innerHTML =
-          '<div style="text-align:center;padding:40px 0;">' +
-          '<p style="margin-bottom:16px;color:var(--text-secondary);">관리자 비밀번호를 입력하세요</p>' +
-          '<input type="password" id="adminPasswordInput" class="form-input" placeholder="비밀번호" ' +
-          'style="max-width:280px;margin:0 auto 12px;display:block;" ' +
-          'onkeypress="if(event.key===\'Enter\')adminLoginSubmit()">' +
-          '<button class="btn btn-primary" onclick="adminLoginSubmit()" style="font-size:14px;">로그인</button>' +
-          '</div>';
-        document.getElementById('totalResponses').textContent = '-';
-        document.getElementById('todayResponses').textContent = '-';
+        document.getElementById('adminLoginScreen').style.display = 'block';
+        document.getElementById('adminContent').style.display = 'none';
+        var idInput = document.getElementById('adminIdInput');
+        var pwInput = document.getElementById('adminPasswordInput');
+        if (idInput) idInput.value = '';
+        if (pwInput) pwInput.value = '';
+      }
+
+      function showAdminContent() {
+        document.getElementById('adminLoginScreen').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
       }
 
       async function adminLoginSubmit() {
+        var idInput = document.getElementById('adminIdInput');
         const pw = document.getElementById('adminPasswordInput').value;
-        if (!pw) {
-          showToast('비밀번호를 입력하세요.');
+        var adminId = idInput ? idInput.value.trim() : '';
+
+        if (!adminId || !pw) {
+          showToast('아이디와 비밀번호를 모두 입력하세요.');
+          return;
+        }
+
+        if (adminId !== 'admin_dssc') {
+          showToast('아이디가 올바르지 않습니다.');
           return;
         }
 
@@ -3914,6 +3963,7 @@
 
           adminToken = result.token;
           showToast('관리자 로그인 성공!');
+          showAdminContent();
           showAdminTab('responses');
           await loadAdminResponses();
         } catch (err) {
@@ -3934,6 +3984,7 @@
             if (resp.status === 401) {
               adminToken = null;
               showAdminLogin();
+              showToast('세션이 만료되었습니다. 다시 로그인하세요.');
               return;
             }
             throw new Error(result.error);
@@ -4763,28 +4814,14 @@
       });
 
       // ===== Birthday auto-advance =====
-      (function() {
+      // Works for both new entry and edit mode (same DOM elements)
+      function setupBirthdateAutoAdvance() {
         var bY = document.getElementById('birthYear');
         var bM = document.getElementById('birthMonth');
         var bD = document.getElementById('birthDay');
         if (!bY || !bM || !bD) return;
 
-        function numOnly(e) { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }
-
-        bY.addEventListener('input', function() {
-          numOnly({target: this});
-          if (this.value.length === 4) bM.focus();
-          updateBirthdate();
-        });
-        bM.addEventListener('input', function() {
-          numOnly({target: this});
-          if (this.value.length === 2) bD.focus();
-          updateBirthdate();
-        });
-        bD.addEventListener('input', function() {
-          numOnly({target: this});
-          updateBirthdate();
-        });
+        function numOnly(el) { el.value = el.value.replace(/[^0-9]/g, ''); }
 
         function updateBirthdate() {
           var y = bY.value, m = bM.value.padStart(2,'0'), d = bD.value.padStart(2,'0');
@@ -4792,11 +4829,37 @@
             formData.birthdate = y + '-' + m + '-' + d;
           }
         }
-      })();
+
+        // Remove old listeners by cloning (ensures clean state for edit mode re-entry)
+        var newBY = bY.cloneNode(true);
+        var newBM = bM.cloneNode(true);
+        var newBD = bD.cloneNode(true);
+        bY.parentNode.replaceChild(newBY, bY);
+        bM.parentNode.replaceChild(newBM, bM);
+        bD.parentNode.replaceChild(newBD, bD);
+
+        newBY.addEventListener('input', function() {
+          numOnly(this);
+          if (this.value.length === 4) newBM.focus();
+          updateBirthdate();
+        });
+        newBM.addEventListener('input', function() {
+          numOnly(this);
+          if (this.value.length === 2) newBD.focus();
+          updateBirthdate();
+        });
+        newBD.addEventListener('input', function() {
+          numOnly(this);
+          updateBirthdate();
+        });
+      }
+      setupBirthdateAutoAdvance();
 
       // ===== Accessibility Controls =====
-      let currentFontSizeLevel = 0; // -3 to +3
-      let currentFontWeightLevel = 0; // -1 to +2
+      // Font size: base 15px, range 9~21 (step 2pt). Level 0 = 15px.
+      // Font weight: base 400, range 200~800 (step 200). Level 0 = 400.
+      let currentFontSizeLevel = 0; // -3 to +3 → 9px to 21px
+      let currentFontWeightLevel = 0; // -1 to +2 → 200 to 800
       let a11yStyleEl = null;
 
       function getA11yStyleEl() {
@@ -4813,13 +4876,11 @@
         if (currentFontSizeLevel !== 0) {
           var delta = currentFontSizeLevel * 2; // -6 to +6 px
           css += ':root { --a11y-size-delta: ' + delta + 'px; }\n';
-          // Apply to all elements using a calc-based approach
           css += 'html { font-size: ' + (15 + delta) + 'px !important; }\n';
           css += 'body, body * { font-size: inherit; }\n';
-          // Override specific elements that have their own font-size
           var overrides = {
             'body': 15, '.form-label': 15, '.form-input': 15, '.option-label': 14,
-            '.btn': 15, '.a11y-btn': 13, '.a11y-label': 12, '.header-logo span': 15,
+            '.btn': 15, '.header-logo span': 15,
             '.header-badge': 11, '.section-header h2': 22, '.section-header p': 14,
             '.section-icon': 32, '.intro-hero h1': 26, '.intro-hero .subtitle': 15,
             '.intro-info': 14, '.intro-info .notice': 13, '.intro-info .contact': 13,
@@ -4843,33 +4904,36 @@
           }
         }
         if (currentFontWeightLevel !== 0) {
-          var weights = { '-1': 300, 0: 400, 1: 600, 2: 800 };
-          var baseWeight = weights[String(currentFontWeightLevel)] || 400;
-          css += 'body, body * { font-weight: ' + baseWeight + ' !important; }\n';
-          // Preserve relative weight differences for bold elements
-          var boldWeight = Math.min(900, baseWeight + 200);
-          var extraBoldWeight = Math.min(900, baseWeight + 300);
+          var weightVal = 400 + (currentFontWeightLevel * 200); // 200, 400, 600, 800
+          css += 'body * { font-weight: ' + weightVal + ' !important; }\n';
+          var boldWeight = Math.min(900, weightVal + 200);
+          var extraBoldWeight = Math.min(900, weightVal + 300);
           css += 'strong, b, .form-label, h1, h2, h3, h4, .section-header h2, .stat-value, .response-card .name, .intro-hero h1, .landing-btn .landing-btn-label, .header-logo span { font-weight: ' + boldWeight + ' !important; }\n';
           css += '.section-header h2, .intro-hero h1, h1 { font-weight: ' + extraBoldWeight + ' !important; }\n';
         }
+        // Always exclude a11y bar from changes (highest specificity at end)
+        css += '#a11yBar .a11y-label { font-size: 12px !important; font-weight: 600 !important; }\n';
+        css += '#a11yBar .a11y-btn { font-size: 13px !important; font-weight: 600 !important; }\n';
+        // Preserve inline styles on a11y button child spans
+        css += '#a11yBar .a11y-btn span[style*="font-size:11px"] { font-size: 11px !important; font-weight: 300 !important; }\n';
+        css += '#a11yBar .a11y-btn span[style*="font-size:17px"] { font-size: 17px !important; font-weight: 600 !important; }\n';
+        css += '#a11yBar .a11y-btn span[style*="font-weight:200"] { font-size: 13px !important; font-weight: 200 !important; }\n';
+        css += '#a11yBar .a11y-btn span[style*="font-weight:800"] { font-size: 13px !important; font-weight: 800 !important; }\n';
         getA11yStyleEl().textContent = css;
       }
 
       function adjustFontSize(dir) {
         currentFontSizeLevel = Math.max(-3, Math.min(3, currentFontSizeLevel + dir));
         applyA11yStyles();
-        showToast(
-          '글자 크기: ' +
-            (currentFontSizeLevel > 0 ? '+' : '') +
-            currentFontSizeLevel,
-        );
+        var actualSize = 15 + (currentFontSizeLevel * 2);
+        showToast('글자 크기: ' + actualSize + 'pt');
       }
 
       function adjustFontWeight(dir) {
         currentFontWeightLevel = Math.max(-1, Math.min(2, currentFontWeightLevel + dir));
         applyA11yStyles();
-        var labels = { '-1': '얇게', 0: '기본', 1: '굵게', 2: '매우 굵게' };
-        showToast('글자 두께: ' + labels[String(currentFontWeightLevel)]);
+        var actualWeight = 400 + (currentFontWeightLevel * 200);
+        showToast('글자 두께: ' + actualWeight);
       }
 
       function resetAccessibility() {
