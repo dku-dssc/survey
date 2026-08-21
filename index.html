@@ -230,10 +230,11 @@
         align-items: center;
         gap: 10px;
       }
-      .header-logo svg {
+      .header-logo img {
         width: 28px;
         height: 28px;
         flex-shrink: 0;
+        object-fit: contain;
       }
       .header-logo span {
         font-size: 15px;
@@ -1409,12 +1410,7 @@
     <header class="header">
       <div class="header-inner">
         <div class="header-logo">
-          <svg viewBox="0 0 100 100" width="28" height="28" style="fill:none;">
-            <path d="M50 50 Q50 5, 15 5 Q5 5, 5 15 Q5 50, 50 50Z" fill="#F5A623"/>
-            <path d="M50 50 Q95 50, 95 15 Q95 5, 85 5 Q50 5, 50 50Z" fill="#E74C3C"/>
-            <path d="M50 50 Q50 95, 85 95 Q95 95, 95 85 Q95 50, 50 50Z" fill="#3C3C3C"/>
-            <path d="M50 50 Q5 50, 5 85 Q5 95, 15 95 Q50 95, 50 50Z" fill="#2E86DE"/>
-          </svg>
+          <img src="logo.png" alt="단국대학교 로고" width="28" height="28" style="object-fit:contain;" />
           <span>단국대학교 장애학생지원센터</span>
         </div>
         <span class="header-badge">2026-2학기</span>
