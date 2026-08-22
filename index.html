@@ -484,7 +484,7 @@
       }
       .dm-cloud-big {
         width: 34px; height: 21px;
-        top: 15px; right: -7px;
+        top: 12px; right: -7px;
       }
       /* 해 모드 (라이트) — 밝은 하늘색 구름 */
       .dm-cloud.cloud-sun path { fill: #a8d8f0; stroke: rgba(100,180,230,0.5); }
@@ -946,6 +946,14 @@
         background: none !important;
         -webkit-text-fill-color: unset !important;
         animation: none !important;
+        transition: color 1.2s ease-out !important;
+      }
+      .form-label.label-liquid-fadeout {
+        color: var(--text-primary) !important;
+        background: none !important;
+        -webkit-text-fill-color: unset !important;
+        animation: none !important;
+        transition: color 1.2s ease-out !important;
       }
       /* 부연설명(.helper) 순차 그라데이션 */
       @keyframes helperLiquidFlow {
@@ -997,6 +1005,14 @@
         background: none !important;
         -webkit-text-fill-color: unset !important;
         animation: none !important;
+        transition: color 1.2s ease-out !important;
+      }
+      body.dark-mode .form-label.label-liquid-fadeout {
+        color: var(--text-primary) !important;
+        background: none !important;
+        -webkit-text-fill-color: unset !important;
+        animation: none !important;
+        transition: color 1.2s ease-out !important;
       }
       .form-label .required {
         color: var(--danger);
@@ -1225,6 +1241,18 @@
       }
       .btn-primary.btn-nudge {
         animation: btnNudgePulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      /* 다음 버튼 팝! 효과 (필수 응답 완료 + 버튼 완전히 보일 때) */
+      @keyframes btnReadyPop {
+        0% { transform: scale(1); box-shadow: 0 8px 20px rgba(17, 100, 177, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.2); }
+        15% { transform: scale(0.92); }
+        40% { transform: scale(1.12); box-shadow: 0 12px 32px rgba(17, 100, 177, 0.45), inset 0 0 16px rgba(255, 255, 255, 0.3); }
+        60% { transform: scale(0.97); }
+        80% { transform: scale(1.04); box-shadow: 0 10px 26px rgba(17, 100, 177, 0.35), inset 0 0 14px rgba(255, 255, 255, 0.25); }
+        100% { transform: scale(1); box-shadow: 0 8px 20px rgba(17, 100, 177, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.2); }
+      }
+      .btn-primary.btn-ready-pop {
+        animation: btnReadyPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
       .btn-primary:hover {
         background: linear-gradient(
@@ -1652,7 +1680,7 @@
       /* ===== Save Draft Button ===== */
       .save-draft-toggle {
         position: fixed;
-        bottom: 92px;
+        bottom: 24px;
         right: 24px;
         z-index: 200;
         width: 56px;
@@ -3980,13 +4008,14 @@
       </div>
     </main>
 
-    <!-- Save Draft Button (위에 저장 버튼) -->
+    <!-- Save Draft Button (설문 중에만 표시, 홈에서는 숨김) -->
     <button
       class="save-draft-toggle"
       id="saveDraftBtn"
       onclick="showSaveDraftModal()"
       title="임시저장"
       aria-label="설문 임시저장"
+      style="display:none;"
     >
       <span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;line-height:1;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -4368,6 +4397,7 @@
         var ve = document.getElementById('verifyError');
         if (ve) ve.classList.remove('show');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        syncFloatingButtons();
       }
 
       function selectVerifyGender(el) {
@@ -4542,6 +4572,20 @@
       }
 
       // ===== Page Navigation =====
+      function syncFloatingButtons() {
+        var adminBtn = document.getElementById('adminToggle');
+        var saveBtn = document.getElementById('saveDraftBtn');
+        if (currentPage >= 1 && currentPage <= 7) {
+          // 설문 진행 중 → 자동저장만
+          if (adminBtn) adminBtn.style.display = 'none';
+          if (saveBtn) saveBtn.style.display = 'flex';
+        } else {
+          // 홈/기타 → 설정만
+          if (adminBtn) adminBtn.style.display = 'flex';
+          if (saveBtn) saveBtn.style.display = 'none';
+        }
+      }
+
       function showPage(page, direction) {
         direction = direction || 'forward';
         // 먼저 스크롤을 즉시 맨 위로 (애니메이션 없이)
@@ -4566,6 +4610,7 @@
           showProgressBar();
           updateProgress();
         }
+        syncFloatingButtons();
       }
 
       function nextPage() {
@@ -5622,14 +5667,15 @@
           const dd = wrapper.querySelector('.autocomplete-dropdown');
           if (dd) dd.classList.remove('show');
         }
-        // 학과 선택 후: 부전공 필드 포커스 피드백만 (스크롤 없이) + 1초 후 다음 버튼 넛지
+        // 학과 선택 후: 부전공 라벨 그라데이션만 (규칙 5: 비필수는 입력란 자동 활성화 X)
         if (inputId === 'deptInput') {
           var minorInput = document.getElementById('minorInput');
           if (minorInput) {
-            // 부전공 form-group의 라벨에 그라데이션 피드백만 주기 (스크롤 X)
-            _skipAutoScroll = true;
-            minorInput.focus();
-            setTimeout(function() { _skipAutoScroll = false; }, 400);
+            var minorGroup = minorInput.closest('.form-group');
+            var minorLabel = minorGroup ? minorGroup.querySelector('.form-label') : null;
+            if (minorLabel && window.triggerLabelGradient) {
+              window.triggerLabelGradient(minorLabel);
+            }
             // 1초 후 다음 버튼 넛지
             setTimeout(function() {
               var pageEl = minorInput.closest('.survey-page');
@@ -6232,7 +6278,8 @@
         }
         // Always exclude a11y bar from changes (highest specificity at end)
         css += '#a11yBar .a11y-label { font-size: 12px !important; font-weight: 600 !important; }\n';
-        css += '#a11yBar .a11y-btn { font-size: 13px !important; font-weight: 600 !important; width: 36px !important; height: 36px !important; }\n';
+        css += '#a11yBar .a11y-btn:not(.dark-mode-toggle) { font-size: 13px !important; font-weight: 600 !important; width: 36px !important; height: 36px !important; }\n';
+        css += '#a11yBar .dark-mode-toggle { width: 42px !important; height: 42px !important; }\n';
         // Preserve inline styles on a11y button child spans
         css += '#a11yBar .a11y-btn span[style*="font-size:11px"] { font-size: 11px !important; font-weight: 300 !important; }\n';
         css += '#a11yBar .a11y-btn span[style*="font-size:17px"] { font-size: 17px !important; font-weight: 600 !important; }\n';
@@ -6568,115 +6615,230 @@
       // Load demo data automatically
       addDemoData();
 
-      // ===== [2] 필드 라벨 리퀴드 그라데이션 1회 애니메이션 =====
+      // ===== [2] 필드 라벨 리퀴드 그라데이션 — IntersectionObserver 기반 =====
+      // 규칙:
+      // 1. 새 페이지: 스크롤 없이 첫 문항에 그라데이션 (입력란 자동 활성화 X)
+      // 2. 완전히 가려졌다가 온전히 보이면 그라데이션 1회 (일부만 가려진 경우 해당 없음)
+      // 3. 비필수 응답 후 스크롤→다음 문항 보이면 자동 피드백 / 필수 미응답+스크롤 or 이미 보이면 클릭 시 피드백
+      // 4. 그라데이션→원래색 자연스럽게 (label-liquid-done → label-liquid-fadeout 트랜지션)
+      // 5. 비필수 주관식: 라벨 포커스만, 입력란 자동 활성화 X
+      // 6. 다음 버튼 팝: 필수 모두 완료 + 완전히 보일 때
       (function() {
-        document.addEventListener('focusin', function(e) {
-          var target = e.target;
-          // input, textarea, select 요소에 포커스가 들어올 때
-          if (!target.matches || (!target.matches('.form-input, textarea, select, .option-item') && !target.closest('.option-group'))) return;
-          var formGroup = target.closest('.form-group');
-          if (!formGroup) return;
-          var label = formGroup.querySelector('.form-label');
+        var _LABEL_ANIM_DUR = 1800;
+        var _HELPER_ANIM_DUR = 1400;
+        var _FADEOUT_DELAY = 2000; // 단색 유지 후 페이드아웃까지 대기
+
+        // --- 라벨 그라데이션 실행 ---
+        function triggerLabelGradient(label) {
           if (!label) return;
-          // 이미 활성 상태면 무시 (같은 포커스 유지 중)
           if (label.classList.contains('label-liquid-active')) return;
-          // 이전 상태 초기화
-          label.classList.remove('label-liquid-done');
+          // 이전 상태 전부 클리어
+          clearLabelState(label);
           var helper = label.querySelector('.helper');
           if (helper) {
             helper.classList.remove('helper-liquid-active', 'helper-liquid-done');
             if (helper._helperTimer) clearTimeout(helper._helperTimer);
           }
-          // 리퀴드 애니메이션 시작
+          // 그라데이션 시작
           label.classList.add('label-liquid-active');
-          // 메인 라벨 그라데이션 완료(1.8초) 후 단색 전환
           label._liquidTimer = setTimeout(function() {
             label.classList.remove('label-liquid-active');
             label.classList.add('label-liquid-done');
-            // 부연설명(helper)은 메인 라벨 그라데이션 완료 후 순차적으로 시작
+            // 부연설명 순차 시작
             if (helper) {
               helper.classList.add('helper-liquid-active');
               helper._helperTimer = setTimeout(function() {
                 helper.classList.remove('helper-liquid-active');
                 helper.classList.add('helper-liquid-done');
-              }, 1400);
+              }, _HELPER_ANIM_DUR);
             }
-          }, 1800);
-        });
-        document.addEventListener('focusout', function(e) {
-          var target = e.target;
-          var formGroup = target.closest && target.closest('.form-group');
-          if (!formGroup) return;
-          var label = formGroup.querySelector('.form-label');
-          if (!label) return;
-          // 포커스 아웃 시 리퀴드 상태 초기화 (다음 포커스 시 다시 재생 가능)
-          setTimeout(function() {
-            // focusout 후에도 같은 form-group 내 다른 요소로 이동했는지 확인
-            if (!formGroup.contains(document.activeElement)) {
-              label.classList.remove('label-liquid-active', 'label-liquid-done');
-              if (label._liquidTimer) clearTimeout(label._liquidTimer);
-              var helper = label.querySelector('.helper');
+            // 자연스럽게 원래 색으로 페이드아웃 (규칙 4)
+            label._fadeoutTimer = setTimeout(function() {
+              label.classList.remove('label-liquid-done');
+              label.classList.add('label-liquid-fadeout');
               if (helper) {
-                helper.classList.remove('helper-liquid-active', 'helper-liquid-done');
-                if (helper._helperTimer) clearTimeout(helper._helperTimer);
+                helper.classList.remove('helper-liquid-done');
               }
-            }
-          }, 50);
-        });
-      })();
+              // 페이드아웃 트랜지션 완료 후 완전 클리어
+              label._clearTimer = setTimeout(function() {
+                label.classList.remove('label-liquid-fadeout');
+              }, 1400);
+            }, _FADEOUT_DELAY);
+          }, _LABEL_ANIM_DUR);
+        }
 
-      // ===== [3] 페이지 전환 시 첫 문항 자동포커스 + 답변 완료 시 다음 문항 이동 + 다음버튼 넛지 =====
-      (function() {
-        // showPage를 래핑하여 자동포커스 추가
+        function clearLabelState(label) {
+          label.classList.remove('label-liquid-active', 'label-liquid-done', 'label-liquid-fadeout');
+          if (label._liquidTimer) clearTimeout(label._liquidTimer);
+          if (label._fadeoutTimer) clearTimeout(label._fadeoutTimer);
+          if (label._clearTimer) clearTimeout(label._clearTimer);
+        }
+
+        // 외부에서 접근 가능하도록 전역 노출
+        window.triggerLabelGradient = triggerLabelGradient;
+
+        // --- IntersectionObserver: form-label 완전 가림→완전 보임 감지 (규칙 2) ---
+        var _labelObserver = null;
+        var _labelHiddenMap = new WeakMap(); // label → true if was fully hidden
+
+        function setupLabelObserver() {
+          if (_labelObserver) _labelObserver.disconnect();
+          _labelObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              var label = entry.target;
+              if (entry.intersectionRatio === 0) {
+                // 완전히 가려짐
+                _labelHiddenMap.set(label, true);
+              } else if (entry.intersectionRatio >= 0.99 && _labelHiddenMap.get(label)) {
+                // 완전히 가려졌다가 온전히 보임 → 그라데이션 1회
+                _labelHiddenMap.set(label, false);
+                triggerLabelGradient(label);
+              }
+            });
+          }, { threshold: [0, 0.99, 1.0] });
+        }
+        setupLabelObserver();
+
+        // 현재 활성 페이지의 라벨들을 observe
+        function observePageLabels(page) {
+          _labelObserver.disconnect();
+          var pageEl = document.querySelector('[data-page="' + page + '"]');
+          if (!pageEl) return;
+          var labels = pageEl.querySelectorAll('.form-label');
+          labels.forEach(function(label) {
+            // 초기 상태: 화면에 보이는 라벨은 hidden=false, 안보이면 true
+            var rect = label.getBoundingClientRect();
+            var isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+            _labelHiddenMap.set(label, !isVisible);
+            _labelObserver.observe(label);
+          });
+        }
+
+        // --- 다음 버튼 팝 효과 IntersectionObserver (규칙 6) ---
+        var _nextBtnObserver = null;
+        var _nextBtnHiddenMap = new WeakMap();
+
+        function setupNextBtnObserver() {
+          if (_nextBtnObserver) _nextBtnObserver.disconnect();
+          _nextBtnObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              var btn = entry.target;
+              if (entry.intersectionRatio === 0) {
+                _nextBtnHiddenMap.set(btn, true);
+              } else if (entry.intersectionRatio >= 0.99 && _nextBtnHiddenMap.get(btn)) {
+                _nextBtnHiddenMap.set(btn, false);
+                // 필수 응답 모두 완료 확인
+                if (areAllRequiredAnswered(btn)) {
+                  btn.classList.remove('btn-ready-pop');
+                  void btn.offsetWidth;
+                  btn.classList.add('btn-ready-pop');
+                  btn.addEventListener('animationend', function() {
+                    btn.classList.remove('btn-ready-pop');
+                  }, { once: true });
+                }
+              }
+            });
+          }, { threshold: [0, 0.99, 1.0] });
+        }
+        setupNextBtnObserver();
+
+        function areAllRequiredAnswered(btnEl) {
+          var pageEl = btnEl.closest('.survey-page');
+          if (!pageEl) return false;
+          var requiredFields = pageEl.querySelectorAll('[data-required="true"]');
+          for (var i = 0; i < requiredFields.length; i++) {
+            var field = requiredFields[i];
+            if (field.classList.contains('form-input') || field.tagName === 'TEXTAREA' || field.tagName === 'SELECT') {
+              if (!field.value || !field.value.trim()) return false;
+            } else if (field.classList.contains('option-group') || field.dataset.type === 'radio' || field.dataset.type === 'checkbox') {
+              var selected = field.querySelector('.option-item.selected');
+              if (!selected) return false;
+            } else if (field.classList.contains('birthdate-group')) {
+              var y = document.getElementById('birthYear');
+              var m = document.getElementById('birthMonth');
+              var d = document.getElementById('birthDay');
+              if (!y || !m || !d || !y.value.trim() || !m.value.trim() || !d.value.trim()) return false;
+            } else {
+              // data-required가 있는 기타 input/select
+              var inp = field.querySelector && field.querySelector('input, select, textarea');
+              if (inp && !inp.value.trim()) return false;
+            }
+          }
+          return true;
+        }
+
+        function observeNextBtn(page) {
+          _nextBtnObserver.disconnect();
+          var pageEl = document.querySelector('[data-page="' + page + '"]');
+          if (!pageEl) return;
+          var nextBtn = pageEl.querySelector('.btn-primary');
+          if (!nextBtn) return;
+          var rect = nextBtn.getBoundingClientRect();
+          var isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+          _nextBtnHiddenMap.set(nextBtn, !isVisible);
+          _nextBtnObserver.observe(nextBtn);
+        }
+
+        // --- 페이지 전환 시 첫 문항 라벨 그라데이션 (규칙 1, 5) ---
+        function autoFocusFirstLabel(page) {
+          var pageEl = document.querySelector('[data-page="' + page + '"]');
+          if (!pageEl) return;
+          var firstGroup = pageEl.querySelector('.form-group');
+          if (!firstGroup) return;
+          var label = firstGroup.querySelector('.form-label');
+          if (label) {
+            triggerLabelGradient(label);
+          }
+          // 규칙 5: 입력란 자동 활성화하지 않음 (포커스 피드백만)
+          // 필수 주관식만 자동 포커스 (입력란 활성화)
+          var isRequired = firstGroup.querySelector('[data-required="true"]');
+          var hasTextInput = firstGroup.querySelector('.form-input[type="text"], .form-input:not([type]), textarea');
+          if (isRequired && hasTextInput) {
+            hasTextInput.focus({ preventScroll: true });
+          }
+        }
+
+        // showPage 래핑
         var _origShowPage = showPage;
         showPage = function(page, direction) {
           _origShowPage(page, direction);
-          // 페이지 전환 직후 첫 문항 포커스 시 스크롤 방지
           _skipAutoScroll = true;
-          // 약간의 딜레이 후 첫 문항에 포커스
           setTimeout(function() {
-            autoFocusFirstField(page);
-            // 포커스 후 스크롤 방지 해제 (약간 딜레이)
+            autoFocusFirstLabel(page);
+            observePageLabels(page);
+            observeNextBtn(page);
             setTimeout(function() { _skipAutoScroll = false; }, 350);
           }, 400);
         };
 
-        function autoFocusFirstField(page) {
-          var pageEl = document.querySelector('[data-page="' + page + '"]');
-          if (!pageEl) return;
-          // DOM 순서대로 첫 번째 form-group 찾기
-          var firstGroup = pageEl.querySelector('.form-group');
-          if (!firstGroup) return;
-          // 해당 그룹 내의 첫 입력 요소 찾기
-          var input = firstGroup.querySelector('.form-input, textarea, select');
-          if (input) {
-            input.focus();
-            return;
-          }
-          var option = firstGroup.querySelector('.option-item');
-          if (option) {
-            option.focus();
-          }
-        }
+        // --- 클릭 시 라벨 포커스 피드백 (규칙 3: 이미 보이는 경우, 필수 미응답+스크롤) ---
+        document.addEventListener('focusin', function(e) {
+          var target = e.target;
+          if (!target.matches || (!target.matches('.form-input, textarea, select, .option-item') && !target.closest('.option-group'))) return;
+          var formGroup = target.closest('.form-group');
+          if (!formGroup) return;
+          var label = formGroup.querySelector('.form-label');
+          if (!label) return;
+          // 이미 애니메이션 중이면 무시
+          if (label.classList.contains('label-liquid-active')) return;
+          // 클릭/탭으로 포커스 → 그라데이션 트리거
+          triggerLabelGradient(label);
+        });
 
-        // selectOption 래핑: 라디오 선택 후 다음 문항으로 이동
+        // --- selectOption 래핑: 라디오 선택 후 다음 문항으로 이동 ---
         var _origSelectOption = selectOption;
         selectOption = function(el) {
           _origSelectOption(el);
-          // 현재 그룹의 라벨에 그라데이션이 진행 중이면 끝까지 기다린 후 이동
           var currentGroup = el.closest('.form-group');
           var label = currentGroup ? currentGroup.querySelector('.form-label') : null;
           if (label && label.classList.contains('label-liquid-active')) {
-            // 그라데이션(1.8s) 완료 후 이동
-            var waitTime = 1800;
-            setTimeout(function() { advanceToNextField(el); }, waitTime);
+            setTimeout(function() { advanceToNextField(el); }, _LABEL_ANIM_DUR);
           } else {
             setTimeout(function() { advanceToNextField(el); }, 200);
           }
         };
 
-        // toggleCheckbox 래핑은 하지 않음 (체크박스는 여러 개 선택 가능)
-
+        // --- 다음 문항 이동 ---
         function advanceToNextField(currentEl) {
           var currentGroup = currentEl.closest('.form-group');
           if (!currentGroup) return;
@@ -6686,16 +6848,27 @@
           var idx = allGroups.indexOf(currentGroup);
           if (idx < 0) return;
 
-          // 다음 form-group 찾기
           for (var i = idx + 1; i < allGroups.length; i++) {
             var nextGroup = allGroups[i];
+            // 규칙 5: 비필수 필드는 라벨 포커스만 (입력란 자동 활성화 X)
+            var isNextRequired = nextGroup.querySelector('[data-required="true"]');
             var nextInput = nextGroup.querySelector('.form-input, textarea, select');
+            var nextOption = nextGroup.querySelector('.option-item');
+
+            if (!isNextRequired) {
+              // 비필수: 라벨 그라데이션만, 포커스 안줌
+              var nextLabel = nextGroup.querySelector('.form-label');
+              if (nextLabel) triggerLabelGradient(nextLabel);
+              scrollFieldIntoView(nextGroup.querySelector('.form-label') || nextGroup);
+              return;
+            }
+
+            // 필수: 기존처럼 포커스+스크롤
             if (nextInput) {
               nextInput.focus();
               scrollFieldIntoView(nextInput);
               return;
             }
-            var nextOption = nextGroup.querySelector('.option-item');
             if (nextOption) {
               nextOption.focus();
               scrollFieldIntoView(nextOption);
@@ -6711,7 +6884,7 @@
           var nextBtn = pageEl.querySelector('.btn-primary');
           if (!nextBtn) return;
           nextBtn.classList.remove('btn-nudge');
-          void nextBtn.offsetWidth; // reflow
+          void nextBtn.offsetWidth;
           nextBtn.classList.add('btn-nudge');
           nextBtn.focus();
           nextBtn.addEventListener('animationend', function() {
@@ -6719,13 +6892,11 @@
           }, { once: true });
         }
 
-        // input 필드 완료 감지 (blur 시 다음으로)
+        // --- select(드롭다운) 변경 시 다음으로 ---
         document.addEventListener('change', function(e) {
           var target = e.target;
           if (!target.matches || !target.matches('.form-input, textarea, select')) return;
           if (!target.value.trim()) return;
-          // 학번, 전화번호 등 자동 이동은 setupFieldAutoAdvance에서 처리
-          // 여기서는 select(드롭다운) 변경 시에만 다음으로
           if (target.tagName === 'SELECT') {
             setTimeout(function() { advanceToNextField(target); }, 200);
           }
@@ -6752,12 +6923,30 @@
       }
 
       (function() {
+        // 생년월일 필드 스크롤 중복 방지 (아이폰 대응)
+        var _birthScrolledFor = null;
         // 텍스트 입력(주관식), textarea 포커스 시 자동 스크롤
         document.addEventListener('focusin', function(e) {
           var target = e.target;
           if (!target.matches || !target.matches('.form-input, textarea')) return;
           if (_skipAutoScroll) return;
           if (isAutoScrollDisabled()) return;
+          // 생년월일 필드: 같은 form-group 내에서 1회만 스크롤
+          var isBirthField = (target.id === 'birthYear' || target.id === 'birthMonth' || target.id === 'birthDay');
+          if (isBirthField) {
+            var birthGroup = target.closest('.form-group');
+            if (_birthScrolledFor === birthGroup) return; // 이미 스크롤함
+            _birthScrolledFor = birthGroup;
+            // 다른 form-group으로 이동하면 리셋
+            setTimeout(function() {
+              document.addEventListener('focusin', function resetBirth(ev) {
+                if (ev.target.closest && ev.target.closest('.form-group') !== birthGroup) {
+                  _birthScrolledFor = null;
+                  document.removeEventListener('focusin', resetBirth);
+                }
+              });
+            }, 100);
+          }
           // 약간의 딜레이 (키보드 올라오는 시간 고려)
           setTimeout(function() {
             scrollFieldIntoView(target);
