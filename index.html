@@ -939,17 +939,17 @@
       }
 
       /* --- ① 비선택 풀 스윕 (빛줄기 왼→오, bg 400%) --- */
-      /* 파란 구간 35~65% (30% 폭) → 각 지점에서 ~1.2초 노출, linear 타이밍 */
+      /* 파란 구간 38~62%, 전환 구간 넓게(20%→38%, 62%→80%) → 부드러운 등장/퇴장 */
       .form-label.label-liquid-sweep {
         background: linear-gradient(90deg,
           var(--text-primary) 0%,
-          var(--text-primary) 28%,
-          #1164B1 35%,
-          #2d8bcf 42%,
+          var(--text-primary) 20%,
+          #1164B1 38%,
+          #2d8bcf 45%,
           #4facfe 50%,
-          #2d8bcf 58%,
-          #1164B1 65%,
-          var(--text-primary) 72%,
+          #2d8bcf 55%,
+          #1164B1 62%,
+          var(--text-primary) 80%,
           var(--text-primary) 100%) !important;
         background-size: 400% auto !important;
         -webkit-background-clip: text !important;
@@ -1031,10 +1031,10 @@
       /* ===== 다크모드 오버라이드 ===== */
       body.dark-mode .form-label.label-liquid-sweep {
         background: linear-gradient(90deg,
-          var(--text-primary) 0%, var(--text-primary) 28%,
-          #3a8fd4 35%, #5bb8e8 42%, #7dd3fc 50%,
-          #5bb8e8 58%, #3a8fd4 65%,
-          var(--text-primary) 72%, var(--text-primary) 100%) !important;
+          var(--text-primary) 0%, var(--text-primary) 20%,
+          #3a8fd4 38%, #5bb8e8 45%, #7dd3fc 50%,
+          #5bb8e8 55%, #3a8fd4 62%,
+          var(--text-primary) 80%, var(--text-primary) 100%) !important;
         background-size: 400% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -7381,9 +7381,10 @@
         };
 
         // ── 클릭/탭 시 포커스 그라데이션 ──
+        // focusin: 텍스트 입력 등 focusable 요소
         document.addEventListener('focusin', function(e) {
           var target = e.target;
-          if (!target.matches || (!target.matches('.form-input, textarea, select, .option-item') && !target.closest('.option-group'))) return;
+          if (!target.matches || (!target.matches('.form-input, textarea, select') && !target.closest('.option-group'))) return;
           var formGroup = target.closest('.form-group');
           if (!formGroup) return;
           var label = formGroup.querySelector('.form-label');
@@ -7392,20 +7393,61 @@
           if (label.classList.contains('label-liquid-held')) return;
 
           triggerFocusedGradient(label);
-          observeLabel(label); // 스크롤 재등장 감지용
+          observeLabel(label);
+        });
+        // click: option-item(div)은 focusin이 발생하지 않으므로 click으로 포커스 그라데이션
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+          var optionItem = target.closest && target.closest('.option-item');
+          if (!optionItem) return;
+          var formGroup = optionItem.closest('.form-group');
+          if (!formGroup) return;
+          var label = formGroup.querySelector('.form-label');
+          if (!label) return;
+          if (label.classList.contains('label-liquid-active')) return;
+          if (label.classList.contains('label-liquid-held')) return;
+
+          triggerFocusedGradient(label);
+          observeLabel(label);
         });
 
-        // ── selectOption 래핑: 선택 후 다음 문항 이동 + 턴 갱신 ──
+        // ── selectOption 래핑: 선택 후 held 전환 + 다음 문항 이동 ──
         var _origSelectOption = selectOption;
         selectOption = function(el) {
           _origSelectOption(el);
           var currentGroup = el.closest('.form-group');
           var label = currentGroup ? currentGroup.querySelector('.form-label') : null;
-          var delay = (label && label.classList.contains('label-liquid-active')) ? _LABEL_ANIM_DUR : 300;
-          setTimeout(function() {
-            refreshTurnLabel();
-            advanceToNextField(el);
-          }, delay);
+
+          // option-item은 focusable이 아니라 focusout이 발생하지 않음
+          // 따라서 여기서 직접 held→fading→다음 문항 전환을 처리
+          if (label && (label.classList.contains('label-liquid-active') || label.classList.contains('label-liquid-sweep'))) {
+            // 활성 애니메이션이 진행 중이면 즉시 held로 전환
+            clearLabelState(label);
+            label.classList.add('label-liquid-held');
+          }
+
+          // held 상태에서 일정 시간 후 fading으로 전환 → 다음 문항
+          if (label && label.classList.contains('label-liquid-held')) {
+            setTimeout(function() {
+              if (!label.classList.contains('label-liquid-held')) return;
+              _focusedLabel = null;
+              label.classList.remove('label-liquid-held');
+              label.classList.add('label-liquid-fading');
+              label._fadeoutTimer = setTimeout(function() {
+                label.classList.remove('label-liquid-fading');
+                label._fadeCooldownUntil = Date.now() + 2000;
+                if (_activeLabel === label) _activeLabel = null;
+                refreshTurnLabel();
+                advanceToNextField(el);
+              }, _FADE_DUR);
+            }, 600); // 0.6초 held 유지 후 fading
+          } else {
+            // held 아닌 경우 즉시 다음으로
+            setTimeout(function() {
+              refreshTurnLabel();
+              advanceToNextField(el);
+            }, 300);
+          }
         };
 
         // ── 다음 문항 이동 ──
@@ -7467,6 +7509,15 @@
             }, 200);
           }
         });
+
+        // ── 초기 페이지 그라데이션 트리거 ──
+        // showPage 래퍼는 래핑 후 호출된 경우만 동작하므로,
+        // 이미 표시된 초기 페이지(예: page 1)에 대해 수동으로 호출
+        setTimeout(function() {
+          autoFocusFirstLabel(currentPage);
+          enableScrollListener();
+          observeNextBtn(currentPage);
+        }, 500);
       })();
 
       // ===== [4] 주관식 입력 시 해당 문항 상단 자동 스크롤 =====
