@@ -939,22 +939,24 @@
       }
 
       /* --- ① 비선택 풀 스윕 (빛이 지나가듯, 끝부분 자연 페이드) --- */
+      /* 파란 구간 18~68% (50% 폭) → 각 지점에서 ~0.8초 노출 (이전 0.25초) */
       .form-label.label-liquid-sweep {
         background: linear-gradient(90deg,
           var(--text-primary) 0%,
-          var(--text-primary) 14%,
-          #1164B1 32%,
-          #2d8bcf 38%,
-          #4facfe 44%,
-          #2d8bcf 50%,
-          #1164B1 56%,
-          var(--text-primary) 74%,
+          var(--text-primary) 5%,
+          #1164B1 18%,
+          #2d8bcf 28%,
+          #4facfe 38%,
+          #4facfe 48%,
+          #2d8bcf 58%,
+          #1164B1 68%,
+          var(--text-primary) 82%,
           var(--text-primary) 100%) !important;
         background-size: 300% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
-        animation: labelLiquidFullSweep 2.8s ease-in-out forwards !important;
+        animation: labelLiquidFullSweep 3s ease-in-out forwards !important;
       }
       .form-label.label-liquid-sweep .required {
         -webkit-text-fill-color: var(--danger) !important;
@@ -990,11 +992,12 @@
       }
 
       /* --- ④ 포커스 해제 시 검은 물결 (파란→검은) --- */
+      /* text-primary를 55%까지 확장 → 최종 프레임(0~50% 표시)에서 파란 잔상 없음 */
       .form-label.label-liquid-fading {
         background: linear-gradient(90deg,
           var(--text-primary) 0%,
-          var(--text-primary) 40%,
-          #1164B1 70%,
+          var(--text-primary) 55%,
+          #1164B1 80%,
           #1164B1 100%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
@@ -1008,11 +1011,12 @@
       }
 
       /* --- ⑤ 빠른 dismiss (다른 문항에 밀려날 때) --- */
+      /* fading과 동일 구조 — 최종 프레임 잔상 없음 */
       .form-label.label-liquid-dismiss {
         background: linear-gradient(90deg,
           var(--text-primary) 0%,
-          var(--text-primary) 40%,
-          #1164B1 70%,
+          var(--text-primary) 55%,
+          #1164B1 80%,
           #1164B1 100%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
@@ -1028,15 +1032,15 @@
       /* ===== 다크모드 오버라이드 ===== */
       body.dark-mode .form-label.label-liquid-sweep {
         background: linear-gradient(90deg,
-          var(--text-primary) 0%, var(--text-primary) 14%,
-          #3a8fd4 32%, #5bb8e8 38%, #7dd3fc 44%,
-          #5bb8e8 50%, #3a8fd4 56%,
-          var(--text-primary) 74%, var(--text-primary) 100%) !important;
+          var(--text-primary) 0%, var(--text-primary) 5%,
+          #3a8fd4 18%, #5bb8e8 28%, #7dd3fc 38%,
+          #7dd3fc 48%, #5bb8e8 58%, #3a8fd4 68%,
+          var(--text-primary) 82%, var(--text-primary) 100%) !important;
         background-size: 300% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
-        animation: labelLiquidFullSweep 2.8s ease-in-out forwards !important;
+        animation: labelLiquidFullSweep 3s ease-in-out forwards !important;
       }
       body.dark-mode .form-label.label-liquid-active {
         background: linear-gradient(90deg, #3a8fd4 15%, #7dd3fc 50%, #3a8fd4 85%) !important;
@@ -1064,8 +1068,8 @@
       }
       body.dark-mode .form-label.label-liquid-fading {
         background: linear-gradient(90deg,
-          var(--text-primary) 0%, var(--text-primary) 40%,
-          #3a8fd4 70%, #3a8fd4 100%) !important;
+          var(--text-primary) 0%, var(--text-primary) 55%,
+          #3a8fd4 80%, #3a8fd4 100%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -1074,8 +1078,8 @@
       }
       body.dark-mode .form-label.label-liquid-dismiss {
         background: linear-gradient(90deg,
-          var(--text-primary) 0%, var(--text-primary) 40%,
-          #3a8fd4 70%, #3a8fd4 100%) !important;
+          var(--text-primary) 0%, var(--text-primary) 55%,
+          #3a8fd4 80%, #3a8fd4 100%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -6833,7 +6837,7 @@
       (function() {
         // ── 타이밍 상수 ──
         var _LABEL_ANIM_DUR = 1800;  // 포커스용 파란 스윕
-        var _SWEEP_DUR = 2800;       // 비선택 풀 스윕
+        var _SWEEP_DUR = 3000;       // 비선택 풀 스윕
         var _FADE_DUR = 1600;        // focusout 검은 물결
         var _DISMISS_DUR = 500;      // dismiss
         var _SWEEP_COOLDOWN = 400;   // [Bug1 fix] 스윕 종료 후 재트리거 방지 쿨다운
