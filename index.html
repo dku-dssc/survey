@@ -932,31 +932,30 @@
         0% { background-position: 200% center; }
         100% { background-position: 0% center; }
       }
-      /* 비선택 풀 스윕: 빛이 왼→오 통과 (300%→-100%) */
+      /* 비선택 풀 스윕: 빛줄기 왼→오 통과 (100%→0%, bg 400%) */
       @keyframes labelLiquidFullSweep {
-        0% { background-position: 300% center; }
-        100% { background-position: -100% center; }
+        0% { background-position: 100% center; }
+        100% { background-position: 0% center; }
       }
 
-      /* --- ① 비선택 풀 스윕 (빛이 지나가듯, 끝부분 자연 페이드) --- */
-      /* 파란 구간 18~68% (50% 폭) → 각 지점에서 ~0.8초 노출 (이전 0.25초) */
+      /* --- ① 비선택 풀 스윕 (빛줄기 왼→오, bg 400%) --- */
+      /* 파란 구간 35~65% (30% 폭) → 각 지점에서 ~1.2초 노출, linear 타이밍 */
       .form-label.label-liquid-sweep {
         background: linear-gradient(90deg,
           var(--text-primary) 0%,
-          var(--text-primary) 5%,
-          #1164B1 18%,
-          #2d8bcf 28%,
-          #4facfe 38%,
-          #4facfe 48%,
+          var(--text-primary) 28%,
+          #1164B1 35%,
+          #2d8bcf 42%,
+          #4facfe 50%,
           #2d8bcf 58%,
-          #1164B1 68%,
-          var(--text-primary) 82%,
+          #1164B1 65%,
+          var(--text-primary) 72%,
           var(--text-primary) 100%) !important;
-        background-size: 300% auto !important;
+        background-size: 400% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
-        animation: labelLiquidFullSweep 3s ease-in-out forwards !important;
+        animation: labelLiquidFullSweep 2.5s linear forwards !important;
       }
       .form-label.label-liquid-sweep .required {
         -webkit-text-fill-color: var(--danger) !important;
@@ -1032,15 +1031,15 @@
       /* ===== 다크모드 오버라이드 ===== */
       body.dark-mode .form-label.label-liquid-sweep {
         background: linear-gradient(90deg,
-          var(--text-primary) 0%, var(--text-primary) 5%,
-          #3a8fd4 18%, #5bb8e8 28%, #7dd3fc 38%,
-          #7dd3fc 48%, #5bb8e8 58%, #3a8fd4 68%,
-          var(--text-primary) 82%, var(--text-primary) 100%) !important;
-        background-size: 300% auto !important;
+          var(--text-primary) 0%, var(--text-primary) 28%,
+          #3a8fd4 35%, #5bb8e8 42%, #7dd3fc 50%,
+          #5bb8e8 58%, #3a8fd4 65%,
+          var(--text-primary) 72%, var(--text-primary) 100%) !important;
+        background-size: 400% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
-        animation: labelLiquidFullSweep 3s ease-in-out forwards !important;
+        animation: labelLiquidFullSweep 2.5s linear forwards !important;
       }
       body.dark-mode .form-label.label-liquid-active {
         background: linear-gradient(90deg, #3a8fd4 15%, #7dd3fc 50%, #3a8fd4 85%) !important;
@@ -6837,7 +6836,7 @@
       (function() {
         // ── 타이밍 상수 ──
         var _LABEL_ANIM_DUR = 1800;  // 포커스용 파란 스윕
-        var _SWEEP_DUR = 3000;       // 비선택 풀 스윕
+        var _SWEEP_DUR = 2500;       // 비선택 풀 스윕
         var _FADE_DUR = 1600;        // focusout 검은 물결
         var _DISMISS_DUR = 500;      // dismiss
         var _SWEEP_COOLDOWN = 400;   // [Bug1 fix] 스윕 종료 후 재트리거 방지 쿨다운
@@ -7014,6 +7013,10 @@
           if (label.classList.contains('label-liquid-sweep')) return;
           if (label.classList.contains('label-liquid-active')) return;
           if (label.classList.contains('label-liquid-held')) return;
+          if (label.classList.contains('label-liquid-fading')) return;
+          if (label.classList.contains('label-liquid-dismiss')) return;
+          // fading/dismiss 직후 재트리거 방지 (라벨별 쿨다운)
+          if (label._fadeCooldownUntil && Date.now() < label._fadeCooldownUntil) return;
 
           // 이전 활성 라벨 dismiss
           if (_activeLabel && _activeLabel !== label) {
@@ -7065,6 +7068,7 @@
             label.classList.add('label-liquid-dismiss');
             label._clearTimer = setTimeout(function() {
               label.classList.remove('label-liquid-dismiss');
+              label._fadeCooldownUntil = Date.now() + 2000; // dismiss 후에도 2초 쿨다운
             }, _DISMISS_DUR);
           }
           if (_activeLabel === label) _activeLabel = null;
@@ -7099,6 +7103,7 @@
             label.classList.add('label-liquid-fading');
             label._fadeoutTimer = setTimeout(function() {
               label.classList.remove('label-liquid-fading');
+              label._fadeCooldownUntil = Date.now() + 2000; // 2초간 같은 라벨 재트리거 방지
               if (_activeLabel === label) _activeLabel = null;
               // 포커스 해제 후 턴 업데이트 (응답 완료 시 다음 필수로)
               // [Bug6 fix] 외부 트리거 보호 중이면 refreshTurnLabel 건너뜀
