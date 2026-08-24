@@ -924,7 +924,8 @@
         color: #4dabff !important;
       }
       /* ===== 필드 라벨 리퀴드 그라데이션 v4 ===== */
-      /* 빛이 지나가는 비유: 검정(어둠) → 짙은남색 → 파랑 → 밝은파랑(빛의 중심) → 파랑 → 짙은남색 → 검정 */
+      /* 빛이 지나가는 비유: 투명(원래색)→파랑→밝은파랑(빛의 중심)→파랑→투명 */
+      /* 끝부분은 transparent로 원래 텍스트색이 자연스럽게 드러남 */
 
       /* 포커스용 파란 스윕 (200%→0%) */
       @keyframes labelLiquidFlow {
@@ -937,22 +938,16 @@
         100% { background-position: -100% center; }
       }
 
-      /* --- ① 비선택 풀 스윕 (빛이 지나가듯 검정→파랑→밝은파랑→파랑→검정) --- */
+      /* --- ① 비선택 풀 스윕 (빛이 지나가듯, 끝부분 자연 페이드) --- */
       .form-label.label-liquid-sweep {
-        background: linear-gradient(-120deg,
+        background: linear-gradient(90deg,
           var(--text-primary) 0%,
-          var(--text-primary) 10%,
-          #081d30 16%,
-          #0b2e4d 22%,
-          #0e4773 27%,
+          var(--text-primary) 14%,
           #1164B1 32%,
-          #2d8bcf 37%,
-          #4facfe 42%,
-          #2d8bcf 47%,
-          #1164B1 52%,
-          #0e4773 57%,
-          #0b2e4d 62%,
-          #081d30 68%,
+          #2d8bcf 38%,
+          #4facfe 44%,
+          #2d8bcf 50%,
+          #1164B1 56%,
           var(--text-primary) 74%,
           var(--text-primary) 100%) !important;
         background-size: 300% auto !important;
@@ -968,7 +963,7 @@
 
       /* --- ② 포커스용 파란 스윕 (포커스 진입 시) --- */
       .form-label.label-liquid-active {
-        background: linear-gradient(-120deg, #1164B1 15%, #4facfe 50%, #1164B1 85%) !important;
+        background: linear-gradient(90deg, #1164B1 15%, #4facfe 50%, #1164B1 85%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -996,11 +991,10 @@
 
       /* --- ④ 포커스 해제 시 검은 물결 (파란→검은) --- */
       .form-label.label-liquid-fading {
-        background: linear-gradient(-120deg,
+        background: linear-gradient(90deg,
           var(--text-primary) 0%,
           var(--text-primary) 40%,
-          #0b2e4d 55%,
-          #1164B1 75%,
+          #1164B1 70%,
           #1164B1 100%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
@@ -1015,11 +1009,10 @@
 
       /* --- ⑤ 빠른 dismiss (다른 문항에 밀려날 때) --- */
       .form-label.label-liquid-dismiss {
-        background: linear-gradient(-120deg,
+        background: linear-gradient(90deg,
           var(--text-primary) 0%,
           var(--text-primary) 40%,
-          #0b2e4d 55%,
-          #1164B1 75%,
+          #1164B1 70%,
           #1164B1 100%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
@@ -1034,12 +1027,10 @@
 
       /* ===== 다크모드 오버라이드 ===== */
       body.dark-mode .form-label.label-liquid-sweep {
-        background: linear-gradient(-120deg,
-          var(--text-primary) 0%, var(--text-primary) 10%,
-          #12384f 16%, #1a4a6e 22%, #2568a0 27%,
-          #3a8fd4 32%, #5bb8e8 37%, #7dd3fc 42%,
-          #5bb8e8 47%, #3a8fd4 52%,
-          #2568a0 57%, #1a4a6e 62%, #12384f 68%,
+        background: linear-gradient(90deg,
+          var(--text-primary) 0%, var(--text-primary) 14%,
+          #3a8fd4 32%, #5bb8e8 38%, #7dd3fc 44%,
+          #5bb8e8 50%, #3a8fd4 56%,
           var(--text-primary) 74%, var(--text-primary) 100%) !important;
         background-size: 300% auto !important;
         -webkit-background-clip: text !important;
@@ -1048,7 +1039,7 @@
         animation: labelLiquidFullSweep 2.8s ease-in-out forwards !important;
       }
       body.dark-mode .form-label.label-liquid-active {
-        background: linear-gradient(-120deg, #3a8fd4 15%, #7dd3fc 50%, #3a8fd4 85%) !important;
+        background: linear-gradient(90deg, #3a8fd4 15%, #7dd3fc 50%, #3a8fd4 85%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -1072,9 +1063,9 @@
         background: none !important;
       }
       body.dark-mode .form-label.label-liquid-fading {
-        background: linear-gradient(-120deg,
+        background: linear-gradient(90deg,
           var(--text-primary) 0%, var(--text-primary) 40%,
-          #1a4a6e 55%, #3a8fd4 75%, #3a8fd4 100%) !important;
+          #3a8fd4 70%, #3a8fd4 100%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -1082,9 +1073,9 @@
         animation: labelLiquidFlow 1.6s ease-in-out forwards !important;
       }
       body.dark-mode .form-label.label-liquid-dismiss {
-        background: linear-gradient(-120deg,
+        background: linear-gradient(90deg,
           var(--text-primary) 0%, var(--text-primary) 40%,
-          #1a4a6e 55%, #3a8fd4 75%, #3a8fd4 100%) !important;
+          #3a8fd4 70%, #3a8fd4 100%) !important;
         background-size: 200% auto !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -1731,6 +1722,10 @@
         justify-content: center;
         transition: var(--transition);
         animation: adminPulseGlow 2.5s ease-in-out infinite;
+      }
+      @keyframes adminClockSpin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
       }
       @keyframes adminPulseGlow {
         0%,
@@ -2552,7 +2547,13 @@
               <label class="form-label"
                 >생년월일 <span class="required">*</span></label
               >
-              <input type="date" class="form-input" id="verifyBirthdate" />
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" class="form-input" id="verifyBirthYear" inputmode="numeric" maxlength="4" placeholder="년(4자리)" style="flex:2;text-align:center;" />
+                <span style="color:var(--text-secondary);">.</span>
+                <input type="text" class="form-input" id="verifyBirthMonth" inputmode="numeric" maxlength="2" placeholder="월" style="flex:1;text-align:center;" />
+                <span style="color:var(--text-secondary);">.</span>
+                <input type="text" class="form-input" id="verifyBirthDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" />
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label"
@@ -4151,6 +4152,22 @@
           <button class="admin-close" onclick="toggleAdmin()">✕</button>
         </h3>
 
+        <!-- 세션 정보 바 -->
+        <div id="adminSessionBar" style="display:none;align-items:center;gap:10px;padding:8px 12px;margin-bottom:12px;border-radius:10px;background:var(--glass-bg,rgba(255,255,255,0.12));backdrop-filter:blur(8px);font-size:13px;color:var(--text-secondary);flex-wrap:wrap;">
+          <span>ID: <strong id="adminSessionId" style="color:var(--text-primary);"></strong></span>
+          <span style="display:flex;align-items:center;gap:5px;margin-left:auto;">
+            <!-- 시계 아이콘 (10초 1회전) -->
+            <svg width="16" height="16" viewBox="0 0 16 16" style="flex-shrink:0;">
+              <circle cx="8" cy="8" r="6.5" fill="none" stroke="var(--text-secondary)" stroke-width="1.2" opacity="0.5"/>
+              <circle cx="8" cy="8" r="0.8" fill="var(--text-secondary)"/>
+              <line x1="8" y1="8" x2="8" y2="3.5" stroke="var(--text-secondary)" stroke-width="1.2" stroke-linecap="round" style="transform-origin:8px 8px;animation:adminClockSpin 10s linear infinite;"/>
+            </svg>
+            <span>남은 시간:</span>
+            <strong id="adminSessionTime" style="color:var(--text-primary);font-variant-numeric:tabular-nums;">10:00</strong>
+            <button onclick="extendAdminSession()" style="margin-left:6px;padding:3px 10px;border:1px solid var(--border-color,rgba(0,0,0,0.12));border-radius:6px;background:var(--glass-bg,rgba(255,255,255,0.15));color:var(--accent,#1164B1);font-size:12px;cursor:pointer;white-space:nowrap;backdrop-filter:blur(4px);">+30분 연장</button>
+          </span>
+        </div>
+
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -4379,27 +4396,56 @@
       // Admin state
       let adminToken = null;
       let adminSessionTimer = null;
-      const ADMIN_SESSION_TIMEOUT = 30 * 60 * 1000; // 30분
+      let adminSessionInterval = null;
+      let adminSessionExpiry = 0;
+      let adminLoggedInId = '';
+      const ADMIN_SESSION_TIMEOUT = 10 * 60 * 1000; // 10분
+      const ADMIN_SESSION_EXTEND = 30 * 60 * 1000;  // 연장 30분
 
       function startAdminSessionTimer() {
         clearAdminSessionTimer();
-        adminSessionTimer = setTimeout(function() {
-          adminToken = null;
-          adminSessionTimer = null;
-          // 로그인 화면으로 전환
-          var loginScreen = document.getElementById('adminLoginScreen');
-          var dashboard = document.getElementById('adminDashboard');
-          if (loginScreen) loginScreen.style.display = '';
-          if (dashboard) dashboard.style.display = 'none';
-          showToast('30분이 경과하여 자동 로그아웃되었습니다.');
-        }, ADMIN_SESSION_TIMEOUT);
+        adminSessionExpiry = Date.now() + ADMIN_SESSION_TIMEOUT;
+        updateAdminSessionDisplay();
+        adminSessionInterval = setInterval(function() {
+          var remaining = adminSessionExpiry - Date.now();
+          if (remaining <= 0) {
+            clearAdminSessionTimer();
+            adminToken = null;
+            adminLoggedInId = '';
+            showAdminLogin();
+            showToast('로그인 시간이 만료되어 자동 로그아웃되었습니다.');
+            return;
+          }
+          updateAdminSessionDisplay();
+        }, 1000);
       }
 
       function clearAdminSessionTimer() {
-        if (adminSessionTimer) {
-          clearTimeout(adminSessionTimer);
-          adminSessionTimer = null;
-        }
+        if (adminSessionTimer) { clearTimeout(adminSessionTimer); adminSessionTimer = null; }
+        if (adminSessionInterval) { clearInterval(adminSessionInterval); adminSessionInterval = null; }
+        adminSessionExpiry = 0;
+        var bar = document.getElementById('adminSessionBar');
+        if (bar) bar.style.display = 'none';
+      }
+
+      function updateAdminSessionDisplay() {
+        var bar = document.getElementById('adminSessionBar');
+        if (!bar) return;
+        bar.style.display = 'flex';
+        var remaining = Math.max(0, adminSessionExpiry - Date.now());
+        var mins = Math.floor(remaining / 60000);
+        var secs = Math.floor((remaining % 60000) / 1000);
+        var idEl = document.getElementById('adminSessionId');
+        var timeEl = document.getElementById('adminSessionTime');
+        if (idEl) idEl.textContent = adminLoggedInId;
+        if (timeEl) timeEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+      }
+
+      function extendAdminSession() {
+        if (!adminToken) return;
+        adminSessionExpiry += ADMIN_SESSION_EXTEND;
+        updateAdminSessionDisplay();
+        showToast('로그인 시간이 30분 연장되었습니다.');
       }
 
       // Verify page gender
@@ -4431,7 +4477,9 @@
         hideProgressBar();
         // Clear verify form
         document.getElementById('verifyName').value = '';
-        document.getElementById('verifyBirthdate').value = '';
+        document.getElementById('verifyBirthYear').value = '';
+        document.getElementById('verifyBirthMonth').value = '';
+        document.getElementById('verifyBirthDay').value = '';
         document.getElementById('verifyStudentId').value = '';
         verifyGender = '';
         document
@@ -4465,10 +4513,14 @@
         hideProgressBar();
         // Also reset verify fields
         var vn = document.getElementById('verifyName');
-        var vb = document.getElementById('verifyBirthdate');
+        var vby = document.getElementById('verifyBirthYear');
+        var vbm = document.getElementById('verifyBirthMonth');
+        var vbd = document.getElementById('verifyBirthDay');
         var vs = document.getElementById('verifyStudentId');
         if (vn) vn.value = '';
-        if (vb) vb.value = '';
+        if (vby) vby.value = '';
+        if (vbm) vbm.value = '';
+        if (vbd) vbd.value = '';
         if (vs) vs.value = '';
         verifyGender = '';
         var ve = document.getElementById('verifyError');
@@ -4488,9 +4540,14 @@
 
       async function verifyIdentity() {
         const name = document.getElementById('verifyName').value.trim();
-        const birthdate = document
-          .getElementById('verifyBirthdate')
-          .value.trim();
+        var vby = document.getElementById('verifyBirthYear').value.trim();
+        var vbm = document.getElementById('verifyBirthMonth').value.trim();
+        var vbd = document.getElementById('verifyBirthDay').value.trim();
+        // 생년월일 조합: YYYY-MM-DD
+        var birthdate = '';
+        if (vby && vbm && vbd) {
+          birthdate = vby.padStart(4, '0') + '-' + vbm.padStart(2, '0') + '-' + vbd.padStart(2, '0');
+        }
         const studentId = document
           .getElementById('verifyStudentId')
           .value.trim();
@@ -4541,6 +4598,58 @@
           showToast('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
         }
       }
+
+      // ===== 본인확인 페이지 키보드 네비게이션 =====
+      (function() {
+        // 성명 → Enter/Tab/ArrowDown → 생년월일(연도)
+        document.addEventListener('keydown', function(e) {
+          if (e.target.id === 'verifyName' && (e.key === 'Enter' || e.key === 'ArrowDown')) {
+            e.preventDefault();
+            var vy = document.getElementById('verifyBirthYear');
+            if (vy) vy.focus();
+          }
+        });
+
+        // 생년월일 자동 이동 + 숫자만 입력
+        ['verifyBirthYear', 'verifyBirthMonth', 'verifyBirthDay'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.addEventListener('input', function() {
+            // 숫자만 허용
+            this.value = this.value.replace(/[^0-9]/g, '');
+            var maxLen = parseInt(this.maxLength) || (id === 'verifyBirthYear' ? 4 : 2);
+            if (this.value.length >= maxLen) {
+              // 다음 필드로 자동 이동
+              if (id === 'verifyBirthYear') {
+                var nm = document.getElementById('verifyBirthMonth');
+                if (nm) nm.focus();
+              } else if (id === 'verifyBirthMonth') {
+                var nd = document.getElementById('verifyBirthDay');
+                if (nd) nd.focus();
+              } else if (id === 'verifyBirthDay') {
+                var ns = document.getElementById('verifyStudentId');
+                if (ns) ns.focus();
+              }
+            }
+          });
+          // Enter/ArrowDown도 다음으로 이동
+          el.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === 'ArrowDown') {
+              e.preventDefault();
+              if (id === 'verifyBirthYear') {
+                var nm = document.getElementById('verifyBirthMonth');
+                if (nm) nm.focus();
+              } else if (id === 'verifyBirthMonth') {
+                var nd = document.getElementById('verifyBirthDay');
+                if (nd) nd.focus();
+              } else if (id === 'verifyBirthDay') {
+                var ns = document.getElementById('verifyStudentId');
+                if (ns) ns.focus();
+              }
+            }
+          });
+        });
+      })();
 
       function resetFormData() {
         for (const key in formData) {
@@ -4691,7 +4800,7 @@
       }
 
       function nextPage() {
-        if (!validatePage(currentPage)) return;
+        if (!isMasterMode && !validatePage(currentPage)) return;
         if (currentPage < 7) {
           currentPage++;
           showPage(currentPage, 'forward');
@@ -4879,7 +4988,7 @@
 
       // ===== Submit =====
       async function submitSurvey() {
-        if (!validatePage(currentPage)) return;
+        if (!isMasterMode && !validatePage(currentPage)) return;
 
         // Collect all remaining data
         document.querySelectorAll('.form-input').forEach((input) => {
@@ -4959,9 +5068,13 @@
             originalEditData = null;
           } else {
             // New mode: 서버에 신규 제출
+            var submitHeaders = { 'Content-Type': 'application/json' };
+            if (isMasterMode && masterToken) {
+              submitHeaders['Authorization'] = 'Bearer ' + masterToken;
+            }
             const resp = await fetch(API_BASE + '/api/submit', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: submitHeaders,
               body: JSON.stringify(formData),
             });
 
@@ -4985,6 +5098,11 @@
             currentPage = 7;
             showPage(7);
             showToast('설문이 성공적으로 제출되었습니다!');
+            // 마스터 모드 해제
+            if (isMasterMode) {
+              isMasterMode = false;
+              masterToken = null;
+            }
             // 임시저장 데이터 삭제
             try { localStorage.removeItem('dku_survey_draft'); } catch(e) {}
           }
@@ -5021,6 +5139,9 @@
         document.getElementById('adminContent').style.display = 'block';
       }
 
+      var isMasterMode = false;
+      var masterToken = null;
+
       async function adminLoginSubmit() {
         var idInput = document.getElementById('adminIdInput');
         const pw = document.getElementById('adminPasswordInput').value;
@@ -5031,30 +5152,37 @@
           return;
         }
 
-        if (adminId !== 'admin_dssc') {
-          showToast('아이디가 올바르지 않습니다.');
-          return;
-        }
-
         try {
           const resp = await fetch(API_BASE + '/api/admin/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: pw }),
+            body: JSON.stringify({ id: adminId, password: pw }),
           });
 
           const result = await resp.json();
           if (!resp.ok) {
-            showToast('비밀번호가 틀립니다.');
+            showToast(result.error || '로그인에 실패했습니다.');
             return;
           }
 
-          adminToken = result.token;
-          startAdminSessionTimer();
-          showToast('관리자 로그인 성공!');
-          showAdminContent();
-          showAdminTab('responses');
-          await loadAdminResponses();
+          if (result.role === 'master') {
+            // 마스터 모드: 설문으로 진입, 필수문항 스킵 가능
+            masterToken = result.token;
+            isMasterMode = true;
+            adminLoggedInId = adminId;
+            toggleAdmin(); // 패널 닫기
+            startNewSurvey();
+            showToast('마스터 모드로 설문을 시작합니다.');
+          } else {
+            // 일반 관리자
+            adminToken = result.token;
+            adminLoggedInId = adminId;
+            startAdminSessionTimer();
+            showToast('관리자 로그인 성공!');
+            showAdminContent();
+            showAdminTab('responses');
+            await loadAdminResponses();
+          }
         } catch (err) {
           showToast('서버 연결 실패');
         }
@@ -6731,23 +6859,27 @@
               if (entry.intersectionRatio === 0) {
                 // 완전히 화면에서 사라짐
                 _labelWasOut.set(label, true);
-              } else if (entry.intersectionRatio >= 0.95 && _labelWasOut.get(label)) {
+              } else if (entry.intersectionRatio >= 0.7 && _labelWasOut.get(label)) {
                 // 온전히 다시 드러남 (사라졌다가 돌아온 경우만)
+                // 0.95→0.7: 긴 멀티라인 라벨(개인정보 동의 등)도 트리거 가능
                 _labelWasOut.set(label, false);
                 onLabelReappeared(label);
               }
             });
-          }, { threshold: [0, 0.95, 1.0] });
+          }, { threshold: [0, 0.7, 0.95, 1.0] });
         }
         setupLabelObserver();
 
         function observeLabel(label) {
           if (!label || _observedLabels.has(label)) return;
           _observedLabels.add(label);
-          // [Bug3 fix] 관찰 시작 시 라벨이 화면에 없으면 _labelWasOut=true로 초기화
+          // [Bug3 fix] 관찰 시작 시 라벨이 화면에 없으면(또는 70% 미만 보임) _labelWasOut=true로 초기화
           var rect = label.getBoundingClientRect();
-          var isFullyVisible = rect.top >= 0 && rect.bottom <= window.innerHeight && rect.height > 0;
-          if (!isFullyVisible) {
+          var visibleTop = Math.max(0, rect.top);
+          var visibleBottom = Math.min(window.innerHeight, rect.bottom);
+          var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+          var ratio = rect.height > 0 ? visibleHeight / rect.height : 0;
+          if (ratio < 0.7) {
             _labelWasOut.set(label, true);
           }
           _labelObserver.observe(label);
@@ -7087,6 +7219,32 @@
           _scrollListenerActive = false;
           window.removeEventListener('scroll', onScrollFindCenter);
         }
+
+        // ── visibilitychange: 탭 전환, 창 최소화/복원 시 재트리거 ──
+        document.addEventListener('visibilitychange', function() {
+          if (document.visibilityState === 'hidden') {
+            // 탭/창이 숨겨짐 → 모든 관찰 중인 라벨을 "사라짐" 상태로
+            _observedLabels.forEach(function(label) {
+              _labelWasOut.set(label, true);
+            });
+          } else if (document.visibilityState === 'visible') {
+            // 탭/창이 다시 보임 → 턴 라벨 또는 포커스 라벨 재트리거
+            setTimeout(function() {
+              if (_focusedLabel && _labelWasOut.get(_focusedLabel)) {
+                _labelWasOut.set(_focusedLabel, false);
+                clearLabelState(_focusedLabel);
+                triggerFocusedGradient(_focusedLabel);
+              } else if (_turnLabel && _labelWasOut.get(_turnLabel)) {
+                var fg = _turnLabel.closest('.form-group');
+                if (fg && !isFormGroupAnswered(fg)) {
+                  _labelWasOut.set(_turnLabel, false);
+                  clearLabelState(_turnLabel);
+                  triggerNonFocusedGradient(_turnLabel);
+                }
+              }
+            }, 200);
+          }
+        });
 
         // ── 다음 버튼: 필수 완료 + 완전히 보일 때마다 커졌다 돌아오기 ──
         var _nextBtnObserver = null;
