@@ -4519,8 +4519,8 @@
             style="max-width:280px;margin:0 auto 10px;display:block;" />
           <input type="password" id="adminPasswordInput" class="form-input" placeholder="비밀번호"
             style="max-width:280px;margin:0 auto 14px;display:block;"
-            onkeypress="if(event.key==='Enter')adminLoginSubmit()" />
-          <button class="btn btn-primary" onclick="adminLoginSubmit()" style="font-size:14px;">로그인</button>
+            onkeypress="if(event.key==='Enter'){event.preventDefault();adminLoginSubmit();}" />
+          <button class="btn btn-primary" onclick="event.preventDefault();adminLoginSubmit();" style="font-size:14px;">로그인</button>
         </div>
       </div>
 
@@ -4536,30 +4536,27 @@
           <span>ID: <strong id="adminSessionId" style="color:var(--text-primary);"></strong></span>
           <span style="display:flex;align-items:center;gap:5px;margin-left:auto;">
             <!-- 스톱워치 아이콘 (10초 1회전) -->
-            <svg width="20" height="22" viewBox="0 0 20 22" style="flex-shrink:0;">
-              <!-- 꼭지 (상단 버튼) -->
-              <rect x="8.5" y="0" width="3" height="3" rx="1" fill="var(--text-secondary)"/>
-              <!-- 우측 돌기 -->
-              <line x1="16.5" y1="4" x2="18" y2="2.5" stroke="var(--text-secondary)" stroke-width="1.5" stroke-linecap="round"/>
+            <svg width="22" height="26" viewBox="0 0 22 26" style="flex-shrink:0;">
+              <!-- 크라운 (상단 버튼, 원에 붙어있음) -->
+              <rect x="9" y="1.5" width="4" height="5.5" rx="1.2" fill="var(--text-secondary)"/>
+              <!-- 우측 돌기 (원 테두리에서 시작) -->
+              <line x1="17" y1="8" x2="19.5" y2="5.5" stroke="var(--text-secondary)" stroke-width="1.8" stroke-linecap="round"/>
               <!-- 외곽 원 -->
-              <circle cx="10" cy="13" r="8" fill="none" stroke="var(--text-secondary)" stroke-width="1.6"/>
-              <!-- 내부 원 (진행 표시) -->
-              <circle cx="10" cy="13" r="8" fill="none" stroke="var(--text-secondary)" stroke-width="1.6" opacity="0.15"
-                stroke-dasharray="50.27" stroke-dashoffset="0" transform="rotate(-90 10 13)"/>
+              <circle cx="11" cy="15" r="9" fill="none" stroke="var(--text-secondary)" stroke-width="2"/>
               <!-- 12시 눈금 -->
-              <line x1="10" y1="6.2" x2="10" y2="7.5" stroke="var(--text-secondary)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <line x1="11" y1="7.5" x2="11" y2="9" stroke="var(--text-secondary)" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
               <!-- 3시 눈금 -->
-              <line x1="16.8" y1="13" x2="15.5" y2="13" stroke="var(--text-secondary)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <line x1="18.5" y1="15" x2="17" y2="15" stroke="var(--text-secondary)" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
               <!-- 6시 눈금 -->
-              <line x1="10" y1="19.8" x2="10" y2="18.5" stroke="var(--text-secondary)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <line x1="11" y1="22.5" x2="11" y2="21" stroke="var(--text-secondary)" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
               <!-- 9시 눈금 -->
-              <line x1="3.2" y1="13" x2="4.5" y2="13" stroke="var(--text-secondary)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <line x1="3.5" y1="15" x2="5" y2="15" stroke="var(--text-secondary)" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
               <!-- 중심점 -->
-              <circle cx="10" cy="13" r="1" fill="var(--text-secondary)"/>
-              <!-- 시곗바늘 (transform-origin을 SVG transform으로 처리) -->
-              <g style="animation:adminClockSpin 10s linear infinite; transform-box:view-box; transform-origin:10px 13px;">
-                <line x1="10" y1="13" x2="10" y2="7" stroke="var(--text-secondary)" stroke-width="1.4" stroke-linecap="round"/>
-              </g>
+              <circle cx="11" cy="15" r="1.2" fill="var(--text-secondary)"/>
+              <!-- 시곗바늘 (SVG animateTransform으로 정확한 중심 회전) -->
+              <line x1="11" y1="15" x2="11" y2="8.5" stroke="var(--text-secondary)" stroke-width="1.5" stroke-linecap="round">
+                <animateTransform attributeName="transform" type="rotate" from="0 11 15" to="360 11 15" dur="10s" repeatCount="indefinite"/>
+              </line>
             </svg>
             <span>남은 시간:</span>
             <strong id="adminSessionTime" style="color:var(--text-primary);font-variant-numeric:tabular-nums;">10:00</strong>
@@ -5609,9 +5606,20 @@
 
         // 패널 열림/닫힘 시 body 스크롤 잠금/해제
         if (panel.classList.contains('open')) {
+          document.body.dataset.scrollY = window.scrollY;
           document.body.style.overflow = 'hidden';
+          document.body.style.position = 'fixed';
+          document.body.style.top = '-' + window.scrollY + 'px';
+          document.body.style.left = '0';
+          document.body.style.right = '0';
         } else {
+          var scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
           document.body.style.overflow = '';
+          document.body.style.position = '';
+          document.body.style.top = '';
+          document.body.style.left = '';
+          document.body.style.right = '';
+          window.scrollTo(0, scrollY);
         }
 
         // 로그인 안 된 상태면 로그인 화면 표시
@@ -5638,6 +5646,9 @@
       var masterToken = null;
 
       async function adminLoginSubmit() {
+        // 스크롤 방지: 현재 스크롤 위치 보존
+        var scrollPos = window.scrollY;
+        window.scrollTo(0, scrollPos);
         var idInput = document.getElementById('adminIdInput');
         const pw = document.getElementById('adminPasswordInput').value;
         var adminId = idInput ? idInput.value.trim() : '';
