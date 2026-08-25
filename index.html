@@ -1959,6 +1959,165 @@
         width: 100%;
       }
 
+      /* ===== Email Integration Bar (Admin) ===== */
+      .email-link-bar {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        background: var(--glass-bg, rgba(255, 255, 255, 0.12));
+        backdrop-filter: blur(8px);
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .email-link-bar .email-label {
+        font-weight: 500;
+        color: var(--text-primary);
+        white-space: nowrap;
+      }
+      .email-link-bar .email-value {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+      .email-link-bar .email-action-btn {
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--border-color, rgba(0,0,0,0.12));
+        border-radius: 8px;
+        background: var(--glass-bg, rgba(255,255,255,0.15));
+        color: var(--text-secondary);
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        flex-shrink: 0;
+        backdrop-filter: blur(4px);
+        line-height: 1;
+      }
+      .email-link-bar .email-action-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary);
+      }
+      .email-link-bar .email-action-btn.linked {
+        color: var(--danger);
+      }
+      .email-link-bar .email-action-btn.linked:hover {
+        background: rgba(255, 59, 48, 0.08);
+        border-color: var(--danger);
+      }
+
+      /* ===== Email Verification Popup ===== */
+      .email-verify-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 10001;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+      }
+      .email-verify-popup {
+        background: var(--bg-page, #f0f4f8);
+        border-radius: var(--radius-lg);
+        padding: 28px 24px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        text-align: center;
+      }
+      body.dark-mode .email-verify-popup {
+        background: #1e1e28;
+      }
+      .email-verify-popup h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+      }
+      .email-verify-popup .email-verify-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 18px;
+        line-height: 1.5;
+      }
+      .email-verify-popup input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        background: var(--glass-bg);
+        color: var(--text-primary);
+        font-size: 14px;
+        outline: none;
+        margin-bottom: 12px;
+        transition: border-color 0.2s;
+      }
+      .email-verify-popup input:focus {
+        border-color: var(--primary);
+      }
+      .email-verify-popup .email-verify-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+      }
+      .email-verify-popup .email-verify-actions button {
+        flex: 1;
+        padding: 10px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: var(--transition);
+      }
+      .email-verify-popup .verify-send-btn {
+        background: var(--primary);
+        color: #fff;
+      }
+      .email-verify-popup .verify-send-btn:hover {
+        background: var(--primary-hover);
+      }
+      .email-verify-popup .verify-send-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .email-verify-popup .verify-cancel-btn {
+        background: var(--glass-bg);
+        color: var(--text-primary);
+        border: 1px solid var(--glass-border);
+      }
+      .email-verify-popup .verify-cancel-btn:hover {
+        background: rgba(0,0,0,0.05);
+      }
+      .email-verify-popup .verify-code-section {
+        display: none;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--glass-border);
+      }
+      .email-verify-popup .verify-code-section p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 10px;
+      }
+      .email-verify-popup .verify-code-input {
+        letter-spacing: 6px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
       /* ===== Enrollment File Upload (Admin Settings) ===== */
       .enrollment-section {
         margin-bottom: 20px;
@@ -4376,16 +4535,68 @@
         <div id="adminSessionBar" style="display:none;align-items:center;gap:10px;padding:8px 12px;margin-bottom:12px;border-radius:10px;background:var(--glass-bg,rgba(255,255,255,0.12));backdrop-filter:blur(8px);font-size:13px;color:var(--text-secondary);flex-wrap:wrap;">
           <span>ID: <strong id="adminSessionId" style="color:var(--text-primary);"></strong></span>
           <span style="display:flex;align-items:center;gap:5px;margin-left:auto;">
-            <!-- 시계 아이콘 (10초 1회전) -->
-            <svg width="16" height="16" viewBox="0 0 16 16" style="flex-shrink:0;">
-              <circle cx="8" cy="8" r="6.5" fill="none" stroke="var(--text-secondary)" stroke-width="1.2" opacity="0.5"/>
-              <circle cx="8" cy="8" r="0.8" fill="var(--text-secondary)"/>
-              <line x1="8" y1="8" x2="8" y2="3.5" stroke="var(--text-secondary)" stroke-width="1.2" stroke-linecap="round" style="transform-origin:8px 8px;animation:adminClockSpin 10s linear infinite;"/>
+            <!-- 스톱워치 아이콘 (10초 1회전) -->
+            <svg width="20" height="22" viewBox="0 0 20 22" style="flex-shrink:0;">
+              <!-- 꼭지 (상단 버튼) -->
+              <rect x="8.5" y="0" width="3" height="3" rx="1" fill="var(--text-secondary)"/>
+              <!-- 우측 돌기 -->
+              <line x1="16.5" y1="4" x2="18" y2="2.5" stroke="var(--text-secondary)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- 외곽 원 -->
+              <circle cx="10" cy="13" r="8" fill="none" stroke="var(--text-secondary)" stroke-width="1.6"/>
+              <!-- 내부 원 (진행 표시) -->
+              <circle cx="10" cy="13" r="8" fill="none" stroke="var(--text-secondary)" stroke-width="1.6" opacity="0.15"
+                stroke-dasharray="50.27" stroke-dashoffset="0" transform="rotate(-90 10 13)"/>
+              <!-- 12시 눈금 -->
+              <line x1="10" y1="6.2" x2="10" y2="7.5" stroke="var(--text-secondary)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <!-- 3시 눈금 -->
+              <line x1="16.8" y1="13" x2="15.5" y2="13" stroke="var(--text-secondary)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <!-- 6시 눈금 -->
+              <line x1="10" y1="19.8" x2="10" y2="18.5" stroke="var(--text-secondary)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <!-- 9시 눈금 -->
+              <line x1="3.2" y1="13" x2="4.5" y2="13" stroke="var(--text-secondary)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <!-- 중심점 -->
+              <circle cx="10" cy="13" r="1" fill="var(--text-secondary)"/>
+              <!-- 시곗바늘 (transform-origin을 SVG transform으로 처리) -->
+              <g style="animation:adminClockSpin 10s linear infinite; transform-box:view-box; transform-origin:10px 13px;">
+                <line x1="10" y1="13" x2="10" y2="7" stroke="var(--text-secondary)" stroke-width="1.4" stroke-linecap="round"/>
+              </g>
             </svg>
             <span>남은 시간:</span>
             <strong id="adminSessionTime" style="color:var(--text-primary);font-variant-numeric:tabular-nums;">10:00</strong>
             <button onclick="extendAdminSession()" style="margin-left:6px;padding:3px 10px;border:1px solid var(--border-color,rgba(0,0,0,0.12));border-radius:6px;background:var(--glass-bg,rgba(255,255,255,0.15));color:var(--accent,#1164B1);font-size:12px;cursor:pointer;white-space:nowrap;backdrop-filter:blur(4px);">+30분 연장</button>
           </span>
+        </div>
+
+        <!-- 이메일 연동 바 -->
+        <div id="emailLinkBar" class="email-link-bar">
+          <span class="email-label">📧 이메일 연동</span>
+          <span id="emailLinkValue" class="email-value">연동된 이메일 없음</span>
+          <button id="emailActionBtn" class="email-action-btn" onclick="handleEmailAction()" title="이메일 추가">
+            <span id="emailActionIcon">+</span>
+          </button>
+        </div>
+
+        <!-- 이메일 인증 팝업 -->
+        <div id="emailVerifyOverlay" class="email-verify-overlay" onclick="if(event.target===this)closeEmailVerify()">
+          <div class="email-verify-popup">
+            <h4>✉️ 이메일 인증</h4>
+            <p class="email-verify-desc">이메일 연동은 레터링 및 공문 발송 시<br/>보내는 사람 이메일 주소로 사용됩니다.</p>
+            <div id="emailStep1">
+              <input type="email" id="emailVerifyInput" placeholder="이메일 주소 입력" autocomplete="email"/>
+              <div class="email-verify-actions">
+                <button class="verify-cancel-btn" onclick="closeEmailVerify()">취소</button>
+                <button class="verify-send-btn" id="emailSendCodeBtn" onclick="sendEmailVerifyCode()">인증코드 발송</button>
+              </div>
+            </div>
+            <div id="emailStep2" class="verify-code-section">
+              <p id="emailCodeMsg">인증코드가 발송되었습니다.</p>
+              <input type="text" id="emailCodeInput" class="verify-code-input" placeholder="000000" maxlength="6" inputmode="numeric"/>
+              <div class="email-verify-actions" style="margin-top:12px;">
+                <button class="verify-cancel-btn" onclick="closeEmailVerify()">취소</button>
+                <button class="verify-send-btn" id="emailVerifyBtn" onclick="verifyEmailCode()">인증 확인</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Stats -->
@@ -4700,6 +4911,9 @@
         adminSessionExpiry = 0;
         var bar = document.getElementById('adminSessionBar');
         if (bar) bar.style.display = 'none';
+        var emailBar = document.getElementById('emailLinkBar');
+        if (emailBar) emailBar.style.display = 'none';
+        linkedEmail = null;
       }
 
       function updateAdminSessionDisplay() {
@@ -5457,6 +5671,9 @@
             showAdminTab('responses');
             await loadAdminResponses();
             await loadEnrollmentData();
+            await loadLinkedEmail();
+            var emailBar = document.getElementById('emailLinkBar');
+            if (emailBar) emailBar.style.display = 'flex';
           }
         } catch (err) {
           showToast('서버 연결 실패');
@@ -5475,6 +5692,8 @@
           if (!resp.ok) {
             if (resp.status === 401) {
               adminToken = null;
+              linkedEmail = null;
+              clearAdminSessionTimer();
               showAdminLogin();
               showToast('세션이 만료되었습니다. 다시 로그인하세요.');
               return;
@@ -6410,6 +6629,176 @@
           a.click();
           URL.revokeObjectURL(url);
         }
+      }
+
+      // ===== Email Integration (이메일 연동) =====
+      var linkedEmail = null; // 연동된 이메일 주소
+      var emailVerifyPending = null; // 인증 대기 중인 이메일
+
+      function updateEmailLinkBar() {
+        var bar = document.getElementById('emailLinkBar');
+        var valueEl = document.getElementById('emailLinkValue');
+        var btnIcon = document.getElementById('emailActionIcon');
+        var btn = document.getElementById('emailActionBtn');
+        if (!bar || !valueEl || !btnIcon || !btn) return;
+        if (linkedEmail) {
+          valueEl.textContent = linkedEmail;
+          btnIcon.textContent = '✕';
+          btn.classList.add('linked');
+          btn.title = '이메일 연동 해제';
+        } else {
+          valueEl.textContent = '연동된 이메일 없음';
+          btnIcon.textContent = '+';
+          btn.classList.remove('linked');
+          btn.title = '이메일 추가';
+        }
+      }
+
+      function handleEmailAction() {
+        if (linkedEmail) {
+          // 연동 해제 확인
+          if (confirm('이메일 연동을 해제하겠습니까?\n\n연동 해제 시 레터링 발송 기능을 사용할 수 없습니다.')) {
+            unlinkEmail();
+          }
+        } else {
+          // 인증 팝업 열기
+          openEmailVerify();
+        }
+      }
+
+      function openEmailVerify() {
+        var overlay = document.getElementById('emailVerifyOverlay');
+        var input = document.getElementById('emailVerifyInput');
+        var step1 = document.getElementById('emailStep1');
+        var step2 = document.getElementById('emailStep2');
+        if (!overlay) return;
+        emailVerifyPending = null;
+        input.value = '';
+        step1.style.display = 'block';
+        step2.style.display = 'none';
+        overlay.style.display = 'flex';
+        setTimeout(function() { input.focus(); }, 100);
+      }
+
+      function closeEmailVerify() {
+        var overlay = document.getElementById('emailVerifyOverlay');
+        if (overlay) overlay.style.display = 'none';
+        emailVerifyPending = null;
+      }
+
+      async function sendEmailVerifyCode() {
+        var input = document.getElementById('emailVerifyInput');
+        var sendBtn = document.getElementById('emailSendCodeBtn');
+        var email = (input.value || '').trim();
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          showToast('올바른 이메일 주소를 입력해주세요.', 'error');
+          input.focus();
+          return;
+        }
+        sendBtn.disabled = true;
+        sendBtn.textContent = '발송 중...';
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/email/send-code', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + adminToken
+            },
+            body: JSON.stringify({ email: email })
+          });
+          var result = await resp.json();
+          if (!resp.ok) throw new Error(result.error || '발송 실패');
+          emailVerifyPending = email;
+          document.getElementById('emailStep1').style.display = 'none';
+          var step2 = document.getElementById('emailStep2');
+          step2.style.display = 'block';
+          document.getElementById('emailCodeMsg').textContent = email + '로 인증코드가 발송되었습니다.';
+          var codeInput = document.getElementById('emailCodeInput');
+          codeInput.value = '';
+          setTimeout(function() { codeInput.focus(); }, 100);
+          showToast('인증코드가 발송되었습니다.');
+        } catch (e) {
+          showToast(e.message || '인증코드 발송에 실패했습니다.', 'error');
+        } finally {
+          sendBtn.disabled = false;
+          sendBtn.textContent = '인증코드 발송';
+        }
+      }
+
+      async function verifyEmailCode() {
+        var codeInput = document.getElementById('emailCodeInput');
+        var verifyBtn = document.getElementById('emailVerifyBtn');
+        var code = (codeInput.value || '').trim();
+        if (!code || code.length !== 6) {
+          showToast('6자리 인증코드를 입력해주세요.', 'error');
+          codeInput.focus();
+          return;
+        }
+        if (!emailVerifyPending) {
+          showToast('이메일 인증 세션이 만료되었습니다.', 'error');
+          closeEmailVerify();
+          return;
+        }
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = '확인 중...';
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/email/verify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + adminToken
+            },
+            body: JSON.stringify({ email: emailVerifyPending, code: code })
+          });
+          var result = await resp.json();
+          if (!resp.ok) throw new Error(result.error || '인증 실패');
+          linkedEmail = emailVerifyPending;
+          emailVerifyPending = null;
+          closeEmailVerify();
+          updateEmailLinkBar();
+          showToast('이메일 인증이 완료되었습니다!');
+        } catch (e) {
+          showToast(e.message || '인증에 실패했습니다.', 'error');
+          codeInput.value = '';
+          codeInput.focus();
+        } finally {
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = '인증 확인';
+        }
+      }
+
+      async function unlinkEmail() {
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/email', {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + adminToken }
+          });
+          if (!resp.ok) {
+            var result = await resp.json();
+            throw new Error(result.error || '해제 실패');
+          }
+          linkedEmail = null;
+          updateEmailLinkBar();
+          showToast('이메일 연동이 해제되었습니다.');
+        } catch (e) {
+          showToast(e.message || '이메일 연동 해제에 실패했습니다.', 'error');
+        }
+      }
+
+      async function loadLinkedEmail() {
+        if (!adminToken) return;
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/email', {
+            headers: { 'Authorization': 'Bearer ' + adminToken }
+          });
+          if (resp.ok) {
+            var result = await resp.json();
+            linkedEmail = result.email || null;
+          }
+        } catch (e) {
+          // 조용히 실패
+        }
+        updateEmailLinkBar();
       }
 
       // ===== Enrollment File Management (우선수강신청서) =====
