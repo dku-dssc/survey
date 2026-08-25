@@ -745,6 +745,57 @@
         padding: 4px 10px;
         border-radius: 20px;
       }
+      /* ===== beta 버전 알약 뱃지 ===== */
+      .beta-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 2px 9px;
+        border-radius: 999px;
+        background: var(--primary-light);
+        border: 1px solid rgba(17, 100, 177, 0.28);
+        box-shadow: 0 1px 4px rgba(17, 100, 177, 0.12),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+        line-height: 1;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: default;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      .beta-word {
+        font-family: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--primary);
+        letter-spacing: 0.2px;
+      }
+      .beta-ver {
+        font-family: "SF Mono", ui-monospace, "Menlo", monospace;
+        font-size: 9.5px;
+        font-weight: 600;
+        color: var(--primary);
+        opacity: 0.85;
+        letter-spacing: 0.3px;
+      }
+      body.dark-mode .beta-pill {
+        background: rgba(60, 150, 220, 0.18);
+        border-color: rgba(120, 190, 240, 0.35);
+      }
+      body.dark-mode .beta-word,
+      body.dark-mode .beta-ver {
+        color: #7dd3fc;
+      }
+      body.high-contrast .beta-pill {
+        background: #000000;
+        border: 1.5px solid #ffffff;
+        box-shadow: none;
+      }
+      body.high-contrast .beta-word,
+      body.high-contrast .beta-ver {
+        color: #ffffff;
+      }
 
       /* ===== Progress Bar ===== */
       .progress-container {
@@ -978,6 +1029,24 @@
       }
       .form-label.lf-sweep.lf-once {
         animation: lfSweep 2.5s linear 1 forwards;
+      }
+      /* [버그수정] 1회 스윕 종료 후 클래스 제거 시 투명 프레임(흰 깜빡) 방지:
+         클립을 끄고 기본색을 즉시 solid로 고정 */
+      .form-label.lf-settled {
+        background-image: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
+        -webkit-text-fill-color: var(--text-primary) !important;
+        color: var(--text-primary) !important;
+        animation: none !important;
+      }
+      .form-label.lf-settled .required {
+        -webkit-text-fill-color: var(--danger) !important;
+        color: var(--danger) !important;
+      }
+      .form-label.lf-settled .helper {
+        -webkit-text-fill-color: var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
       }
 
       /* 자식(필수표시 *, 도움말)은 밴드에서 제외하고 고유색 유지 */
@@ -2268,10 +2337,26 @@
         <div class="header-logo" id="headerLogoLink" onclick="handleHeaderHomeClick()" style="cursor:pointer;">
           <img src="logo.png" alt="단국대학교 로고" width="36" height="36" style="object-fit:contain;" />
           <span>단국대학교 장애학생지원센터</span>
+          <span class="beta-pill" onclick="event.stopPropagation()" title="베타 버전">
+            <span class="beta-word">beta</span
+            ><span class="beta-ver" id="appVersion">0.0.01</span>
+          </span>
         </div>
         <span class="header-badge">2026-2학기</span>
       </div>
     </header>
+    <script>
+      // ===== 앱 버전 (형식 X.Y.ZZ) =====
+      //  X  = 대규모 패치(막대한 기능 추가 등)
+      //  Y  = 큰 수정(핵심 변경 등)
+      //  ZZ = 해당 버전의 세부 수정
+      //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
+      window.APP_VERSION = "0.0.01";
+      (function () {
+        var v = document.getElementById("appVersion");
+        if (v) v.textContent = window.APP_VERSION;
+      })();
+    </script>
 
     <!-- Accessibility Bar -->
     <div class="a11y-bar" id="a11yBar">
@@ -6813,15 +6898,18 @@
           label.classList.add('lf-focus', 'lf-sweep', 'lf-loop');
         }
         function playOnce(label){                 // 검정 + 밴드 1회 (규칙4)
-          if (!label) return;
-          if (label === getLabel(focusedGroup)) return; // 포커스 라벨엔 1회 스윕 안 함
-          label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once');
+          if (!label) return false;
+          if (label === getLabel(focusedGroup)) return false; // 포커스 라벨엔 1회 스윕 안 함
+          if (!pageAllRequiredAnswered(label)) return false;  // [전제] 해당 페이지 필수 문항 모두 완료
+          label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once', 'lf-settled');
           void label.offsetWidth;
           label.classList.add('lf-sweep', 'lf-once');
           label.addEventListener('animationend', function done(){
+            // [버그수정] 클래스 제거 시 투명 프레임(흰 깜빡) 방지: 먼저 solid 기본색 고정
+            label.classList.add('lf-settled');
             label.classList.remove('lf-sweep', 'lf-once');
-            label.removeEventListener('animationend', done);
           }, { once: true });
+          return true;
         }
 
         // ── 포커스 이동 ──
@@ -6875,6 +6963,25 @@
           for (var i = idx + 1; i < gs.length; i++){ if (isFocusable(gs[i]) && !isAnswered(gs[i])) return gs[i]; }
           return null;
         }
+        // [전제] 라벨이 속한 페이지의 모든 필수 문항이 응답되었는지
+        function pageAllRequiredAnswered(el){
+          var pageEl = el && el.closest ? el.closest('.survey-page') : null;
+          if (!pageEl) return true;
+          var reqs = pageEl.querySelectorAll('[data-required="true"]');
+          for (var i = 0; i < reqs.length; i++){
+            var g = reqs[i].closest('.form-group');
+            if (g && !isAnswered(g)) return false;
+          }
+          return true;
+        }
+        // 필수 완료 후, 현재 화면에 완전히 보이는 비필수 서술형을 1회 스윕
+        function sweepVisibleOptionalOnce(pageEl){
+          observed.forEach(function(l){
+            if (l.closest('.survey-page') !== pageEl) return;
+            if (wasOut.get(l) && isFullyVisible(l)){ if (playOnce(l)) wasOut.set(l, false); }
+          });
+        }
+
         function advanceFrom(group){
           var next = nextFocusableUnanswered(group);
           if (next){
@@ -6882,10 +6989,20 @@
             focusInputIfText(next);
             scrollFieldIntoView(getLabel(next) || next);
           } else {
-            clearFocus();
+            // 다음 포커스 대상 없음: 응답 완료면 solid 파랑 유지(규칙3, 예: 동의 문항), 아니면 검정
+            if (isAnswered(group)){
+              focusedGroup = group;
+              var l = getLabel(group);
+              if (l) applyFocusSolid(l);
+            } else {
+              clearFocus();
+            }
             var pageEl = group.closest('.survey-page');
             if (pageEl) nudgeNextButton(pageEl);
           }
+          // [전제] 필수 문항이 모두 완료되면, 보이는 비필수 서술형을 1회 스윕
+          var pg = group.closest('.survey-page');
+          if (pg && pageAllRequiredAnswered(pg)) sweepVisibleOptionalOnce(pg);
         }
 
         // ── 재등장 1회(규칙4) 관찰 ──
@@ -6894,7 +7011,7 @@
             entries.forEach(function(e){
               var l = e.target;
               if (e.intersectionRatio === 0){ wasOut.set(l, true); }
-              else if (e.intersectionRatio >= 0.99 && wasOut.get(l)){ wasOut.set(l, false); playOnce(l); }
+              else if (e.intersectionRatio >= 0.99 && wasOut.get(l)){ if (playOnce(l)) wasOut.set(l, false); }
             });
           }, { threshold: [0, 0.99, 1] });
         }
@@ -6932,7 +7049,7 @@
           groups.forEach(function(g){
             if (isNonReqText(g)){
               var l = getLabel(g);
-              if (l && isFullyVisible(l)){ wasOut.set(l, false); playOnce(l); }
+              if (l && isFullyVisible(l)){ if (playOnce(l)) wasOut.set(l, false); }
             }
           });
         }
@@ -7043,7 +7160,7 @@
           } else {
             setTimeout(function(){
               observed.forEach(function(l){
-                if (wasOut.get(l) && isFullyVisible(l)){ wasOut.set(l, false); playOnce(l); }
+                if (wasOut.get(l) && isFullyVisible(l)){ if (playOnce(l)) wasOut.set(l, false); }
               });
             }, 200);
           }
