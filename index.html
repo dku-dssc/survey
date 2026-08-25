@@ -1951,6 +1951,221 @@
         display: flex;
         gap: 8px;
         margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      .letter-actions-row {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+      }
+
+      /* ===== Enrollment File Upload (Admin Settings) ===== */
+      .enrollment-section {
+        margin-bottom: 20px;
+      }
+      .enrollment-section h4 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+      }
+      .enrollment-file-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.2);
+        backdrop-filter: blur(8px);
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+      .enrollment-file-card .file-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+      }
+      .enrollment-file-card .file-name {
+        font-weight: 500;
+        color: var(--text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .enrollment-file-card .file-meta {
+        color: var(--text-tertiary);
+        font-size: 11px;
+        white-space: nowrap;
+      }
+      .enrollment-file-card .file-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .enrollment-file-card .file-actions button {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.1);
+        color: var(--text-primary);
+        transition: var(--transition);
+      }
+      .enrollment-file-card .file-actions button:hover {
+        background: rgba(255,255,255,0.2);
+      }
+      .enrollment-file-card .file-actions .btn-danger {
+        background: rgba(255,59,48,0.15);
+        color: #ff3b30;
+        border-color: rgba(255,59,48,0.3);
+      }
+      .enrollment-file-card .file-actions .btn-danger:hover {
+        background: rgba(255,59,48,0.25);
+      }
+      .enrollment-upload-zone {
+        border: 2px dashed rgba(255,255,255,0.25);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+        color: var(--text-tertiary);
+        font-size: 13px;
+      }
+      .enrollment-upload-zone:hover {
+        border-color: var(--primary);
+        background: rgba(17,100,177,0.05);
+        color: var(--primary);
+      }
+      .enrollment-upload-zone.dragover {
+        border-color: var(--primary);
+        background: rgba(17,100,177,0.1);
+      }
+
+      /* Column Mapping Popup */
+      .mapping-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .mapping-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .mapping-popup {
+        background: var(--card-bg, #fff);
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 16px;
+        padding: 24px;
+        max-width: 480px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+      }
+      .mapping-popup h4 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: var(--text-primary);
+      }
+      .mapping-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: 13px;
+      }
+      .mapping-row label {
+        min-width: 40px;
+        font-weight: 600;
+        color: var(--primary);
+      }
+      .mapping-row select {
+        flex: 1;
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.08);
+        color: var(--text-primary);
+        font-size: 13px;
+      }
+      .mapping-popup .btn-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        justify-content: flex-end;
+      }
+      .mapping-preview-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin: 12px 0;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .mapping-preview-table th,
+      .mapping-preview-table td {
+        padding: 6px 8px;
+        border: 1px solid rgba(255,255,255,0.15);
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
+      }
+      .mapping-preview-table th {
+        background: rgba(17,100,177,0.15);
+        color: var(--primary);
+        font-weight: 600;
+      }
+      .mapping-preview-table td {
+        background: rgba(255,255,255,0.04);
+      }
+
+      /* Mismatch Badge (red version of modified-badge) */
+      .mismatch-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        color: #ff3b30;
+        background: rgba(255,59,48,0.12);
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-left: 8px;
+      }
+      .match-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        color: #34c759;
+        background: rgba(52,199,89,0.12);
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-left: 8px;
+      }
+      .mismatch-field {
+        color: #ff3b30 !important;
+        background: rgba(255,59,48,0.08);
+        border-radius: 6px;
+        padding: 2px 6px;
+      }
+      .match-field {
+        color: #34c759 !important;
       }
 
       /* ===== Data Dashboard ===== */
@@ -2327,6 +2542,7 @@
         }
       }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   </head>
   <body>
     <div class="bg-decoration"></div>
@@ -2351,7 +2567,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "0.0.01";
+      window.APP_VERSION = "0.1.00";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -4202,6 +4418,14 @@
           >
             레터링 생성
           </button>
+          <button
+            class="btn btn-secondary"
+            onclick="showAdminTab('settings')"
+            id="tabSettings"
+            style="flex: 1; font-size: 13px; justify-content: center; text-align: center"
+          >
+            ⚙️ 설정
+          </button>
         </div>
 
         <!-- Responses List -->
@@ -4222,6 +4446,52 @@
             </select>
           </div>
           <div id="letterPreviewArea"></div>
+        </div>
+
+        <!-- Admin Settings -->
+        <div id="adminSettings" style="display: none">
+          <div class="enrollment-section">
+            <h4>📄 우선수강신청서 명단 관리</h4>
+            <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:12px;">
+              엑셀 파일(.xlsx, .xls)을 업로드하면 학생 수강 내역을 기반으로 교차검증 및 교수님께 공문 발송이 가능합니다.
+            </p>
+            <div id="enrollmentFileList"></div>
+            <div class="enrollment-upload-zone" id="enrollmentDropZone"
+              onclick="document.getElementById('enrollmentFileInput').click()">
+              <div style="font-size:24px;margin-bottom:8px;">📎</div>
+              <div>엑셀 파일을 드래그하거나 클릭하여 업로드</div>
+              <div style="font-size:11px;margin-top:4px;opacity:0.7;">.xlsx, .xls 파일 지원</div>
+            </div>
+            <input type="file" id="enrollmentFileInput" accept=".xlsx,.xls" style="display:none"
+              onchange="handleEnrollmentFileSelect(event)" />
+          </div>
+
+          <div class="enrollment-section">
+            <h4>📊 열 매핑 설정</h4>
+            <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:12px;">
+              업로드된 엑셀 파일의 각 열이 어떤 정보인지 설정합니다.
+            </p>
+            <button class="btn btn-secondary" onclick="showColumnMappingPopup()" style="font-size:13px;" id="btnColumnMapping" disabled>
+              열 매핑 설정 열기
+            </button>
+            <div id="currentMappingDisplay" style="margin-top:8px;font-size:12px;color:var(--text-tertiary);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column Mapping Popup -->
+    <div class="mapping-overlay" id="mappingOverlay">
+      <div class="mapping-popup">
+        <h4>📊 엑셀 열 매핑 설정</h4>
+        <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:12px;">
+          각 열(A, B, C...)이 어떤 데이터를 담고 있는지 지정하세요.
+        </p>
+        <div id="mappingPreview"></div>
+        <div id="mappingRows"></div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="closeMappingPopup()" style="font-size:13px;">취소</button>
+          <button class="btn btn-primary" onclick="saveMappingAndUpload()" style="font-size:13px;">저장 및 업로드</button>
         </div>
       </div>
     </div>
@@ -5186,6 +5456,7 @@
             showAdminContent();
             showAdminTab('responses');
             await loadAdminResponses();
+            await loadEnrollmentData();
           }
         } catch (err) {
           showToast('서버 연결 실패');
@@ -5223,18 +5494,20 @@
           tab === 'responses' ? 'block' : 'none';
         document.getElementById('adminLetter').style.display =
           tab === 'letter' ? 'block' : 'none';
-        document
-          .getElementById('tabResponses')
-          .classList.toggle('btn-primary', tab === 'responses');
-        document
-          .getElementById('tabResponses')
-          .classList.toggle('btn-secondary', tab !== 'responses');
-        document
-          .getElementById('tabLetter')
-          .classList.toggle('btn-primary', tab === 'letter');
-        document
-          .getElementById('tabLetter')
-          .classList.toggle('btn-secondary', tab !== 'letter');
+        document.getElementById('adminSettings').style.display =
+          tab === 'settings' ? 'block' : 'none';
+        ['tabResponses','tabLetter','tabSettings'].forEach(function(id) {
+          var el = document.getElementById(id);
+          var match = (id === 'tabResponses' && tab === 'responses') ||
+                      (id === 'tabLetter' && tab === 'letter') ||
+                      (id === 'tabSettings' && tab === 'settings');
+          el.classList.toggle('btn-primary', match);
+          el.classList.toggle('btn-secondary', !match);
+        });
+        if (tab === 'settings') {
+          renderEnrollmentFiles();
+          renderCurrentMapping();
+        }
       }
 
       function updateAdminPanel() {
@@ -5257,6 +5530,18 @@
                   const modBadge = r.modifiedAt
                     ? '<span class="modified-badge">수정됨</span>'
                     : '';
+                  // Cross-reference with enrollment data
+                  var xref = crossReferenceResponse(r);
+                  var xrefBadge = '';
+                  if (xref) {
+                    if (xref.notFound) {
+                      xrefBadge = '<span class="mismatch-badge">명단 미등록</span>';
+                    } else if (!xref.matched) {
+                      xrefBadge = '<span class="mismatch-badge">정보 불일치</span>';
+                    } else {
+                      xrefBadge = '<span class="match-badge">검증완료</span>';
+                    }
+                  }
                   return (
                     '<div class="response-card" onclick="viewResponse(' +
                     i +
@@ -5264,6 +5549,7 @@
                     '<div class="name">' +
                     (r.name || '이름 없음') +
                     modBadge +
+                    xrefBadge +
                     '</div>' +
                     '<div class="meta">' +
                     (r.department || '') +
@@ -5569,7 +5855,28 @@
         const hasModifications =
           r.modifiedFields && r.modifiedFields.length > 0;
 
+        // Cross-reference check
+        var xref = crossReferenceResponse(r);
+
         let details = '';
+
+        // Show enrollment cross-reference summary at top if available
+        if (xref) {
+          if (xref.notFound) {
+            details += '<div style="padding:8px 12px;border-radius:8px;margin-bottom:8px;background:rgba(255,59,48,0.08);border:1px solid rgba(255,59,48,0.2);font-size:12px;color:#ff3b30;">' +
+              '⚠️ 우선수강신청서 명단에 해당 학번이 등록되어 있지 않습니다.</div>';
+          } else if (!xref.matched) {
+            var mismatchInfo = xref.mismatches.map(function(m) {
+              return m.label + ': 설문 "' + m.surveyVal + '" ≠ 명단 "' + m.enrollVal + '"';
+            }).join(', ');
+            details += '<div style="padding:8px 12px;border-radius:8px;margin-bottom:8px;background:rgba(255,59,48,0.08);border:1px solid rgba(255,59,48,0.2);font-size:12px;color:#ff3b30;">' +
+              '⚠️ 정보 불일치: ' + escapeHTML(mismatchInfo) + '</div>';
+          } else {
+            details += '<div style="padding:8px 12px;border-radius:8px;margin-bottom:8px;background:rgba(52,199,89,0.08);border:1px solid rgba(52,199,89,0.2);font-size:12px;color:#34c759;">' +
+              '✅ 우선수강신청서 명단과 일치합니다.</div>';
+          }
+        }
+
         for (const [k, v] of Object.entries(r)) {
           if (diffSkipKeys.includes(k)) continue;
           const label = fieldLabelsMap[k] || k;
@@ -5617,6 +5924,17 @@
             displayHTML = escapeHTML(currentVal);
           }
 
+          // Apply mismatch highlighting for name and studentId
+          var mismatchClass = '';
+          if (xref && !xref.notFound && xref.mismatches) {
+            var fieldMismatch = xref.mismatches.find(function(m) { return m.field === k; });
+            if (fieldMismatch) {
+              mismatchClass = ' mismatch-field';
+              displayHTML = '<span class="mismatch-field">' + escapeHTML(currentVal) +
+                '</span> <span style="font-size:11px;color:#ff3b30;">(명단: ' + escapeHTML(fieldMismatch.enrollVal) + ')</span>';
+            }
+          }
+
           details +=
             '<div style="padding:4px 8px;border-radius:6px;margin-bottom:2px;">' +
             '<strong>' +
@@ -5624,6 +5942,21 @@
             ':</strong> ' +
             displayHTML +
             '</div>';
+        }
+
+        // Show enrolled courses if available
+        if (xref && !xref.notFound) {
+          var courses = getEnrollmentCoursesByStudentId(r.studentId);
+          if (courses.length > 0) {
+            details += '<div style="padding:8px;margin-top:8px;border-top:1px solid rgba(255,255,255,0.25);padding-top:8px;">' +
+              '<strong>📚 수강 교과목 (' + courses.length + '과목)</strong>' +
+              '<div style="margin-top:4px;font-size:12px;line-height:1.8;">';
+            courses.forEach(function(c) {
+              details += '<div style="padding:2px 0;">· ' + escapeHTML(c.courseName || '') +
+                (c.instructorName ? ' (' + escapeHTML(c.instructorName) + ')' : '') + '</div>';
+            });
+            details += '</div></div>';
+          }
         }
 
         // Add timestamps
@@ -6023,9 +6356,14 @@
           '<p style="text-align:center;margin-top:24px;">단국대학교 장애학생지원센터장</p>' +
           '</div>' +
           '<div class="letter-actions">' +
+          '<div class="letter-actions-row">' +
           '<button class="btn btn-primary" onclick="copyLetter()" style="flex:1;">📋 복사</button>' +
           '<button class="btn btn-secondary" onclick="printLetter()" style="flex:1;">🖨️ 인쇄</button>' +
           '<button class="btn btn-secondary" onclick="downloadLetter()" style="flex:1;">📥 다운로드</button>' +
+          '</div>' +
+          '<div class="letter-actions-row">' +
+          '<button class="btn btn-secondary" onclick="sendOfficialLetter()" style="flex:1;background:rgba(17,100,177,0.1);color:var(--primary);border:1px solid rgba(17,100,177,0.3);">📨 담당 교수님께 공문 보내기</button>' +
+          '</div>' +
           '</div>';
       }
 
@@ -6072,6 +6410,330 @@
           a.click();
           URL.revokeObjectURL(url);
         }
+      }
+
+      // ===== Enrollment File Management (우선수강신청서) =====
+      var enrollmentData = []; // [{fileName, uploadedAt, id, rows: [{name, studentId, courseName, instructorId, instructorName, instructorEmail, instructorPhone}]}]
+      var pendingExcelData = null; // temporary parsed data before mapping confirmation
+      var pendingFileName = '';
+      var columnMapping = {
+        B: 'studentName',
+        C: 'studentId',
+        D: 'courseName',
+        E: 'instructorId',
+        F: 'instructorName',
+        G: 'instructorEmail',
+        H: 'instructorPhone'
+      };
+      var mappingLabels = {
+        studentName: '학생 성명',
+        studentId: '학생 학번',
+        courseName: '교과목명',
+        instructorId: '교강사 교번',
+        instructorName: '교강사명',
+        instructorEmail: '교강사 이메일',
+        instructorPhone: '교강사 휴대폰번호',
+        skip: '(사용 안 함)'
+      };
+
+      // Drag & drop setup
+      document.addEventListener('DOMContentLoaded', function() {
+        var dropZone = document.getElementById('enrollmentDropZone');
+        if (!dropZone) return;
+        dropZone.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', function() {
+          dropZone.classList.remove('dragover');
+        });
+        dropZone.addEventListener('drop', function(e) {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+          var files = e.dataTransfer.files;
+          if (files.length > 0) processEnrollmentFile(files[0]);
+        });
+      });
+
+      function handleEnrollmentFileSelect(event) {
+        var file = event.target.files[0];
+        if (file) processEnrollmentFile(file);
+        event.target.value = '';
+      }
+
+      function processEnrollmentFile(file) {
+        if (!file.name.match(/\.(xlsx|xls)$/i)) {
+          showToast('엑셀 파일(.xlsx, .xls)만 업로드 가능합니다.');
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, { type: 'array' });
+            var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            var jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 'A', defval: '' });
+            if (jsonData.length < 2) {
+              showToast('데이터가 부족합니다. 헤더 행과 데이터 행이 필요합니다.');
+              return;
+            }
+            pendingExcelData = jsonData;
+            pendingFileName = file.name;
+            showColumnMappingPopup();
+          } catch (err) {
+            showToast('엑셀 파일 읽기 오류: ' + err.message);
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      function showColumnMappingPopup() {
+        if (!pendingExcelData || pendingExcelData.length === 0) {
+          showToast('먼저 엑셀 파일을 업로드하세요.');
+          return;
+        }
+        var overlay = document.getElementById('mappingOverlay');
+        // Build preview table (first 3 data rows)
+        var previewHtml = '<div style="overflow-x:auto;"><table class="mapping-preview-table"><tr>';
+        var cols = Object.keys(pendingExcelData[0]);
+        cols.forEach(function(c) { previewHtml += '<th>' + c + '</th>'; });
+        previewHtml += '</tr>';
+        for (var i = 0; i < Math.min(3, pendingExcelData.length); i++) {
+          previewHtml += '<tr>';
+          cols.forEach(function(c) {
+            previewHtml += '<td>' + escapeHTML(String(pendingExcelData[i][c] || '')) + '</td>';
+          });
+          previewHtml += '</tr>';
+        }
+        previewHtml += '</table></div>';
+        document.getElementById('mappingPreview').innerHTML = previewHtml;
+
+        // Build mapping rows
+        var fieldOptions = Object.entries(mappingLabels).map(function(entry) {
+          return '<option value="' + entry[0] + '">' + entry[1] + '</option>';
+        }).join('');
+
+        var rowsHtml = '';
+        cols.forEach(function(col) {
+          var currentVal = columnMapping[col] || 'skip';
+          var optionsHtml = fieldOptions.replace(
+            'value="' + currentVal + '"',
+            'value="' + currentVal + '" selected'
+          );
+          rowsHtml += '<div class="mapping-row">' +
+            '<label>' + col + '열</label>' +
+            '<select id="mapping_' + col + '">' + optionsHtml + '</select>' +
+            '</div>';
+        });
+        document.getElementById('mappingRows').innerHTML = rowsHtml;
+        overlay.classList.add('show');
+      }
+
+      function closeMappingPopup() {
+        document.getElementById('mappingOverlay').classList.remove('show');
+      }
+
+      function saveMappingAndUpload() {
+        // Read mapping from popup
+        var cols = Object.keys(pendingExcelData[0]);
+        var newMapping = {};
+        cols.forEach(function(col) {
+          var sel = document.getElementById('mapping_' + col);
+          if (sel && sel.value !== 'skip') {
+            newMapping[col] = sel.value;
+          }
+        });
+        columnMapping = newMapping;
+
+        // Parse data rows using mapping (skip header row = row 0)
+        var rows = [];
+        for (var i = 1; i < pendingExcelData.length; i++) {
+          var raw = pendingExcelData[i];
+          var row = {};
+          var hasData = false;
+          for (var col in newMapping) {
+            var val = String(raw[col] || '').trim();
+            row[newMapping[col]] = val;
+            if (val) hasData = true;
+          }
+          if (hasData) rows.push(row);
+        }
+
+        if (rows.length === 0) {
+          showToast('유효한 데이터 행이 없습니다.');
+          return;
+        }
+
+        closeMappingPopup();
+        uploadEnrollmentToServer(pendingFileName, rows, newMapping);
+      }
+
+      async function uploadEnrollmentToServer(fileName, rows, mapping) {
+        if (!adminToken) {
+          showToast('관리자 로그인이 필요합니다.');
+          return;
+        }
+        try {
+          var payload = {
+            fileName: fileName,
+            columnMapping: mapping,
+            rows: rows
+          };
+          var body = JSON.stringify(payload);
+
+          var resp = await fetch(API_BASE + '/api/admin/enrollment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + adminToken
+            },
+            body: body
+          });
+
+          var result = await resp.json();
+          if (!resp.ok) throw new Error(result.error || '업로드 실패');
+
+          showToast('수강신청 명단이 업로드되었습니다. (' + rows.length + '건)');
+          pendingExcelData = null;
+          pendingFileName = '';
+          await loadEnrollmentData();
+          renderEnrollmentFiles();
+          renderCurrentMapping();
+          document.getElementById('btnColumnMapping').disabled = false;
+        } catch (err) {
+          showToast('업로드 오류: ' + err.message);
+        }
+      }
+
+      async function loadEnrollmentData() {
+        if (!adminToken) return;
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/enrollment', {
+            headers: { 'Authorization': 'Bearer ' + adminToken }
+          });
+          var result = await resp.json();
+          if (resp.ok && result.files) {
+            enrollmentData = result.files;
+            if (enrollmentData.length > 0) {
+              document.getElementById('btnColumnMapping').disabled = false;
+            }
+          }
+        } catch (err) { /* silent */ }
+      }
+
+      async function deleteEnrollmentFile(fileId) {
+        if (!confirm('이 수강신청 명단을 삭제하시겠습니까?')) return;
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/enrollment/' + fileId, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + adminToken }
+          });
+          if (!resp.ok) throw new Error('삭제 실패');
+          showToast('명단이 삭제되었습니다.');
+          await loadEnrollmentData();
+          renderEnrollmentFiles();
+        } catch (err) {
+          showToast('삭제 오류: ' + err.message);
+        }
+      }
+
+      function renderEnrollmentFiles() {
+        var container = document.getElementById('enrollmentFileList');
+        if (!container) return;
+        if (enrollmentData.length === 0) {
+          container.innerHTML = '<p style="font-size:12px;color:var(--text-tertiary);padding:8px 0;">업로드된 파일이 없습니다.</p>';
+          return;
+        }
+        container.innerHTML = enrollmentData.map(function(f) {
+          return '<div class="enrollment-file-card">' +
+            '<div class="file-info">' +
+            '<span style="font-size:18px;">📄</span>' +
+            '<div>' +
+            '<div class="file-name">' + escapeHTML(f.fileName) + '</div>' +
+            '<div class="file-meta">' + f.rowCount + '건 · ' + new Date(f.uploadedAt).toLocaleDateString('ko-KR') + '</div>' +
+            '</div></div>' +
+            '<div class="file-actions">' +
+            '<button onclick="viewEnrollmentFile(' + f.id + ')">상세</button>' +
+            '<button class="btn-danger" onclick="deleteEnrollmentFile(' + f.id + ')">삭제</button>' +
+            '</div></div>';
+        }).join('');
+      }
+
+      function viewEnrollmentFile(fileId) {
+        var file = enrollmentData.find(function(f) { return f.id === fileId; });
+        if (!file || !file.rows) return;
+        var html = '<button class="btn btn-secondary" onclick="renderEnrollmentFiles();showAdminTab(\'settings\')" style="margin-bottom:12px;font-size:13px;">← 돌아가기</button>';
+        html += '<h4 style="font-size:14px;margin-bottom:8px;">' + escapeHTML(file.fileName) + '</h4>';
+        html += '<div style="overflow-x:auto;"><table class="mapping-preview-table">';
+        html += '<tr><th>학생 성명</th><th>학번</th><th>교과목명</th><th>교강사명</th></tr>';
+        file.rows.forEach(function(r) {
+          html += '<tr><td>' + escapeHTML(r.studentName || '') + '</td><td>' + escapeHTML(r.studentId || '') + '</td><td>' + escapeHTML(r.courseName || '') + '</td><td>' + escapeHTML(r.instructorName || '') + '</td></tr>';
+        });
+        html += '</table></div>';
+        document.getElementById('enrollmentFileList').innerHTML = html;
+      }
+
+      function renderCurrentMapping() {
+        var el = document.getElementById('currentMappingDisplay');
+        if (!el) return;
+        var parts = [];
+        for (var col in columnMapping) {
+          parts.push(col + '열 → ' + (mappingLabels[columnMapping[col]] || columnMapping[col]));
+        }
+        el.textContent = parts.length > 0 ? '현재 매핑: ' + parts.join(', ') : '';
+      }
+
+      // ===== Cross-reference enrollment with survey responses =====
+      function getEnrollmentByStudentId(studentId) {
+        if (!studentId || enrollmentData.length === 0) return null;
+        var cleanId = String(studentId).replace(/[^0-9]/g, '');
+        for (var i = 0; i < enrollmentData.length; i++) {
+          var file = enrollmentData[i];
+          if (!file.rows) continue;
+          for (var j = 0; j < file.rows.length; j++) {
+            var row = file.rows[j];
+            var rowId = String(row.studentId || '').replace(/[^0-9]/g, '');
+            if (rowId === cleanId) return row;
+          }
+        }
+        return null;
+      }
+
+      function getEnrollmentCoursesByStudentId(studentId) {
+        if (!studentId || enrollmentData.length === 0) return [];
+        var cleanId = String(studentId).replace(/[^0-9]/g, '');
+        var courses = [];
+        for (var i = 0; i < enrollmentData.length; i++) {
+          var file = enrollmentData[i];
+          if (!file.rows) continue;
+          for (var j = 0; j < file.rows.length; j++) {
+            var row = file.rows[j];
+            var rowId = String(row.studentId || '').replace(/[^0-9]/g, '');
+            if (rowId === cleanId) courses.push(row);
+          }
+        }
+        return courses;
+      }
+
+      function crossReferenceResponse(r) {
+        // Returns { matched: bool, mismatches: [{field, surveyVal, enrollVal}], enrollRecord: row|null }
+        if (enrollmentData.length === 0) return null;
+        var enrollRec = getEnrollmentByStudentId(r.studentId);
+        if (!enrollRec) {
+          // Try matching by name instead
+          return { matched: false, mismatches: [{ field: 'studentId', surveyVal: r.studentId, enrollVal: '(명단에 없음)' }], enrollRecord: null, notFound: true };
+        }
+        var mismatches = [];
+        // Check name
+        if (enrollRec.studentName && r.name && enrollRec.studentName.trim() !== r.name.trim()) {
+          mismatches.push({ field: 'name', label: '성명', surveyVal: r.name, enrollVal: enrollRec.studentName });
+        }
+        return { matched: mismatches.length === 0, mismatches: mismatches, enrollRecord: enrollRec, notFound: false };
+      }
+
+      // ===== Send Official Letter =====
+      function sendOfficialLetter() {
+        alert('아직 서비스가 개시되지 않았습니다.');
       }
 
       // ===== Toast =====
@@ -6471,6 +7133,9 @@
             '.diff-view-btn': 12,
             '.completion-page h2': 24, '.completion-page p': 15,
             '.letter-preview': 14, '.letter-preview h4': 18,
+            '.enrollment-section h4': 14, '.enrollment-file-card': 13,
+            '.mapping-popup h4': 16, '.mapping-row': 13,
+            '.mismatch-badge': 11, '.match-badge': 11,
             '.admin-panel h3': 20, '.admin-close': 24,
             '.verify-error': 14
           };
