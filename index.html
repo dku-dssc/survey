@@ -2726,7 +2726,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "0.1.00";
+      window.APP_VERSION = "0.2.00";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -5606,6 +5606,13 @@
         const overlay = document.getElementById('overlay');
         panel.classList.toggle('open');
         overlay.classList.toggle('show');
+
+        // 패널 열림/닫힘 시 body 스크롤 잠금/해제
+        if (panel.classList.contains('open')) {
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.style.overflow = '';
+        }
 
         // 로그인 안 된 상태면 로그인 화면 표시
         if (panel.classList.contains('open') && !adminToken) {
