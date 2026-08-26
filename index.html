@@ -2133,48 +2133,56 @@
         font-weight: 600;
       }
 
-      /* ===== Email Compose Modal (공문 발송) ===== */
+      /* ===== Email Compose Panel (공문 발송 — 왼쪽 전체 화면) ===== */
       .email-compose-overlay {
         display: none;
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.55);
-        z-index: 10002;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
+        background: rgba(0,0,0,0.3);
+        z-index: 299;
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
       }
-      .email-compose-popup {
-        background: var(--bg-page, #f0f4f8);
-        border-radius: var(--radius-lg);
-        padding: 0;
-        max-width: 600px;
-        width: 94%;
-        max-height: 90vh;
-        box-shadow: 0 24px 80px rgba(0,0,0,0.25);
-        display: flex;
+      .email-compose-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: calc(100vw - 480px);
+        height: 100vh;
+        background: rgba(240, 244, 248, 0.95);
+        backdrop-filter: blur(36px) saturate(200%);
+        -webkit-backdrop-filter: blur(36px) saturate(200%);
+        z-index: 301;
+        display: none;
         flex-direction: column;
         overflow: hidden;
+        border-right: 1px solid rgba(200, 210, 230, 0.4);
+        box-shadow: 8px 0 32px rgba(0,0,0,0.08);
+        animation: composeSlideIn 0.35s ease;
       }
-      body.dark-mode .email-compose-popup {
-        background: #1e1e28;
+      @keyframes composeSlideIn {
+        from { transform: translateX(-40px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      body.dark-mode .email-compose-panel {
+        background: rgba(28, 28, 35, 0.95);
       }
       .email-compose-header {
-        padding: 20px 24px 16px;
+        padding: 24px 32px 18px;
         border-bottom: 1px solid var(--glass-border);
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-shrink: 0;
       }
       .email-compose-header h4 {
-        font-size: 17px;
+        font-size: 19px;
         font-weight: 600;
         color: var(--text-primary);
         margin: 0;
       }
       .email-compose-close {
-        width: 32px; height: 32px;
+        width: 34px; height: 34px;
         border-radius: 50%;
         border: none;
         background: rgba(120,120,128,0.12);
@@ -2190,24 +2198,34 @@
         background: rgba(120,120,128,0.2);
       }
       .email-compose-body {
-        padding: 16px 24px;
+        padding: 24px 32px;
         overflow-y: auto;
         flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .email-compose-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
       }
       .email-compose-field {
-        margin-bottom: 14px;
+        margin-bottom: 10px;
+      }
+      .email-compose-field.full-width {
+        grid-column: 1 / -1;
       }
       .email-compose-field label {
         display: block;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
         color: var(--text-secondary);
         margin-bottom: 5px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
-      .email-compose-field input,
-      .email-compose-field textarea {
+      .email-compose-field input {
         width: 100%;
         padding: 10px 14px;
         border: 1.5px solid var(--glass-border);
@@ -2219,18 +2237,12 @@
         transition: border-color 0.2s;
         font-family: inherit;
       }
-      .email-compose-field input:focus,
-      .email-compose-field textarea:focus {
+      .email-compose-field input:focus {
         border-color: var(--primary);
       }
       .email-compose-field input[readonly] {
         opacity: 0.7;
         cursor: not-allowed;
-      }
-      .email-compose-field textarea {
-        min-height: 120px;
-        resize: vertical;
-        line-height: 1.6;
       }
       .email-compose-attachment {
         display: flex;
@@ -2267,15 +2279,70 @@
         color: #34c759;
         font-weight: 500;
       }
+      /* 본문 편집 영역 (contenteditable) */
+      .email-compose-editor-wrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .email-compose-editor-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+      }
+      .email-compose-editor-toolbar .toolbar-hint {
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+      .compose-editor {
+        flex: 1;
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        background: #fff;
+        padding: 24px;
+        font-size: 14px;
+        line-height: 2;
+        color: var(--text-primary);
+        overflow-y: auto;
+        outline: none;
+        min-height: 200px;
+        cursor: text;
+        transition: border-color 0.2s;
+      }
+      .compose-editor:focus {
+        border-color: var(--primary);
+      }
+      body.dark-mode .compose-editor {
+        background: rgba(30,30,40,0.6);
+      }
+      .compose-editor h4 {
+        text-align: center;
+        font-size: 16px;
+        border-bottom: 2px solid var(--text-primary);
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+      }
+      .compose-editor p {
+        margin: 0;
+      }
       .email-compose-footer {
-        padding: 16px 24px;
+        padding: 18px 32px;
         border-top: 1px solid var(--glass-border);
         display: flex;
-        gap: 10px;
+        gap: 12px;
         justify-content: flex-end;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .compose-footer-info {
+        flex: 1;
+        font-size: 11px;
+        color: var(--text-tertiary);
       }
       .email-compose-footer button {
-        padding: 10px 24px;
+        padding: 11px 28px;
         border-radius: var(--radius-sm);
         font-size: 14px;
         font-weight: 500;
@@ -2307,26 +2374,12 @@
         cursor: not-allowed;
         box-shadow: none;
       }
-      .email-compose-preview {
-        margin-top: 12px;
-        border: 1px solid var(--glass-border);
-        border-radius: var(--radius-sm);
-        max-height: 200px;
-        overflow-y: auto;
-        background: #fff;
-        padding: 16px;
-        font-size: 13px;
-        line-height: 1.8;
-      }
-      body.dark-mode .email-compose-preview {
-        background: rgba(30,30,40,0.6);
-      }
-      .email-compose-preview h4 {
-        text-align: center;
-        font-size: 15px;
-        border-bottom: 2px solid var(--text-primary);
-        padding-bottom: 8px;
-        margin-bottom: 12px;
+      /* 모바일 대응: 관리자 패널이 전체 폭일 때 이메일 작성도 전체 폭 */
+      @media (max-width: 768px) {
+        .email-compose-panel {
+          width: 100vw;
+          border-right: none;
+        }
       }
 
       /* ===== Enrollment File Upload (Admin Settings) ===== */
@@ -4808,14 +4861,15 @@
           </div>
         </div>
 
-        <!-- 이메일 작성 팝업 (공문 발송) -->
-        <div id="emailComposeOverlay" class="email-compose-overlay" onclick="if(event.target===this)closeEmailCompose()">
-          <div class="email-compose-popup">
-            <div class="email-compose-header">
-              <h4>📨 공문 발송</h4>
-              <button class="email-compose-close" onclick="closeEmailCompose()">✕</button>
-            </div>
-            <div class="email-compose-body">
+        <!-- 이메일 작성 패널 (공문 발송 — 왼쪽 전체 화면) -->
+        <div id="emailComposeOverlay" class="email-compose-overlay" onclick="closeEmailCompose()"></div>
+        <div id="emailComposePanel" class="email-compose-panel">
+          <div class="email-compose-header">
+            <h4>📨 공문 발송</h4>
+            <button class="email-compose-close" onclick="closeEmailCompose()">✕</button>
+          </div>
+          <div class="email-compose-body">
+            <div class="email-compose-meta">
               <div class="email-compose-field">
                 <label>보내는 사람</label>
                 <input type="text" id="composeFrom" readonly/>
@@ -4824,11 +4878,11 @@
                 <label>받는 사람 (교수님 이메일)</label>
                 <input type="email" id="composeTo" placeholder="professor@dankook.ac.kr"/>
               </div>
-              <div class="email-compose-field">
+              <div class="email-compose-field full-width">
                 <label>제목</label>
                 <input type="text" id="composeSubject" placeholder="이메일 제목"/>
               </div>
-              <div class="email-compose-field">
+              <div class="email-compose-field full-width">
                 <label>첨부파일</label>
                 <div class="email-compose-attachment">
                   <span class="attach-icon">📎</span>
@@ -4839,15 +4893,19 @@
                   <span class="attach-status" id="composeAttachStatus"></span>
                 </div>
               </div>
-              <div class="email-compose-field">
-                <label>본문 미리보기</label>
-                <div class="email-compose-preview" id="composePreview"></div>
+            </div>
+            <div class="email-compose-editor-wrap">
+              <div class="email-compose-editor-toolbar">
+                <label style="margin-bottom:0;">본문</label>
+                <span class="toolbar-hint">자유롭게 편집 가능 · Ctrl+Z 되돌리기 · Ctrl+Shift+Z 다시 실행</span>
               </div>
+              <div class="compose-editor" id="composeEditor" contenteditable="true" spellcheck="true"></div>
             </div>
-            <div class="email-compose-footer">
-              <button class="compose-cancel-btn" onclick="closeEmailCompose()">취소</button>
-              <button class="compose-send-btn" id="composeSendBtn" onclick="submitOfficialLetter()" disabled>📨 발송하기</button>
-            </div>
+          </div>
+          <div class="email-compose-footer">
+            <span class="compose-footer-info">편집한 내용이 이메일 본문에 그대로 반영됩니다.</span>
+            <button class="compose-cancel-btn" onclick="closeEmailCompose()">취소</button>
+            <button class="compose-send-btn" id="composeSendBtn" onclick="submitOfficialLetter()" disabled>📨 발송하기</button>
           </div>
         </div>
 
@@ -7400,7 +7458,6 @@
       // ===== 공문 발송 이메일 작성 =====
       var composePdfBase64 = null;
       var composePdfFilename = '';
-      var composeLetterHtml = '';
       var composeStudentName = '';
 
       function sendOfficialLetter() {
@@ -7422,26 +7479,22 @@
 
         // 교수 이메일 찾기 (수강신청 데이터에서)
         var professorEmail = '';
-        var professorName = '';
         var courses = getEnrollmentCoursesByStudentId(r.studentId);
         if (courses.length > 0) {
           professorEmail = courses[0].instructorEmail || '';
-          professorName = courses[0].instructorName || '';
         }
 
-        // 보내는 사람 설정
+        // 필드 설정
         document.getElementById('composeFrom').value = linkedEmail;
-        // 받는 사람 설정
         document.getElementById('composeTo').value = professorEmail;
-        // 제목 설정
         document.getElementById('composeSubject').value =
           '[단국대학교 장애학생지원센터] 장애학생 학습지원 협조 요청 - ' + composeStudentName;
 
-        // 레터링 HTML 본문 생성
+        // 레터링 HTML 본문을 편집기에 삽입
         var letterEl = document.querySelector('.letter-preview');
+        var editor = document.getElementById('composeEditor');
         if (letterEl) {
-          composeLetterHtml = letterEl.innerHTML;
-          document.getElementById('composePreview').innerHTML = composeLetterHtml;
+          editor.innerHTML = letterEl.innerHTML;
         }
 
         // 첨부파일 초기화
@@ -7451,29 +7504,24 @@
         document.getElementById('composeAttachStatus').textContent = '';
         document.getElementById('composeSendBtn').disabled = true;
 
-        // 팝업 표시
-        var overlay = document.getElementById('emailComposeOverlay');
-        overlay.style.display = 'flex';
+        // 왼쪽 패널 + 오버레이 표시
+        document.getElementById('emailComposeOverlay').style.display = 'block';
+        document.getElementById('emailComposePanel').style.display = 'flex';
 
         // PDF 생성 (html2pdf.js 사용)
-        generateLetterPdf(letterEl);
+        generateLetterPdf();
       }
 
-      async function generateLetterPdf(letterEl) {
-        if (!letterEl) {
-          document.getElementById('composeAttachName').textContent = 'PDF 생성 실패';
-          return;
-        }
-
+      async function generateLetterPdf() {
         try {
-          // PDF용 클론 생성 (스타일 보정)
+          // PDF용 클론 생성 (편집기 내용 기반, 스타일 보정)
+          var editorContent = document.getElementById('composeEditor').innerHTML;
           var pdfContainer = document.createElement('div');
           pdfContainer.style.cssText = 'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:40px;line-height:2;font-size:14px;color:#1d1d1f;background:#fff;width:595px;';
-          pdfContainer.innerHTML = '<h4 style="text-align:center;font-size:18px;border-bottom:2px solid #333;padding-bottom:12px;margin-bottom:24px;color:#1d1d1f;">장애학생 학습지원 협조 요청</h4>' +
-            composeLetterHtml.replace(/<h4[^>]*>.*?<\/h4>/i, '');
+          pdfContainer.innerHTML = editorContent;
           // 색상 강제 적용 (다크모드 대응)
           pdfContainer.querySelectorAll('*').forEach(function(el) {
-            el.style.color = el.style.color || '#1d1d1f';
+            if (!el.style.color) el.style.color = '#1d1d1f';
           });
 
           document.body.appendChild(pdfContainer);
@@ -7488,17 +7536,13 @@
 
           composePdfFilename = opt.filename;
 
-          // PDF를 base64로 생성
           var pdfBlob = await html2pdf().set(opt).from(pdfContainer).outputPdf('blob');
           document.body.removeChild(pdfContainer);
 
           // Blob → base64 변환
           var reader = new FileReader();
           reader.onload = function() {
-            var base64 = reader.result.split(',')[1];
-            composePdfBase64 = base64;
-
-            // UI 업데이트
+            composePdfBase64 = reader.result.split(',')[1];
             var sizeKB = Math.round(pdfBlob.size / 1024);
             var sizeStr = sizeKB > 1024 ? (sizeKB / 1024).toFixed(1) + ' MB' : sizeKB + ' KB';
             document.getElementById('composeAttachName').textContent = composePdfFilename;
@@ -7512,23 +7556,22 @@
           console.error('PDF generation error:', e);
           document.getElementById('composeAttachName').textContent = 'PDF 생성 실패 (첨부 없이 발송 가능)';
           document.getElementById('composeAttachStatus').textContent = '';
-          // PDF 없이도 발송 가능하게
           document.getElementById('composeSendBtn').disabled = false;
         }
       }
 
       function closeEmailCompose() {
-        var overlay = document.getElementById('emailComposeOverlay');
-        overlay.style.display = 'none';
+        document.getElementById('emailComposeOverlay').style.display = 'none';
+        document.getElementById('emailComposePanel').style.display = 'none';
         composePdfBase64 = null;
         composePdfFilename = '';
-        composeLetterHtml = '';
         composeStudentName = '';
       }
 
       async function submitOfficialLetter() {
         var toEmail = document.getElementById('composeTo').value.trim();
         var subject = document.getElementById('composeSubject').value.trim();
+        var editorContent = document.getElementById('composeEditor').innerHTML;
 
         if (!toEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(toEmail)) {
           showToast('올바른 수신 이메일 주소를 입력해주세요.', 'error');
@@ -7550,13 +7593,13 @@
         sendBtn.disabled = true;
         sendBtn.textContent = '발송 중...';
 
-        // 이메일 본문 HTML 구성
+        // 본문이 편집되었으면 PDF 재생성
+        await generateLetterPdf();
+
+        // 이메일 본문 HTML 구성 (편집기 내용 반영)
         var emailHtml = '<div style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;max-width:600px;margin:0 auto;padding:24px;">'
-          + '<div style="text-align:center;padding-bottom:16px;border-bottom:2px solid #1d1d1f;margin-bottom:24px;">'
-          + '<h2 style="color:#1d1d1f;font-size:20px;margin:0;">장애학생 학습지원 협조 요청</h2>'
-          + '</div>'
           + '<div style="line-height:2;font-size:14px;color:#1d1d1f;">'
-          + composeLetterHtml.replace(/<h4[^>]*>.*?<\/h4>/i, '')
+          + editorContent
           + '</div>'
           + '<hr style="border:none;border-top:1px solid #e5e5e5;margin:24px 0;">'
           + '<p style="color:#86868b;font-size:11px;text-align:center;">본 메일은 단국대학교 장애학생지원센터에서 발송되었습니다.</p>'
