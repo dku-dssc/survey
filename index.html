@@ -2133,6 +2133,202 @@
         font-weight: 600;
       }
 
+      /* ===== Email Compose Modal (공문 발송) ===== */
+      .email-compose-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.55);
+        z-index: 10002;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+      }
+      .email-compose-popup {
+        background: var(--bg-page, #f0f4f8);
+        border-radius: var(--radius-lg);
+        padding: 0;
+        max-width: 600px;
+        width: 94%;
+        max-height: 90vh;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      body.dark-mode .email-compose-popup {
+        background: #1e1e28;
+      }
+      .email-compose-header {
+        padding: 20px 24px 16px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .email-compose-header h4 {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+      }
+      .email-compose-close {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(120,120,128,0.12);
+        color: var(--text-secondary);
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+      }
+      .email-compose-close:hover {
+        background: rgba(120,120,128,0.2);
+      }
+      .email-compose-body {
+        padding: 16px 24px;
+        overflow-y: auto;
+        flex: 1;
+      }
+      .email-compose-field {
+        margin-bottom: 14px;
+      }
+      .email-compose-field label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .email-compose-field input,
+      .email-compose-field textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        background: var(--glass-bg);
+        color: var(--text-primary);
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+        font-family: inherit;
+      }
+      .email-compose-field input:focus,
+      .email-compose-field textarea:focus {
+        border-color: var(--primary);
+      }
+      .email-compose-field input[readonly] {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+      .email-compose-field textarea {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.6;
+      }
+      .email-compose-attachment {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: rgba(0,113,227,0.06);
+        border: 1px solid rgba(0,113,227,0.15);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        color: var(--text-primary);
+      }
+      .email-compose-attachment .attach-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+      }
+      .email-compose-attachment .attach-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .email-compose-attachment .attach-name {
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .email-compose-attachment .attach-size {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        margin-top: 2px;
+      }
+      .email-compose-attachment .attach-status {
+        font-size: 11px;
+        color: #34c759;
+        font-weight: 500;
+      }
+      .email-compose-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--glass-border);
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .email-compose-footer button {
+        padding: 10px 24px;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: var(--transition);
+      }
+      .compose-cancel-btn {
+        background: rgba(220, 230, 245, 0.35);
+        color: var(--text-primary);
+        border: 1px solid rgba(160, 185, 220, 0.45) !important;
+        backdrop-filter: blur(12px);
+      }
+      .compose-cancel-btn:hover {
+        background: rgba(220, 230, 245, 0.5);
+      }
+      .compose-send-btn {
+        background: linear-gradient(135deg, rgba(17, 100, 177, 0.85), rgba(72, 118, 239, 0.75));
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        box-shadow: 0 8px 20px rgba(17, 100, 177, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(12px) saturate(170%);
+      }
+      .compose-send-btn:hover {
+        box-shadow: 0 10px 28px rgba(17, 100, 177, 0.35), inset 0 0 16px rgba(255, 255, 255, 0.25);
+      }
+      .compose-send-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+      .email-compose-preview {
+        margin-top: 12px;
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        max-height: 200px;
+        overflow-y: auto;
+        background: #fff;
+        padding: 16px;
+        font-size: 13px;
+        line-height: 1.8;
+      }
+      body.dark-mode .email-compose-preview {
+        background: rgba(30,30,40,0.6);
+      }
+      .email-compose-preview h4 {
+        text-align: center;
+        font-size: 15px;
+        border-bottom: 2px solid var(--text-primary);
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+      }
+
       /* ===== Enrollment File Upload (Admin Settings) ===== */
       .enrollment-section {
         margin-bottom: 20px;
@@ -2717,6 +2913,7 @@
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
   </head>
   <body>
     <div class="bg-decoration"></div>
@@ -2741,7 +2938,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "0.2.02";
+      window.APP_VERSION = "0.2.03";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -4607,6 +4804,49 @@
                 <button class="verify-cancel-btn" onclick="closeEmailVerify()">취소</button>
                 <button class="verify-send-btn" id="emailVerifyBtn" onclick="verifyEmailCode()">인증 확인</button>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 이메일 작성 팝업 (공문 발송) -->
+        <div id="emailComposeOverlay" class="email-compose-overlay" onclick="if(event.target===this)closeEmailCompose()">
+          <div class="email-compose-popup">
+            <div class="email-compose-header">
+              <h4>📨 공문 발송</h4>
+              <button class="email-compose-close" onclick="closeEmailCompose()">✕</button>
+            </div>
+            <div class="email-compose-body">
+              <div class="email-compose-field">
+                <label>보내는 사람</label>
+                <input type="text" id="composeFrom" readonly/>
+              </div>
+              <div class="email-compose-field">
+                <label>받는 사람 (교수님 이메일)</label>
+                <input type="email" id="composeTo" placeholder="professor@dankook.ac.kr"/>
+              </div>
+              <div class="email-compose-field">
+                <label>제목</label>
+                <input type="text" id="composeSubject" placeholder="이메일 제목"/>
+              </div>
+              <div class="email-compose-field">
+                <label>첨부파일</label>
+                <div class="email-compose-attachment">
+                  <span class="attach-icon">📎</span>
+                  <div class="attach-info">
+                    <div class="attach-name" id="composeAttachName">레터링 PDF 준비 중...</div>
+                    <div class="attach-size" id="composeAttachSize"></div>
+                  </div>
+                  <span class="attach-status" id="composeAttachStatus"></span>
+                </div>
+              </div>
+              <div class="email-compose-field">
+                <label>본문 미리보기</label>
+                <div class="email-compose-preview" id="composePreview"></div>
+              </div>
+            </div>
+            <div class="email-compose-footer">
+              <button class="compose-cancel-btn" onclick="closeEmailCompose()">취소</button>
+              <button class="compose-send-btn" id="composeSendBtn" onclick="submitOfficialLetter()" disabled>📨 발송하기</button>
             </div>
           </div>
         </div>
@@ -7157,8 +7397,198 @@
       }
 
       // ===== Send Official Letter =====
+      // ===== 공문 발송 이메일 작성 =====
+      var composePdfBase64 = null;
+      var composePdfFilename = '';
+      var composeLetterHtml = '';
+      var composeStudentName = '';
+
       function sendOfficialLetter() {
-        alert('아직 서비스가 개시되지 않았습니다.');
+        // 이메일 연동 확인
+        if (!linkedEmail) {
+          showToast('먼저 이메일 연동을 완료해주세요.', 'error');
+          return;
+        }
+
+        // 현재 선택된 학생 확인
+        var idx = document.getElementById('letterStudentSelect').value;
+        if (idx === '') {
+          showToast('학생을 먼저 선택해주세요.', 'error');
+          return;
+        }
+
+        var r = responses[idx];
+        composeStudentName = r.name || '○○○';
+
+        // 교수 이메일 찾기 (수강신청 데이터에서)
+        var professorEmail = '';
+        var professorName = '';
+        var courses = getEnrollmentCoursesByStudentId(r.studentId);
+        if (courses.length > 0) {
+          professorEmail = courses[0].instructorEmail || '';
+          professorName = courses[0].instructorName || '';
+        }
+
+        // 보내는 사람 설정
+        document.getElementById('composeFrom').value = linkedEmail;
+        // 받는 사람 설정
+        document.getElementById('composeTo').value = professorEmail;
+        // 제목 설정
+        document.getElementById('composeSubject').value =
+          '[단국대학교 장애학생지원센터] 장애학생 학습지원 협조 요청 - ' + composeStudentName;
+
+        // 레터링 HTML 본문 생성
+        var letterEl = document.querySelector('.letter-preview');
+        if (letterEl) {
+          composeLetterHtml = letterEl.innerHTML;
+          document.getElementById('composePreview').innerHTML = composeLetterHtml;
+        }
+
+        // 첨부파일 초기화
+        composePdfBase64 = null;
+        document.getElementById('composeAttachName').textContent = '레터링 PDF 생성 중...';
+        document.getElementById('composeAttachSize').textContent = '';
+        document.getElementById('composeAttachStatus').textContent = '';
+        document.getElementById('composeSendBtn').disabled = true;
+
+        // 팝업 표시
+        var overlay = document.getElementById('emailComposeOverlay');
+        overlay.style.display = 'flex';
+
+        // PDF 생성 (html2pdf.js 사용)
+        generateLetterPdf(letterEl);
+      }
+
+      async function generateLetterPdf(letterEl) {
+        if (!letterEl) {
+          document.getElementById('composeAttachName').textContent = 'PDF 생성 실패';
+          return;
+        }
+
+        try {
+          // PDF용 클론 생성 (스타일 보정)
+          var pdfContainer = document.createElement('div');
+          pdfContainer.style.cssText = 'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:40px;line-height:2;font-size:14px;color:#1d1d1f;background:#fff;width:595px;';
+          pdfContainer.innerHTML = '<h4 style="text-align:center;font-size:18px;border-bottom:2px solid #333;padding-bottom:12px;margin-bottom:24px;color:#1d1d1f;">장애학생 학습지원 협조 요청</h4>' +
+            composeLetterHtml.replace(/<h4[^>]*>.*?<\/h4>/i, '');
+          // 색상 강제 적용 (다크모드 대응)
+          pdfContainer.querySelectorAll('*').forEach(function(el) {
+            el.style.color = el.style.color || '#1d1d1f';
+          });
+
+          document.body.appendChild(pdfContainer);
+
+          var opt = {
+            margin: [15, 15, 15, 15],
+            filename: '학습지원_협조요청_' + composeStudentName + '.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+
+          composePdfFilename = opt.filename;
+
+          // PDF를 base64로 생성
+          var pdfBlob = await html2pdf().set(opt).from(pdfContainer).outputPdf('blob');
+          document.body.removeChild(pdfContainer);
+
+          // Blob → base64 변환
+          var reader = new FileReader();
+          reader.onload = function() {
+            var base64 = reader.result.split(',')[1];
+            composePdfBase64 = base64;
+
+            // UI 업데이트
+            var sizeKB = Math.round(pdfBlob.size / 1024);
+            var sizeStr = sizeKB > 1024 ? (sizeKB / 1024).toFixed(1) + ' MB' : sizeKB + ' KB';
+            document.getElementById('composeAttachName').textContent = composePdfFilename;
+            document.getElementById('composeAttachSize').textContent = sizeStr;
+            document.getElementById('composeAttachStatus').textContent = '✓ 준비 완료';
+            document.getElementById('composeSendBtn').disabled = false;
+          };
+          reader.readAsDataURL(pdfBlob);
+
+        } catch (e) {
+          console.error('PDF generation error:', e);
+          document.getElementById('composeAttachName').textContent = 'PDF 생성 실패 (첨부 없이 발송 가능)';
+          document.getElementById('composeAttachStatus').textContent = '';
+          // PDF 없이도 발송 가능하게
+          document.getElementById('composeSendBtn').disabled = false;
+        }
+      }
+
+      function closeEmailCompose() {
+        var overlay = document.getElementById('emailComposeOverlay');
+        overlay.style.display = 'none';
+        composePdfBase64 = null;
+        composePdfFilename = '';
+        composeLetterHtml = '';
+        composeStudentName = '';
+      }
+
+      async function submitOfficialLetter() {
+        var toEmail = document.getElementById('composeTo').value.trim();
+        var subject = document.getElementById('composeSubject').value.trim();
+
+        if (!toEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(toEmail)) {
+          showToast('올바른 수신 이메일 주소를 입력해주세요.', 'error');
+          document.getElementById('composeTo').focus();
+          return;
+        }
+        if (!subject) {
+          showToast('제목을 입력해주세요.', 'error');
+          document.getElementById('composeSubject').focus();
+          return;
+        }
+
+        // 최종 확인
+        if (!confirm('다음 내용으로 공문을 발송합니다.\n\n받는 사람: ' + toEmail + '\n제목: ' + subject + '\n첨부: ' + (composePdfFilename || '없음') + '\n\n발송하시겠습니까?')) {
+          return;
+        }
+
+        var sendBtn = document.getElementById('composeSendBtn');
+        sendBtn.disabled = true;
+        sendBtn.textContent = '발송 중...';
+
+        // 이메일 본문 HTML 구성
+        var emailHtml = '<div style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;max-width:600px;margin:0 auto;padding:24px;">'
+          + '<div style="text-align:center;padding-bottom:16px;border-bottom:2px solid #1d1d1f;margin-bottom:24px;">'
+          + '<h2 style="color:#1d1d1f;font-size:20px;margin:0;">장애학생 학습지원 협조 요청</h2>'
+          + '</div>'
+          + '<div style="line-height:2;font-size:14px;color:#1d1d1f;">'
+          + composeLetterHtml.replace(/<h4[^>]*>.*?<\/h4>/i, '')
+          + '</div>'
+          + '<hr style="border:none;border-top:1px solid #e5e5e5;margin:24px 0;">'
+          + '<p style="color:#86868b;font-size:11px;text-align:center;">본 메일은 단국대학교 장애학생지원센터에서 발송되었습니다.</p>'
+          + '</div>';
+
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/email/send-letter', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + adminToken
+            },
+            body: JSON.stringify({
+              to: toEmail,
+              subject: subject,
+              html: emailHtml,
+              pdfBase64: composePdfBase64 || undefined,
+              pdfFilename: composePdfFilename || undefined,
+              studentName: composeStudentName
+            })
+          });
+          var result = await resp.json();
+          if (!resp.ok) throw new Error(result.error || '발송 실패');
+
+          closeEmailCompose();
+          showToast('공문이 성공적으로 발송되었습니다! (' + toEmail + ')');
+        } catch (e) {
+          showToast(e.message || '공문 발송에 실패했습니다.', 'error');
+        } finally {
+          sendBtn.disabled = false;
+          sendBtn.textContent = '📨 발송하기';
+        }
       }
 
       // ===== Toast =====
