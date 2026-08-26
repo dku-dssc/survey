@@ -2991,7 +2991,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "0.2.03";
+      window.APP_VERSION = "0.2.04";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -4861,54 +4861,6 @@
           </div>
         </div>
 
-        <!-- 이메일 작성 패널 (공문 발송 — 왼쪽 전체 화면) -->
-        <div id="emailComposeOverlay" class="email-compose-overlay" onclick="closeEmailCompose()"></div>
-        <div id="emailComposePanel" class="email-compose-panel">
-          <div class="email-compose-header">
-            <h4>📨 공문 발송</h4>
-            <button class="email-compose-close" onclick="closeEmailCompose()">✕</button>
-          </div>
-          <div class="email-compose-body">
-            <div class="email-compose-meta">
-              <div class="email-compose-field">
-                <label>보내는 사람</label>
-                <input type="text" id="composeFrom" readonly/>
-              </div>
-              <div class="email-compose-field">
-                <label>받는 사람 (교수님 이메일)</label>
-                <input type="email" id="composeTo" placeholder="professor@dankook.ac.kr"/>
-              </div>
-              <div class="email-compose-field full-width">
-                <label>제목</label>
-                <input type="text" id="composeSubject" placeholder="이메일 제목"/>
-              </div>
-              <div class="email-compose-field full-width">
-                <label>첨부파일</label>
-                <div class="email-compose-attachment">
-                  <span class="attach-icon">📎</span>
-                  <div class="attach-info">
-                    <div class="attach-name" id="composeAttachName">레터링 PDF 준비 중...</div>
-                    <div class="attach-size" id="composeAttachSize"></div>
-                  </div>
-                  <span class="attach-status" id="composeAttachStatus"></span>
-                </div>
-              </div>
-            </div>
-            <div class="email-compose-editor-wrap">
-              <div class="email-compose-editor-toolbar">
-                <label style="margin-bottom:0;">본문</label>
-                <span class="toolbar-hint">자유롭게 편집 가능 · Ctrl+Z 되돌리기 · Ctrl+Shift+Z 다시 실행</span>
-              </div>
-              <div class="compose-editor" id="composeEditor" contenteditable="true" spellcheck="true"></div>
-            </div>
-          </div>
-          <div class="email-compose-footer">
-            <span class="compose-footer-info">편집한 내용이 이메일 본문에 그대로 반영됩니다.</span>
-            <button class="compose-cancel-btn" onclick="closeEmailCompose()">취소</button>
-            <button class="compose-send-btn" id="composeSendBtn" onclick="submitOfficialLetter()" disabled>📨 발송하기</button>
-          </div>
-        </div>
-
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -4998,6 +4950,54 @@
             <div id="currentMappingDisplay" style="margin-top:8px;font-size:12px;color:var(--text-tertiary);"></div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- 이메일 작성 패널 (공문 발송 — 왼쪽 전체 화면, admin-panel 바깥) -->
+    <div id="emailComposeOverlay" class="email-compose-overlay" onclick="closeEmailCompose()"></div>
+    <div id="emailComposePanel" class="email-compose-panel">
+      <div class="email-compose-header">
+        <h4>📨 공문 발송</h4>
+        <button class="email-compose-close" onclick="closeEmailCompose()">✕</button>
+      </div>
+      <div class="email-compose-body">
+        <div class="email-compose-meta">
+          <div class="email-compose-field">
+            <label>보내는 사람</label>
+            <input type="text" id="composeFrom" readonly/>
+          </div>
+          <div class="email-compose-field">
+            <label>받는 사람 (교수님 이메일)</label>
+            <input type="email" id="composeTo" placeholder="professor@dankook.ac.kr"/>
+          </div>
+          <div class="email-compose-field full-width">
+            <label>제목</label>
+            <input type="text" id="composeSubject" placeholder="이메일 제목"/>
+          </div>
+          <div class="email-compose-field full-width">
+            <label>첨부파일</label>
+            <div class="email-compose-attachment">
+              <span class="attach-icon">📎</span>
+              <div class="attach-info">
+                <div class="attach-name" id="composeAttachName">레터링 PDF 준비 중...</div>
+                <div class="attach-size" id="composeAttachSize"></div>
+              </div>
+              <span class="attach-status" id="composeAttachStatus"></span>
+            </div>
+          </div>
+        </div>
+        <div class="email-compose-editor-wrap">
+          <div class="email-compose-editor-toolbar">
+            <label style="margin-bottom:0;">본문</label>
+            <span class="toolbar-hint">자유롭게 편집 가능 · Ctrl+Z 되돌리기 · Ctrl+Shift+Z 다시 실행</span>
+          </div>
+          <div class="compose-editor" id="composeEditor" contenteditable="true" spellcheck="true"></div>
+        </div>
+      </div>
+      <div class="email-compose-footer">
+        <span class="compose-footer-info">편집한 내용이 이메일 본문에 그대로 반영됩니다.</span>
+        <button class="compose-cancel-btn" onclick="closeEmailCompose()">취소</button>
+        <button class="compose-send-btn" id="composeSendBtn" onclick="submitOfficialLetter()" disabled>📨 발송하기</button>
       </div>
     </div>
 
