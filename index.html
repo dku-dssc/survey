@@ -1055,12 +1055,50 @@
         -webkit-text-fill-color: var(--danger) !important;
         color: var(--danger) !important;
         background: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
       }
       .form-label.lf-sweep .helper,
       .form-label.lf-focus .helper {
         -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
         background: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
+        font-weight: 400 !important;
+      }
+
+      /* ── helper 부연설명 회색 그라데이션 (규칙4 후 재생) ── */
+      @keyframes helperSweep {
+        0%   { background-position: 100% 0, 0 0; }
+        100% { background-position: 0% 0, 0 0; }
+      }
+      .helper.helper-sweep {
+        background-image:
+          linear-gradient(90deg,
+            rgba(120,120,120,0) 40%,
+            rgba(160,160,160,1) 47%,
+            rgba(200,200,200,1) 53%,
+            rgba(120,120,120,0) 60%),
+          linear-gradient(90deg, var(--text-secondary), var(--text-secondary)) !important;
+        background-size: 400% 100%, 100% 100% !important;
+        background-repeat: no-repeat, no-repeat !important;
+        background-position: 100% 0, 0 0 !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        color: transparent !important;
+        animation: helperSweep 2s linear 1 forwards !important;
+        font-weight: 400 !important;
+      }
+      .helper.helper-settled {
+        background-image: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
+        -webkit-text-fill-color: var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        animation: none !important;
+        font-weight: 400 !important;
       }
 
       /* 모션 최소화 선호 시 애니메이션 정지(정적 표시) */
@@ -1105,6 +1143,17 @@
       }
       .form-input::placeholder {
         color: var(--text-tertiary);
+      }
+      /* 브라우저 자동완성 노란 배경 제거 */
+      .form-input:-webkit-autofill,
+      .form-input:-webkit-autofill:hover,
+      .form-input:-webkit-autofill:focus,
+      .form-input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 40px rgba(40,40,45,0.95) inset !important;
+        box-shadow: 0 0 0 40px rgba(40,40,45,0.95) inset !important;
+        -webkit-text-fill-color: var(--text-primary) !important;
+        caret-color: var(--text-primary) !important;
+        transition: background-color 5000s ease-in-out 0s;
       }
       textarea.form-input {
         resize: vertical;
@@ -1709,15 +1758,13 @@
         align-items: center;
         justify-content: center;
         transition: var(--transition);
-        animation: adminPulseGlow 2.5s ease-in-out infinite;
       }
       @keyframes adminClockSpin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
-      @keyframes adminPulseGlow {
-        0%,
-        100% {
+      @keyframes fabPulseGlow {
+        0%, 100% {
           box-shadow:
             0 4px 16px rgba(17, 100, 177, 0.4),
             0 0 0 0 rgba(60, 210, 255, 0.4);
@@ -1762,6 +1809,7 @@
         align-items: center;
         justify-content: center;
         transition: var(--transition);
+        animation: fabPulseGlow 2.5s ease-in-out infinite;
       }
       .save-draft-toggle:hover {
         box-shadow: 0 4px 20px rgba(17, 100, 177, 0.35), inset 0 0 20px rgba(255, 255, 255, 0.3), 0 0 16px rgba(200, 220, 255, 0.25);
@@ -2497,34 +2545,43 @@
       .deadline-input-group {
         display: flex;
         align-items: center;
-        gap: 2px;
+        gap: 0;
+        padding: 0;
+        position: relative;
+      }
+      .otp-digit {
+        width: 28px;
+        height: 36px;
         background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 10px;
-        padding: 8px 10px;
-        transition: var(--transition);
-      }
-      .deadline-input-group:focus-within {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(0,113,227,0.15);
-      }
-      .deadline-input-group input {
-        background: none;
-        border: none;
-        outline: none;
+        border: 1.5px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
         color: var(--text-primary);
-        font-size: 14px;
+        font-size: 15px;
         font-family: var(--font);
         text-align: center;
         padding: 0;
+        outline: none;
+        transition: var(--transition);
+        margin: 0 1.5px;
+        caret-color: var(--primary);
       }
-      .deadline-input-group input::placeholder {
+      .otp-digit:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(0,113,227,0.18);
+        background: rgba(0,113,227,0.08);
+      }
+      .otp-digit::placeholder {
         color: var(--text-tertiary);
-        opacity: 0.6;
+        opacity: 0.5;
+        font-size: 11px;
       }
-      .dl-year { width: 42px; }
-      .dl-month { width: 24px; }
-      .dl-day { width: 24px; }
+      .otp-sep {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        margin: 0 2px;
+        user-select: none;
+      }
       .deadline-tilde {
         font-size: 16px;
         color: var(--text-secondary);
@@ -2651,18 +2708,21 @@
       }
       .mapping-display-table th,
       .mapping-display-table td {
-        padding: 8px 6px;
+        padding: 6px 6px;
         text-align: center;
-        border: 1px solid rgba(255,255,255,0.12);
+        border: 2.5px solid var(--card-bg, rgba(30,30,30,0.85));
+        width: 1%;
+        white-space: nowrap;
       }
       .mapping-display-table th {
         background: rgba(17,100,177,0.18);
         color: var(--primary);
         font-weight: 600;
-        font-size: 12px;
+        font-size: 11px;
+        padding: 4px 6px;
       }
       .mapping-display-table td {
-        background: rgba(255,255,255,0.04);
+        background: rgba(255,255,255,0.12);
         color: var(--text-primary);
         font-size: 11px;
         font-weight: 500;
@@ -2671,97 +2731,140 @@
       /* ===== Semester Folder (학기별 폴더) ===== */
       .semester-folders {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        margin-bottom: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 12px;
+        padding: 8px 0;
       }
       .semester-folder {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 6px;
-        padding: 14px 8px;
-        border-radius: 12px;
+        padding: 12px 6px 10px;
+        border-radius: 10px;
         cursor: pointer;
         transition: var(--transition);
-        background: rgba(255,255,255,0.04);
         border: 1px solid transparent;
       }
       .semester-folder:hover {
-        background: rgba(17,100,177,0.08);
-        border-color: rgba(17,100,177,0.2);
+        background: rgba(255,255,255,0.06);
       }
-      .semester-folder.active {
-        background: rgba(17,100,177,0.12);
-        border-color: var(--primary);
+      .semester-folder:active {
+        transform: scale(0.96);
       }
+      /* macOS Finder folder icon */
       .semester-folder-icon {
-        width: 48px;
-        height: 42px;
+        width: 64px;
+        height: 52px;
         position: relative;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
       }
-      .semester-folder-icon .folder-back {
+      .folder-tab {
+        position: absolute;
+        top: 0;
+        left: 2px;
+        width: 24px;
+        height: 12px;
+        background: linear-gradient(180deg, #6dcbf5 0%, #42a5d9 100%);
+        border-radius: 5px 5px 0 0;
+        z-index: 1;
+      }
+      .folder-back {
+        position: absolute;
+        top: 8px;
+        left: 0;
+        width: 64px;
+        height: 44px;
+        background: linear-gradient(180deg, #4fb8e8 0%, #2b8bc4 100%);
+        border-radius: 2px 6px 6px 6px;
+        z-index: 2;
+      }
+      /* Document stubs peeking out */
+      .folder-docs {
+        position: absolute;
+        top: 14px;
+        left: 8px;
+        right: 8px;
+        height: 20px;
+        z-index: 3;
+        overflow: hidden;
+      }
+      .folder-doc-stub {
+        position: absolute;
+        width: 34px;
+        height: 22px;
+        background: #f0f0f0;
+        border-radius: 2px 2px 0 0;
+        border: 1px solid rgba(0,0,0,0.08);
+        border-bottom: none;
+      }
+      .folder-doc-stub:nth-child(1) { left: 0; top: 4px; }
+      .folder-doc-stub:nth-child(2) { left: 10px; top: 1px; }
+      .folder-doc-stub:nth-child(3) { left: 4px; top: 7px; }
+      .folder-doc-stub .doc-line {
+        height: 2px;
+        background: rgba(0,0,0,0.15);
+        border-radius: 1px;
+        margin: 4px 4px 0;
+      }
+      .folder-doc-stub .doc-line:nth-child(2) {
+        width: 60%;
+        margin-top: 3px;
+      }
+      .folder-front {
         position: absolute;
         bottom: 0;
         left: 0;
-        width: 48px;
-        height: 34px;
-        background: linear-gradient(135deg, #5ac8fa, #007aff);
-        border-radius: 2px 8px 8px 8px;
+        width: 64px;
+        height: 36px;
+        background: linear-gradient(180deg, #7dd3f7 0%, #4aaee0 50%, #3a9ad4 100%);
+        border-radius: 0 0 6px 6px;
+        z-index: 4;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
       }
-      .semester-folder-icon .folder-tab {
+      .folder-front::after {
+        content: '';
         position: absolute;
         top: 0;
         left: 0;
-        width: 20px;
-        height: 10px;
-        background: linear-gradient(135deg, #5ac8fa, #34aadc);
-        border-radius: 4px 4px 0 0;
+        right: 0;
+        height: 1px;
+        background: rgba(255,255,255,0.35);
       }
-      .semester-folder-icon .folder-front {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 48px;
-        height: 30px;
-        background: linear-gradient(180deg, #5ac8fa, #34aadc);
-        border-radius: 0 4px 8px 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-      }
-      body.dark-mode .semester-folder-icon .folder-back {
-        background: linear-gradient(135deg, #1a5276, #2471a3);
-      }
-      body.dark-mode .semester-folder-icon .folder-tab {
-        background: linear-gradient(135deg, #1a5276, #1f618d);
-      }
-      body.dark-mode .semester-folder-icon .folder-front {
-        background: linear-gradient(180deg, #2e86c1, #1a5276);
-      }
+      /* Dark mode folder colors */
+      body.dark-mode .folder-tab { background: linear-gradient(180deg, #1e6fa0 0%, #155980 100%); }
+      body.dark-mode .folder-back { background: linear-gradient(180deg, #1a6898 0%, #0e4a6e 100%); }
+      body.dark-mode .folder-front { background: linear-gradient(180deg, #2180b0 0%, #165d88 50%, #0e4a6e 100%); }
+      body.dark-mode .folder-doc-stub { background: #3a3a3c; border-color: rgba(255,255,255,0.08); }
+      body.dark-mode .folder-doc-stub .doc-line { background: rgba(255,255,255,0.15); }
       .semester-folder-name {
         font-size: 11px;
         font-weight: 600;
         color: var(--text-primary);
         text-align: center;
         line-height: 1.3;
+        margin-top: 2px;
       }
       .semester-folder-count {
         font-size: 10px;
         color: var(--text-tertiary);
       }
       .folder-breadcrumb {
-        font-size: 12px;
+        font-size: 13px;
         color: var(--text-tertiary);
-        margin-bottom: 12px;
+        margin-bottom: 14px;
         display: flex;
         align-items: center;
         gap: 4px;
+        padding: 4px 0;
       }
       .folder-breadcrumb .bc-link {
         color: var(--primary);
         cursor: pointer;
+        font-weight: 500;
       }
       .folder-breadcrumb .bc-link:hover { text-decoration: underline; }
-      .folder-breadcrumb .bc-sep { user-select: none; }
+      .folder-breadcrumb .bc-sep { user-select: none; color: var(--text-tertiary); }
 
       /* Enrollment detail scroll */
       .enrollment-detail-wrap {
@@ -3260,13 +3363,35 @@
           display: none;
         }
         .landing-buttons {
-          flex-direction: column;
-          align-items: center;
+          flex-direction: row;
+          justify-content: center;
+          gap: 12px;
         }
         .landing-btn {
-          width: 100%;
-          height: 120px;
+          width: calc(50% - 6px);
+          max-width: 160px;
+          height: 140px;
+          padding: 12px 8px;
+          gap: 8px;
         }
+        .landing-btn .landing-btn-icon svg {
+          width: 28px;
+          height: 28px;
+        }
+        .landing-btn .landing-btn-desc {
+          font-size: 10px;
+          text-align: center;
+        }
+        .otp-digit {
+          width: 24px;
+          height: 32px;
+          font-size: 13px;
+          margin: 0 1px;
+          border-radius: 6px;
+        }
+        .otp-sep { font-size: 14px; margin: 0 1px; }
+        .deadline-tilde { font-size: 14px; padding: 0 2px; }
+        .deadline-card { gap: 4px; }
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -3295,7 +3420,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.0.0";
+      window.APP_VERSION = "4.1.0";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -5257,20 +5382,30 @@
             </div>
             <div class="deadline-card">
               <div class="deadline-input-group dl-calendar-wrap" id="dlStartWrap">
-                <input type="text" class="dl-year" id="dlStartYear" placeholder="YYYY" maxlength="4" inputmode="numeric" onfocus="openCalendar('start')" oninput="onDeadlineInput(this,'start','year')">
-                <span class="date-sep">.</span>
-                <input type="text" class="dl-month" id="dlStartMonth" placeholder="MM" maxlength="2" inputmode="numeric" onfocus="openCalendar('start')" oninput="onDeadlineInput(this,'start','month')">
-                <span class="date-sep">.</span>
-                <input type="text" class="dl-day" id="dlStartDay" placeholder="DD" maxlength="2" inputmode="numeric" onfocus="openCalendar('start')" oninput="onDeadlineInput(this,'start','day')">
+                <input type="text" class="otp-digit" id="dlS_y1" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('start')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlS_y2" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('start')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlS_y3" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('start')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlS_y4" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('start')" oninput="otpMove(this)">
+                <span class="otp-sep">.</span>
+                <input type="text" class="otp-digit" id="dlS_m1" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('start')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlS_m2" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('start')" oninput="otpMove(this)">
+                <span class="otp-sep">.</span>
+                <input type="text" class="otp-digit" id="dlS_d1" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('start')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlS_d2" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('start')" oninput="otpMove(this)">
                 <div class="dl-calendar" id="dlCalStart"></div>
               </div>
               <span class="deadline-tilde">~</span>
               <div class="deadline-input-group dl-calendar-wrap" id="dlEndWrap">
-                <input type="text" class="dl-year" id="dlEndYear" placeholder="YYYY" maxlength="4" inputmode="numeric" onfocus="openCalendar('end')" oninput="onDeadlineInput(this,'end','year')">
-                <span class="date-sep">.</span>
-                <input type="text" class="dl-month" id="dlEndMonth" placeholder="MM" maxlength="2" inputmode="numeric" onfocus="openCalendar('end')" oninput="onDeadlineInput(this,'end','month')">
-                <span class="date-sep">.</span>
-                <input type="text" class="dl-day" id="dlEndDay" placeholder="DD" maxlength="2" inputmode="numeric" onfocus="openCalendar('end')" oninput="onDeadlineInput(this,'end','day')">
+                <input type="text" class="otp-digit" id="dlE_y1" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('end')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlE_y2" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('end')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlE_y3" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('end')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlE_y4" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('end')" oninput="otpMove(this)">
+                <span class="otp-sep">.</span>
+                <input type="text" class="otp-digit" id="dlE_m1" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('end')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlE_m2" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('end')" oninput="otpMove(this)">
+                <span class="otp-sep">.</span>
+                <input type="text" class="otp-digit" id="dlE_d1" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('end')" oninput="otpMove(this)">
+                <input type="text" class="otp-digit" id="dlE_d2" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('end')" oninput="otpMove(this)">
                 <div class="dl-calendar" id="dlCalEnd"></div>
               </div>
             </div>
@@ -5283,20 +5418,30 @@
               </div>
               <div class="deadline-card">
                 <div class="deadline-input-group dl-calendar-wrap" id="dlTempStartWrap">
-                  <input type="text" class="dl-year" id="dlTempStartYear" placeholder="YYYY" maxlength="4" inputmode="numeric" onfocus="openCalendar('tempStart')" oninput="onDeadlineInput(this,'tempStart','year')">
-                  <span class="date-sep">.</span>
-                  <input type="text" class="dl-month" id="dlTempStartMonth" placeholder="MM" maxlength="2" inputmode="numeric" onfocus="openCalendar('tempStart')" oninput="onDeadlineInput(this,'tempStart','month')">
-                  <span class="date-sep">.</span>
-                  <input type="text" class="dl-day" id="dlTempStartDay" placeholder="DD" maxlength="2" inputmode="numeric" onfocus="openCalendar('tempStart')" oninput="onDeadlineInput(this,'tempStart','day')">
+                  <input type="text" class="otp-digit" id="dlTS_y1" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTS_y2" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTS_y3" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTS_y4" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
+                  <span class="otp-sep">.</span>
+                  <input type="text" class="otp-digit" id="dlTS_m1" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTS_m2" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
+                  <span class="otp-sep">.</span>
+                  <input type="text" class="otp-digit" id="dlTS_d1" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTS_d2" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
                   <div class="dl-calendar" id="dlCalTempStart"></div>
                 </div>
                 <span class="deadline-tilde">~</span>
                 <div class="deadline-input-group dl-calendar-wrap" id="dlTempEndWrap">
-                  <input type="text" class="dl-year" id="dlTempEndYear" placeholder="YYYY" maxlength="4" inputmode="numeric" onfocus="openCalendar('tempEnd')" oninput="onDeadlineInput(this,'tempEnd','year')">
-                  <span class="date-sep">.</span>
-                  <input type="text" class="dl-month" id="dlTempEndMonth" placeholder="MM" maxlength="2" inputmode="numeric" onfocus="openCalendar('tempEnd')" oninput="onDeadlineInput(this,'tempEnd','month')">
-                  <span class="date-sep">.</span>
-                  <input type="text" class="dl-day" id="dlTempEndDay" placeholder="DD" maxlength="2" inputmode="numeric" onfocus="openCalendar('tempEnd')" oninput="onDeadlineInput(this,'tempEnd','day')">
+                  <input type="text" class="otp-digit" id="dlTE_y1" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTE_y2" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTE_y3" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTE_y4" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
+                  <span class="otp-sep">.</span>
+                  <input type="text" class="otp-digit" id="dlTE_m1" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTE_m2" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
+                  <span class="otp-sep">.</span>
+                  <input type="text" class="otp-digit" id="dlTE_d1" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
+                  <input type="text" class="otp-digit" id="dlTE_d2" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
                   <div class="dl-calendar" id="dlCalTempEnd"></div>
                 </div>
               </div>
@@ -6503,44 +6648,45 @@
 
         var groups = groupResponsesBySemester();
 
-        // Auto-select current semester if no folder selected
-        if (!currentSemesterFolder && groups.length > 0) {
-          currentSemesterFolder = { year: groups[0].year, semester: groups[0].semester };
-        }
-
-        // Folder grid (Apple Finder style)
-        var folderHtml = '<div class="semester-folders">';
-        groups.forEach(function(g) {
-          var isActive = currentSemesterFolder && currentSemesterFolder.year === g.year && currentSemesterFolder.semester === g.semester;
-          folderHtml += '<div class="semester-folder' + (isActive ? ' active' : '') + '" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">';
-          folderHtml += '<div class="semester-folder-icon"><div class="folder-tab"></div><div class="folder-back"></div><div class="folder-front"></div></div>';
-          folderHtml += '<div class="semester-folder-name">' + g.year + '년<br>' + g.semester + '학기</div>';
-          folderHtml += '<div class="semester-folder-count">' + g.responses.length + '건</div>';
-          folderHtml += '</div>';
-        });
-        folderHtml += '</div>';
-
-        // Breadcrumb
-        var bcHtml = '';
-        if (currentSemesterFolder) {
-          bcHtml = '<div class="folder-breadcrumb">';
-          bcHtml += '<span class="bc-link" onclick="selectSemesterFolder(null)">응답 목록</span>';
-          bcHtml += '<span class="bc-sep"> › </span>';
-          bcHtml += '<span>' + currentSemesterFolder.year + '년 ' + currentSemesterFolder.semester + '학기</span>';
-          bcHtml += '</div>';
-        }
-
-        // Filter responses for current folder
-        var filtered = responses;
-        if (currentSemesterFolder) {
-          filtered = responses.filter(function(r) {
-            if (!r.submittedAt) return false;
-            var si = getSemesterFromDate(r.submittedAt);
-            return si && si.year === currentSemesterFolder.year && si.semester === currentSemesterFolder.semester;
+        // STATE 1: No folder selected → show only folders
+        if (!currentSemesterFolder) {
+          var folderHtml = '<div class="semester-folders">';
+          groups.forEach(function(g) {
+            var hasDocs = g.responses.length > 0;
+            var docStubs = '';
+            if (hasDocs) {
+              docStubs = '<div class="folder-docs">';
+              var stubCount = Math.min(g.responses.length, 3);
+              for (var s = 0; s < stubCount; s++) {
+                docStubs += '<div class="folder-doc-stub"><div class="doc-line"></div><div class="doc-line"></div></div>';
+              }
+              docStubs += '</div>';
+            }
+            folderHtml += '<div class="semester-folder" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">';
+            folderHtml += '<div class="semester-folder-icon"><div class="folder-tab"></div><div class="folder-back"></div>' + docStubs + '<div class="folder-front"></div></div>';
+            folderHtml += '<div class="semester-folder-name">' + g.year + '년<br>' + g.semester + '학기</div>';
+            folderHtml += '<div class="semester-folder-count">' + g.responses.length + '건</div>';
+            folderHtml += '</div>';
           });
+          folderHtml += '</div>';
+          list.innerHTML = folderHtml;
+          updateLetterSelect();
+          return;
         }
 
-        // Response cards
+        // STATE 2: Folder selected → breadcrumb + response cards only
+        var bcHtml = '<div class="folder-breadcrumb">';
+        bcHtml += '<span class="bc-link" onclick="selectSemesterFolder(null)">📂 응답 목록</span>';
+        bcHtml += '<span class="bc-sep"> › </span>';
+        bcHtml += '<span>' + currentSemesterFolder.year + '년 ' + currentSemesterFolder.semester + '학기</span>';
+        bcHtml += '</div>';
+
+        var filtered = responses.filter(function(r) {
+          if (!r.submittedAt) return false;
+          var si = getSemesterFromDate(r.submittedAt);
+          return si && si.year === currentSemesterFolder.year && si.semester === currentSemesterFolder.semester;
+        });
+
         var cardsHtml = filtered.length === 0
           ? '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">이 학기에는 응답이 없습니다.</p>'
           : filtered.map(function(r) {
@@ -6563,7 +6709,7 @@
                 'border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;" title="삭제">삭제</button></div>';
             }).join('');
 
-        list.innerHTML = folderHtml + bcHtml + cardsHtml;
+        list.innerHTML = bcHtml + cardsHtml;
         updateLetterSelect();
       }
 
@@ -7652,13 +7798,31 @@
       }
 
       function showColumnMappingPopup() {
+        // 엑셀 파일이 없으면 서버에 저장된 매핑 데이터로 팝업 열기
         if (!pendingExcelData || pendingExcelData.length === 0) {
           if (enrollmentData.length > 0 && enrollmentData[0].columnMapping) {
             try {
               var sm = typeof enrollmentData[0].columnMapping === 'string' ? JSON.parse(enrollmentData[0].columnMapping) : enrollmentData[0].columnMapping;
               Object.assign(columnMapping, sm);
-              renderCurrentMapping();
-              showToast('서버에 저장된 매핑을 불러왔습니다.');
+              // 서버 매핑 키를 기반으로 가상 열 목록 생성하여 팝업 열기
+              var cols = Object.keys(sm).filter(function(k) { return sm[k] !== 'skip'; });
+              if (cols.length === 0) cols = Object.keys(sm);
+              if (cols.length > 0) {
+                var overlay = document.getElementById('mappingOverlay');
+                document.getElementById('mappingPreview').innerHTML = '<p style="font-size:11px;color:var(--text-tertiary);padding:8px 0;">서버에 저장된 매핑을 기반으로 표시합니다.</p>';
+                var fieldOptions = Object.entries(mappingLabels).map(function(entry) {
+                  return '<option value="' + entry[0] + '">' + entry[1] + '</option>';
+                }).join('');
+                var rowsHtml = '';
+                cols.forEach(function(col) {
+                  var currentVal = columnMapping[col] || 'skip';
+                  var optionsHtml = fieldOptions.replace('value="' + currentVal + '"', 'value="' + currentVal + '" selected');
+                  rowsHtml += '<div class="mapping-row"><label>' + col + '열</label><select id="mapping_' + col + '">' + optionsHtml + '</select></div>';
+                });
+                document.getElementById('mappingRows').innerHTML = rowsHtml;
+                overlay.classList.add('show');
+                return;
+              }
             } catch(e) {}
           }
           showToast('매핑을 확인하려면 엑셀 파일을 업로드하세요.');
@@ -7922,64 +8086,98 @@
         } catch(e) { /* silent */ }
       }
 
-      function populateDeadlineUI() {
-        var sd = deadlineSettings.survey_deadline;
-        if (sd && sd.start) {
-          var parts = sd.start.split('-');
-          document.getElementById('dlStartYear').value = parts[0] || '';
-          document.getElementById('dlStartMonth').value = parts[1] || '';
-          document.getElementById('dlStartDay').value = parts[2] || '';
-        }
-        if (sd && sd.end) {
-          var parts = sd.end.split('-');
-          document.getElementById('dlEndYear').value = parts[0] || '';
-          document.getElementById('dlEndMonth').value = parts[1] || '';
-          document.getElementById('dlEndDay').value = parts[2] || '';
-        }
-        var td = deadlineSettings.temp_deadline;
-        if (td && td.start) {
-          var parts = td.start.split('-');
-          document.getElementById('dlTempStartYear').value = parts[0] || '';
-          document.getElementById('dlTempStartMonth').value = parts[1] || '';
-          document.getElementById('dlTempStartDay').value = parts[2] || '';
-        }
-        if (td && td.end) {
-          var parts = td.end.split('-');
-          document.getElementById('dlTempEndYear').value = parts[0] || '';
-          document.getElementById('dlTempEndMonth').value = parts[1] || '';
-          document.getElementById('dlTempEndDay').value = parts[2] || '';
-        }
-        updateDeadlineInfo('main');
-        updateDeadlineInfo('temp');
-      }
+      // OTP prefix mapping: type -> ID prefix
+      var otpPrefixMap = { start: 'dlS_', end: 'dlE_', tempStart: 'dlTS_', tempEnd: 'dlTE_' };
+      // All digit IDs in order for each group (start flows to end, tempStart flows to tempEnd)
+      var otpOrder = {
+        main: ['dlS_y1','dlS_y2','dlS_y3','dlS_y4','dlS_m1','dlS_m2','dlS_d1','dlS_d2','dlE_y1','dlE_y2','dlE_y3','dlE_y4','dlE_m1','dlE_m2','dlE_d1','dlE_d2'],
+        temp: ['dlTS_y1','dlTS_y2','dlTS_y3','dlTS_y4','dlTS_m1','dlTS_m2','dlTS_d1','dlTS_d2','dlTE_y1','dlTE_y2','dlTE_y3','dlTE_y4','dlTE_m1','dlTE_m2','dlTE_d1','dlTE_d2']
+      };
 
-      function onDeadlineInput(el, group, part) {
+      function otpMove(el) {
         var val = el.value.replace(/[^0-9]/g, '');
-        el.value = val;
-        var maxLen = part === 'year' ? 4 : 2;
-        if (val.length >= maxLen) {
-          var order;
-          if (group === 'start') order = ['dlStartYear','dlStartMonth','dlStartDay','dlEndYear','dlEndMonth','dlEndDay'];
-          else if (group === 'end') order = ['dlEndYear','dlEndMonth','dlEndDay'];
-          else if (group === 'tempStart') order = ['dlTempStartYear','dlTempStartMonth','dlTempStartDay','dlTempEndYear','dlTempEndMonth','dlTempEndDay'];
-          else if (group === 'tempEnd') order = ['dlTempEndYear','dlTempEndMonth','dlTempEndDay'];
+        el.value = val ? val.charAt(val.length - 1) : '';
+        if (el.value) {
+          var group = el.id.startsWith('dlTS_') || el.id.startsWith('dlTE_') ? 'temp' : 'main';
+          var order = otpOrder[group];
           var idx = order.indexOf(el.id);
           if (idx >= 0 && idx < order.length - 1) {
             var next = document.getElementById(order[idx + 1]);
             if (next) { next.focus(); next.select(); }
           }
+          updateDeadlineInfo(group);
         }
-        updateDeadlineInfo(group === 'start' || group === 'end' ? 'main' : 'temp');
+      }
+
+      // Backspace handler for OTP digits
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && e.target.classList.contains('otp-digit')) {
+          if (!e.target.value) {
+            var group = e.target.id.startsWith('dlTS_') || e.target.id.startsWith('dlTE_') ? 'temp' : 'main';
+            var order = otpOrder[group];
+            var idx = order.indexOf(e.target.id);
+            if (idx > 0) {
+              var prev = document.getElementById(order[idx - 1]);
+              if (prev) { prev.focus(); prev.select(); }
+            }
+            e.preventDefault();
+          }
+        }
+      });
+
+      function setOtpDigits(prefix, dateStr) {
+        // dateStr = "YYYY-MM-DD", prefix = "dlS_", "dlE_", "dlTS_", "dlTE_"
+        var parts = dateStr.split('-');
+        var y = parts[0] || '', m = parts[1] || '', d = parts[2] || '';
+        for (var i = 0; i < 4; i++) {
+          var el = document.getElementById(prefix + 'y' + (i+1));
+          if (el) el.value = y[i] || '';
+        }
+        for (var i = 0; i < 2; i++) {
+          var el = document.getElementById(prefix + 'm' + (i+1));
+          if (el) el.value = m[i] || '';
+        }
+        for (var i = 0; i < 2; i++) {
+          var el = document.getElementById(prefix + 'd' + (i+1));
+          if (el) el.value = d[i] || '';
+        }
+      }
+
+      function getOtpDate(prefix) {
+        // prefix = "dlS_", "dlE_", "dlTS_", "dlTE_"
+        var y = '', m = '', d = '';
+        for (var i = 1; i <= 4; i++) {
+          var el = document.getElementById(prefix + 'y' + i);
+          y += el ? el.value : '';
+        }
+        for (var i = 1; i <= 2; i++) {
+          var el = document.getElementById(prefix + 'm' + i);
+          m += el ? el.value : '';
+        }
+        for (var i = 1; i <= 2; i++) {
+          var el = document.getElementById(prefix + 'd' + i);
+          d += el ? el.value : '';
+        }
+        if (y.length === 4 && m.length === 2 && d.length === 2) {
+          return y + '-' + m + '-' + d;
+        }
+        return null;
+      }
+
+      function populateDeadlineUI() {
+        var sd = deadlineSettings.survey_deadline;
+        if (sd && sd.start) setOtpDigits('dlS_', sd.start);
+        if (sd && sd.end) setOtpDigits('dlE_', sd.end);
+        var td = deadlineSettings.temp_deadline;
+        if (td && td.start) setOtpDigits('dlTS_', td.start);
+        if (td && td.end) setOtpDigits('dlTE_', td.end);
+        updateDeadlineInfo('main');
+        updateDeadlineInfo('temp');
       }
 
       function getDeadlineDates(prefix) {
-        var sy = document.getElementById('dl' + prefix + 'Year').value;
-        var sm = document.getElementById('dl' + prefix + 'Month').value;
-        var sd = document.getElementById('dl' + prefix + 'Day').value;
-        if (sy.length === 4 && sm.length >= 1 && sd.length >= 1) {
-          return sy + '-' + sm.padStart(2,'0') + '-' + sd.padStart(2,'0');
-        }
-        return null;
+        var map = { Start: 'dlS_', End: 'dlE_', TempStart: 'dlTS_', TempEnd: 'dlTE_' };
+        return getOtpDate(map[prefix]);
       }
 
       function updateDeadlineInfo(type) {
@@ -8154,15 +8352,9 @@
         var dt = new Date(y, m, d);
         if (!activeCalendar) return;
         var type = activeCalendar.type;
-        var idPrefix;
-        if (type === 'start') idPrefix = 'dlStart';
-        else if (type === 'end') idPrefix = 'dlEnd';
-        else if (type === 'tempStart') idPrefix = 'dlTempStart';
-        else if (type === 'tempEnd') idPrefix = 'dlTempEnd';
-
-        document.getElementById(idPrefix + 'Year').value = String(dt.getFullYear());
-        document.getElementById(idPrefix + 'Month').value = String(dt.getMonth() + 1).padStart(2, '0');
-        document.getElementById(idPrefix + 'Day').value = String(dt.getDate()).padStart(2, '0');
+        var prefix = otpPrefixMap[type];
+        var dateStr = String(dt.getFullYear()) + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+        setOtpDigits(prefix, dateStr);
 
         activeCalendar.el.classList.remove('show');
         activeCalendar = null;
@@ -9220,6 +9412,8 @@
         function clearLabel(label){
           if (!label) return;
           label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once');
+          var helper = label.querySelector('.helper');
+          if (helper) helper.classList.remove('helper-sweep', 'helper-settled');
         }
         function applyFocusSolid(label){          // 파랑 solid (규칙3)
           if (!label) return;
@@ -9237,12 +9431,26 @@
           if (label === getLabel(focusedGroup)) return false; // 포커스 라벨엔 1회 스윕 안 함
           if (!pageAllRequiredAnswered(label)) return false;  // [전제] 해당 페이지 필수 문항 모두 완료
           label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once', 'lf-settled');
+          // helper 초기화
+          var helper = label.querySelector('.helper');
+          if (helper) { helper.classList.remove('helper-sweep', 'helper-settled'); }
           void label.offsetWidth;
           label.classList.add('lf-sweep', 'lf-once');
-          label.addEventListener('animationend', function done(){
+          label.addEventListener('animationend', function done(e){
+            if (e.target !== label) return; // helper의 animationend 무시
             // [버그수정] 클래스 제거 시 투명 프레임(흰 깜빡) 방지: 먼저 solid 기본색 고정
             label.classList.add('lf-settled');
             label.classList.remove('lf-sweep', 'lf-once');
+            // 라벨 그라데이션 완료 후 → helper 회색 그라데이션 시작
+            if (helper && helper.textContent.trim()) {
+              helper.classList.remove('helper-settled');
+              void helper.offsetWidth;
+              helper.classList.add('helper-sweep');
+              helper.addEventListener('animationend', function hDone(){
+                helper.classList.add('helper-settled');
+                helper.classList.remove('helper-sweep');
+              }, { once: true });
+            }
           }, { once: true });
           return true;
         }
