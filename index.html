@@ -1076,19 +1076,20 @@
       .helper.helper-sweep {
         background-image:
           linear-gradient(90deg,
-            rgba(120,120,120,0) 40%,
-            rgba(160,160,160,1) 47%,
-            rgba(200,200,200,1) 53%,
-            rgba(120,120,120,0) 60%),
+            rgba(180,180,180,0) 30%,
+            rgba(255,255,255,0.9) 42%,
+            rgba(220,230,255,1) 50%,
+            rgba(255,255,255,0.9) 58%,
+            rgba(180,180,180,0) 70%),
           linear-gradient(90deg, var(--text-secondary), var(--text-secondary)) !important;
-        background-size: 400% 100%, 100% 100% !important;
+        background-size: 300% 100%, 100% 100% !important;
         background-repeat: no-repeat, no-repeat !important;
         background-position: 100% 0, 0 0 !important;
         -webkit-background-clip: text !important;
         background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         color: transparent !important;
-        animation: helperSweep 2s linear 1 forwards !important;
+        animation: helperSweep 1.8s ease-in-out 1 forwards !important;
         font-weight: 400 !important;
       }
       .helper.helper-settled {
@@ -1144,13 +1145,13 @@
       .form-input::placeholder {
         color: var(--text-tertiary);
       }
-      /* 브라우저 자동완성 노란 배경 제거 */
+      /* 브라우저 자동완성 배경 — 리퀴드 글라스 하늘색 */
       .form-input:-webkit-autofill,
       .form-input:-webkit-autofill:hover,
       .form-input:-webkit-autofill:focus,
       .form-input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 40px rgba(40,40,45,0.95) inset !important;
-        box-shadow: 0 0 0 40px rgba(40,40,45,0.95) inset !important;
+        -webkit-box-shadow: 0 0 0 40px rgba(0, 113, 227, 0.12) inset !important;
+        box-shadow: 0 0 0 40px rgba(0, 113, 227, 0.12) inset !important;
         -webkit-text-fill-color: var(--text-primary) !important;
         caret-color: var(--text-primary) !important;
         transition: background-color 5000s ease-in-out 0s;
@@ -2539,8 +2540,8 @@
       .deadline-card {
         display: flex;
         align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
+        gap: 4px;
+        flex-wrap: nowrap;
       }
       .deadline-input-group {
         display: flex;
@@ -2550,19 +2551,19 @@
         position: relative;
       }
       .otp-digit {
-        width: 28px;
-        height: 36px;
+        width: 22px;
+        height: 30px;
         background: rgba(255,255,255,0.08);
         border: 1.5px solid rgba(255,255,255,0.2);
-        border-radius: 8px;
+        border-radius: 6px;
         color: var(--text-primary);
-        font-size: 15px;
+        font-size: 14px;
         font-family: var(--font);
         text-align: center;
         padding: 0;
         outline: none;
         transition: var(--transition);
-        margin: 0 1.5px;
+        margin: 0 1px;
         caret-color: var(--primary);
       }
       .otp-digit:focus {
@@ -2573,13 +2574,13 @@
       .otp-digit::placeholder {
         color: var(--text-tertiary);
         opacity: 0.5;
-        font-size: 11px;
+        font-size: 9px;
       }
       .otp-sep {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 700;
         color: var(--text-secondary);
-        margin: 0 2px;
+        margin: 0 1px;
         user-select: none;
       }
       .deadline-tilde {
@@ -2749,66 +2750,76 @@
       .semester-folder:hover {
         background: rgba(255,255,255,0.06);
       }
+      .semester-folder:hover .folder-front {
+        transform: translateY(-6px) rotateX(12deg);
+      }
+      .semester-folder:hover .folder-docs {
+        transform: translateY(-3px);
+      }
       .semester-folder:active {
         transform: scale(0.96);
       }
-      /* macOS Finder folder icon */
+      /* macOS Finder folder icon — 첨부 이미지 기반 */
       .semester-folder-icon {
         width: 64px;
-        height: 52px;
+        height: 50px;
         position: relative;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
-      }
-      .folder-tab {
-        position: absolute;
-        top: 0;
-        left: 2px;
-        width: 24px;
-        height: 12px;
-        background: linear-gradient(180deg, #6dcbf5 0%, #42a5d9 100%);
-        border-radius: 5px 5px 0 0;
-        z-index: 1;
+        perspective: 200px;
       }
       .folder-back {
         position: absolute;
-        top: 8px;
+        top: 0;
         left: 0;
         width: 64px;
-        height: 44px;
-        background: linear-gradient(180deg, #4fb8e8 0%, #2b8bc4 100%);
-        border-radius: 2px 6px 6px 6px;
-        z-index: 2;
+        height: 50px;
+        background: linear-gradient(180deg, #59b8e6 0%, #3a9bd5 40%, #2d89c3 100%);
+        border-radius: 3px 10px 4px 4px;
+        z-index: 1;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      }
+      .folder-back::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 0;
+        width: 26px;
+        height: 10px;
+        background: linear-gradient(180deg, #6ec9f0 0%, #4aace0 100%);
+        border-radius: 5px 5px 0 0;
       }
       /* Document stubs peeking out */
       .folder-docs {
         position: absolute;
-        top: 14px;
-        left: 8px;
-        right: 8px;
-        height: 20px;
-        z-index: 3;
+        top: 6px;
+        left: 6px;
+        right: 6px;
+        height: 22px;
+        z-index: 2;
         overflow: hidden;
+        transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        transform: translateY(0);
       }
       .folder-doc-stub {
         position: absolute;
-        width: 34px;
-        height: 22px;
-        background: #f0f0f0;
+        width: 36px;
+        height: 24px;
+        background: #f2f2f2;
         border-radius: 2px 2px 0 0;
-        border: 1px solid rgba(0,0,0,0.08);
+        border: 1px solid rgba(0,0,0,0.06);
         border-bottom: none;
+        box-shadow: 0 -1px 2px rgba(0,0,0,0.04);
       }
-      .folder-doc-stub:nth-child(1) { left: 0; top: 4px; }
-      .folder-doc-stub:nth-child(2) { left: 10px; top: 1px; }
-      .folder-doc-stub:nth-child(3) { left: 4px; top: 7px; }
+      .folder-doc-stub:nth-child(1) { left: 0; top: 6px; }
+      .folder-doc-stub:nth-child(2) { left: 12px; top: 2px; }
+      .folder-doc-stub:nth-child(3) { left: 5px; top: 10px; }
       .folder-doc-stub .doc-line {
         height: 2px;
-        background: rgba(0,0,0,0.15);
+        background: rgba(0,0,0,0.12);
         border-radius: 1px;
-        margin: 4px 4px 0;
+        margin: 5px 5px 0;
       }
       .folder-doc-stub .doc-line:nth-child(2) {
-        width: 60%;
+        width: 55%;
         margin-top: 3px;
       }
       .folder-front {
@@ -2816,11 +2827,14 @@
         bottom: 0;
         left: 0;
         width: 64px;
-        height: 36px;
-        background: linear-gradient(180deg, #7dd3f7 0%, #4aaee0 50%, #3a9ad4 100%);
-        border-radius: 0 0 6px 6px;
-        z-index: 4;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        height: 38px;
+        background: linear-gradient(180deg, #8adaf8 0%, #5fc0ec 30%, #3ea6dd 70%, #2f92cc 100%);
+        border-radius: 0 2px 4px 4px;
+        z-index: 3;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        transform-origin: bottom center;
+        transform: translateY(0) rotateX(0deg);
       }
       .folder-front::after {
         content: '';
@@ -2829,14 +2843,14 @@
         left: 0;
         right: 0;
         height: 1px;
-        background: rgba(255,255,255,0.35);
+        background: rgba(255,255,255,0.4);
       }
       /* Dark mode folder colors */
-      body.dark-mode .folder-tab { background: linear-gradient(180deg, #1e6fa0 0%, #155980 100%); }
-      body.dark-mode .folder-back { background: linear-gradient(180deg, #1a6898 0%, #0e4a6e 100%); }
-      body.dark-mode .folder-front { background: linear-gradient(180deg, #2180b0 0%, #165d88 50%, #0e4a6e 100%); }
-      body.dark-mode .folder-doc-stub { background: #3a3a3c; border-color: rgba(255,255,255,0.08); }
-      body.dark-mode .folder-doc-stub .doc-line { background: rgba(255,255,255,0.15); }
+      body.dark-mode .folder-back { background: linear-gradient(180deg, #1a6898 0%, #0f5580 40%, #0a4268 100%); }
+      body.dark-mode .folder-back::before { background: linear-gradient(180deg, #1e7aaa 0%, #15608c 100%); }
+      body.dark-mode .folder-front { background: linear-gradient(180deg, #2690be 0%, #1c7da8 30%, #156a92 70%, #0e5478 100%); }
+      body.dark-mode .folder-doc-stub { background: #3a3a3c; border-color: rgba(255,255,255,0.06); }
+      body.dark-mode .folder-doc-stub .doc-line { background: rgba(255,255,255,0.12); }
       .semester-folder-name {
         font-size: 11px;
         font-weight: 600;
@@ -3383,15 +3397,15 @@
           text-align: center;
         }
         .otp-digit {
-          width: 24px;
-          height: 32px;
-          font-size: 13px;
-          margin: 0 1px;
-          border-radius: 6px;
+          width: 19px;
+          height: 26px;
+          font-size: 12px;
+          margin: 0 0.5px;
+          border-radius: 5px;
         }
-        .otp-sep { font-size: 14px; margin: 0 1px; }
-        .deadline-tilde { font-size: 14px; padding: 0 2px; }
-        .deadline-card { gap: 4px; }
+        .otp-sep { font-size: 12px; margin: 0 0.5px; }
+        .deadline-tilde { font-size: 12px; padding: 0 1px; }
+        .deadline-card { gap: 2px; }
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -6663,7 +6677,7 @@
               docStubs += '</div>';
             }
             folderHtml += '<div class="semester-folder" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">';
-            folderHtml += '<div class="semester-folder-icon"><div class="folder-tab"></div><div class="folder-back"></div>' + docStubs + '<div class="folder-front"></div></div>';
+            folderHtml += '<div class="semester-folder-icon"><div class="folder-back"></div>' + docStubs + '<div class="folder-front"></div></div>';
             folderHtml += '<div class="semester-folder-name">' + g.year + '년<br>' + g.semester + '학기</div>';
             folderHtml += '<div class="semester-folder-count">' + g.responses.length + '건</div>';
             folderHtml += '</div>';
