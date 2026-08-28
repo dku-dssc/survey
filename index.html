@@ -1044,7 +1044,7 @@
         -webkit-text-fill-color: var(--danger) !important;
         color: var(--danger) !important;
       }
-      .form-label.lf-settled .helper {
+      .form-label.lf-settled .helper:not(.helper-sweep) {
         -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
       }
@@ -1058,30 +1058,37 @@
         -webkit-background-clip: border-box !important;
         background-clip: border-box !important;
       }
-      .form-label.lf-sweep .helper,
-      .form-label.lf-focus .helper {
+      .form-label.lf-sweep .helper:not(.helper-sweep),
+      .form-label.lf-focus .helper:not(.helper-sweep) {
         -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
         background: none !important;
         -webkit-background-clip: border-box !important;
         background-clip: border-box !important;
-        font-weight: 400 !important;
       }
 
       /* ── helper 부연설명 검정→회색 그라데이션 (본문 그라데이션 직후 재생) ── */
       @keyframes helperSweep {
-        0%   { color: #111; -webkit-text-fill-color: #111; }
-        100% { color: var(--text-secondary); -webkit-text-fill-color: var(--text-secondary); }
+        0%   { background-position: 100% 0; }
+        100% { background-position: 0% 0; }
       }
       .helper.helper-sweep {
-        animation: helperSweep 1.2s ease-out 1 forwards !important;
-        font-weight: 400 !important;
+        background: linear-gradient(90deg, var(--text-secondary) 0%, var(--text-secondary) 40%, #111 50%, var(--text-secondary) 60%, var(--text-secondary) 100%) !important;
+        background-size: 300% 100% !important;
+        background-position: 100% 0 !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        color: transparent !important;
+        animation: helperSweep 1.4s ease-in-out 1 forwards !important;
       }
       .helper.helper-settled {
+        background: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
         -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
         animation: none !important;
-        font-weight: 400 !important;
       }
 
       /* 모션 최소화 선호 시 애니메이션 정지(정적 표시) */
@@ -2732,6 +2739,14 @@
       .semester-folder:hover {
         background: rgba(255,255,255,0.06);
       }
+      /* 빈 폴더: 전체 살짝 위로 뜨기 */
+      .semester-folder.folder-empty:hover .semester-folder-icon svg {
+        transform: translateY(-2px);
+      }
+      /* 파일 있는 폴더: 서류만 올라감 */
+      .semester-folder.folder-has:hover .folder-docs {
+        transform: translateY(-3px);
+      }
       .semester-folder:active {
         transform: scale(0.96);
       }
@@ -2748,18 +2763,15 @@
         width: 64px;
         height: 52px;
         filter: drop-shadow(0 1px 3px rgba(0,0,0,0.15));
-      }
-      .folder-front-shape {
         transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-        transform-origin: 32px 48px;
       }
-      .semester-folder:hover .folder-front-shape {
-        transform: translateY(-2px);
+      .folder-docs {
+        transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
       }
       /* Dark mode folder */
-      body.dark-mode .folder-tab-shape { fill: #2180AA; }
-      body.dark-mode .folder-back-shape { fill: #1A6C96; }
-      body.dark-mode .folder-front-shape { fill: #2898C4; }
+      body.dark-mode .folder-tab-shape { fill: #1B6D97; }
+      body.dark-mode .folder-back-shape { fill: #1B6D97; }
+      body.dark-mode .folder-front-shape { fill: #2A99C6; }
       .semester-folder-name {
         font-size: 11px;
         font-weight: 600;
@@ -6575,17 +6587,16 @@
         if (!currentSemesterFolder) {
           var folderHtml = '<div class="semester-folders">';
           groups.forEach(function(g) {
-            folderHtml += '<div class="semester-folder" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">';
+            var hasDocs = g.responses.length > 0;
+            var folderClass = 'semester-folder ' + (hasDocs ? 'folder-has' : 'folder-empty');
+            folderHtml += '<div class="' + folderClass + '" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">';
+            var docsSvg = hasDocs ? '<rect class="folder-docs" x="6" y="12" width="52" height="7" rx="1.5" fill="white"/>' : '';
             folderHtml += '<div class="semester-folder-icon">' +
-              '<svg viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-              /* 탭 — 왼쪽 위 작은 돌출, 매끄러운 곡선 */
-              '<path class="folder-tab-shape" d="M4 8 C4 5.5 5.5 4 8 4 L22 4 C23.5 4 24.5 4.8 25.5 6.5 L27 9 C27.5 9.8 28.3 10 29 10 L4 10 Z" fill="#6CC4EE"/>' +
-              /* 뒷면 — 큰 둥근 사각형 */
-              '<rect class="folder-back-shape" x="2" y="10" width="56" height="36" rx="4" fill="#5AAFE0"/>' +
-              /* 앞면 — 약간 더 밝은 파란색, 위에 올라옴 */
-              '<rect class="folder-front-shape" x="1" y="16" width="58" height="31" rx="4" fill="#6DC4EE"/>' +
-              /* 앞면 상단 하이라이트 라인 */
-              '<rect x="3" y="16.5" width="54" height="1" rx="0.5" fill="white" opacity="0.25"/>' +
+              '<svg viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+              '<path class="folder-tab-shape" d="M1 14 L1 8 C1 6 2.5 5 4.5 5 L20 5 C22 5 23 6 24 7.5 L27.5 14 Z" fill="#5EB2DE"/>' +
+              '<rect class="folder-back-shape" x="1" y="10" width="62" height="20" rx="4" ry="4" fill="#5EB2DE"/>' +
+              docsSvg +
+              '<rect class="folder-front-shape" x="0.5" y="15" width="63" height="36.5" rx="4.5" ry="4.5" fill="#7DCBEA"/>' +
               '</svg>' +
               '</div>';
             folderHtml += '<div class="semester-folder-name">' + g.year + '년<br>' + g.semester + '학기</div>';
