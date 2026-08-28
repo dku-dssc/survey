@@ -2540,7 +2540,7 @@
       .deadline-card {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 2px;
         flex-wrap: nowrap;
       }
       .deadline-input-group {
@@ -2551,19 +2551,19 @@
         position: relative;
       }
       .otp-digit {
-        width: 22px;
-        height: 30px;
+        width: 18px;
+        height: 26px;
         background: rgba(255,255,255,0.08);
-        border: 1.5px solid rgba(255,255,255,0.2);
-        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 5px;
         color: var(--text-primary);
-        font-size: 14px;
+        font-size: 13px;
         font-family: var(--font);
         text-align: center;
         padding: 0;
         outline: none;
         transition: var(--transition);
-        margin: 0 1px;
+        margin: 0;
         caret-color: var(--primary);
       }
       .otp-digit:focus {
@@ -2577,16 +2577,16 @@
         font-size: 9px;
       }
       .otp-sep {
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 700;
         color: var(--text-secondary);
-        margin: 0 1px;
+        margin: 0;
         user-select: none;
       }
       .deadline-tilde {
-        font-size: 16px;
+        font-size: 13px;
         color: var(--text-secondary);
-        padding: 0 4px;
+        padding: 0 2px;
         user-select: none;
       }
       .deadline-info {
@@ -2750,107 +2750,37 @@
       .semester-folder:hover {
         background: rgba(255,255,255,0.06);
       }
-      .semester-folder:hover .folder-front {
-        transform: translateY(-6px) rotateX(12deg);
-      }
-      .semester-folder:hover .folder-docs {
+      .semester-folder:hover .folder-front-shape {
         transform: translateY(-3px);
+        transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
       }
       .semester-folder:active {
         transform: scale(0.96);
       }
-      /* macOS Finder folder icon — 첨부 이미지 기반 */
+      /* macOS Finder folder icon — SVG 인라인 방식 */
       .semester-folder-icon {
         width: 64px;
-        height: 50px;
+        height: 56px;
         position: relative;
-        perspective: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
-      .folder-back {
-        position: absolute;
-        top: 0;
-        left: 0;
+      .semester-folder-icon svg {
         width: 64px;
-        height: 50px;
-        background: linear-gradient(180deg, #59b8e6 0%, #3a9bd5 40%, #2d89c3 100%);
-        border-radius: 3px 10px 4px 4px;
-        z-index: 1;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-      }
-      .folder-back::before {
-        content: '';
-        position: absolute;
-        top: -8px;
-        left: 0;
-        width: 26px;
-        height: 10px;
-        background: linear-gradient(180deg, #6ec9f0 0%, #4aace0 100%);
-        border-radius: 5px 5px 0 0;
-      }
-      /* Document stubs peeking out */
-      .folder-docs {
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        right: 6px;
-        height: 22px;
-        z-index: 2;
-        overflow: hidden;
+        height: 56px;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
         transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-        transform: translateY(0);
       }
-      .folder-doc-stub {
-        position: absolute;
-        width: 36px;
-        height: 24px;
-        background: #f2f2f2;
-        border-radius: 2px 2px 0 0;
-        border: 1px solid rgba(0,0,0,0.06);
-        border-bottom: none;
-        box-shadow: 0 -1px 2px rgba(0,0,0,0.04);
-      }
-      .folder-doc-stub:nth-child(1) { left: 0; top: 6px; }
-      .folder-doc-stub:nth-child(2) { left: 12px; top: 2px; }
-      .folder-doc-stub:nth-child(3) { left: 5px; top: 10px; }
-      .folder-doc-stub .doc-line {
-        height: 2px;
-        background: rgba(0,0,0,0.12);
-        border-radius: 1px;
-        margin: 5px 5px 0;
-      }
-      .folder-doc-stub .doc-line:nth-child(2) {
-        width: 55%;
-        margin-top: 3px;
-      }
-      .folder-front {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 64px;
-        height: 38px;
-        background: linear-gradient(180deg, #8adaf8 0%, #5fc0ec 30%, #3ea6dd 70%, #2f92cc 100%);
-        border-radius: 0 2px 4px 4px;
-        z-index: 3;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-        transform-origin: bottom center;
-        transform: translateY(0) rotateX(0deg);
-      }
-      .folder-front::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: rgba(255,255,255,0.4);
+      .semester-folder:hover .semester-folder-icon svg .folder-front-shape {
+        transform: translateY(-3px) rotateX(8deg);
+        transform-origin: center bottom;
       }
       /* Dark mode folder colors */
-      body.dark-mode .folder-back { background: linear-gradient(180deg, #1a6898 0%, #0f5580 40%, #0a4268 100%); }
-      body.dark-mode .folder-back::before { background: linear-gradient(180deg, #1e7aaa 0%, #15608c 100%); }
-      body.dark-mode .folder-front { background: linear-gradient(180deg, #2690be 0%, #1c7da8 30%, #156a92 70%, #0e5478 100%); }
-      body.dark-mode .folder-doc-stub { background: #3a3a3c; border-color: rgba(255,255,255,0.06); }
-      body.dark-mode .folder-doc-stub .doc-line { background: rgba(255,255,255,0.12); }
+      body.dark-mode .folder-tab-shape { fill: url(#tabGradDark) !important; }
+      body.dark-mode .folder-back-shape { fill: url(#backGradDark) !important; }
+      body.dark-mode .folder-front-shape { fill: url(#frontGradDark) !important; }
+      body.dark-mode .folder-front-highlight { opacity: 0.15 !important; }
       .semester-folder-name {
         font-size: 11px;
         font-weight: 600;
@@ -3397,15 +3327,15 @@
           text-align: center;
         }
         .otp-digit {
-          width: 19px;
-          height: 26px;
-          font-size: 12px;
-          margin: 0 0.5px;
-          border-radius: 5px;
+          width: 16px;
+          height: 22px;
+          font-size: 11px;
+          margin: 0;
+          border-radius: 4px;
         }
-        .otp-sep { font-size: 12px; margin: 0 0.5px; }
-        .deadline-tilde { font-size: 12px; padding: 0 1px; }
-        .deadline-card { gap: 2px; }
+        .otp-sep { font-size: 10px; margin: 0; }
+        .deadline-tilde { font-size: 10px; padding: 0 1px; }
+        .deadline-card { gap: 1px; }
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -3434,7 +3364,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.1.0";
+      window.APP_VERSION = "4.1.1";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -6666,18 +6596,27 @@
         if (!currentSemesterFolder) {
           var folderHtml = '<div class="semester-folders">';
           groups.forEach(function(g) {
-            var hasDocs = g.responses.length > 0;
-            var docStubs = '';
-            if (hasDocs) {
-              docStubs = '<div class="folder-docs">';
-              var stubCount = Math.min(g.responses.length, 3);
-              for (var s = 0; s < stubCount; s++) {
-                docStubs += '<div class="folder-doc-stub"><div class="doc-line"></div><div class="doc-line"></div></div>';
-              }
-              docStubs += '</div>';
-            }
             folderHtml += '<div class="semester-folder" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">';
-            folderHtml += '<div class="semester-folder-icon"><div class="folder-back"></div>' + docStubs + '<div class="folder-front"></div></div>';
+            folderHtml += '<div class="semester-folder-icon">' +
+              '<svg viewBox="0 0 64 56" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+              '<defs>' +
+              '<linearGradient id="tabGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7ED4F6"/><stop offset="100%" stop-color="#4FB5E5"/></linearGradient>' +
+              '<linearGradient id="backGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#56B8E8"/><stop offset="100%" stop-color="#2A85C0"/></linearGradient>' +
+              '<linearGradient id="frontGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6DC8F2"/><stop offset="40%" stop-color="#47ADE0"/><stop offset="100%" stop-color="#2E90CA"/></linearGradient>' +
+              '<linearGradient id="tabGradDark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e7aaa"/><stop offset="100%" stop-color="#15608c"/></linearGradient>' +
+              '<linearGradient id="backGradDark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a6898"/><stop offset="100%" stop-color="#0a4268"/></linearGradient>' +
+              '<linearGradient id="frontGradDark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2690be"/><stop offset="100%" stop-color="#0e5478"/></linearGradient>' +
+              '</defs>' +
+              /* 탭 (왼쪽 위 돌출부) */
+              '<path class="folder-tab-shape" d="M3 10 C3 7, 5 5, 8 5 L22 5 C24 5, 25 6, 26 8 L28 12 L3 12 Z" fill="url(#tabGrad)"/>' +
+              /* 뒷면 (메인 사각형) */
+              '<path class="folder-back-shape" d="M2 12 C2 10, 4 9, 6 9 L58 9 C60 9, 62 10, 62 12 L62 51 C62 53, 60 54, 58 54 L6 54 C4 54, 2 53, 2 51 Z" fill="url(#backGrad)"/>' +
+              /* 앞면 (약간 밝은 오버레이) */
+              '<path class="folder-front-shape" d="M1 20 C1 18, 3 16, 5 16 L59 16 C61 16, 63 18, 63 20 L63 52 C63 54, 61 55, 59 55 L5 55 C3 55, 1 54, 1 52 Z" fill="url(#frontGrad)" style="transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); transform-origin: center bottom;"/>' +
+              /* 앞면 상단 하이라이트 */
+              '<rect class="folder-front-highlight" x="3" y="16" width="58" height="2" rx="1" fill="white" opacity="0.3"/>' +
+              '</svg>' +
+              '</div>';
             folderHtml += '<div class="semester-folder-name">' + g.year + '년<br>' + g.semester + '학기</div>';
             folderHtml += '<div class="semester-folder-count">' + g.responses.length + '건</div>';
             folderHtml += '</div>';
