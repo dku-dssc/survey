@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2026학년도 2학기 개인별 교육지원계획 수요조사</title>
+    <title>개인별 교육지원계획 수요조사</title>
     <style>
       /* ===== CSS Reset & Base ===== */
       *,
@@ -2469,6 +2469,310 @@
         background: rgba(17,100,177,0.1);
       }
 
+      /* ===== Survey Deadline Settings ===== */
+      .deadline-section {
+        margin-bottom: 24px;
+        padding: 16px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 14px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .deadline-section-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .deadline-card {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .deadline-input-group {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
+        padding: 8px 10px;
+        transition: var(--transition);
+      }
+      .deadline-input-group:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(0,113,227,0.15);
+      }
+      .deadline-input-group input {
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text-primary);
+        font-size: 14px;
+        font-family: var(--font);
+        text-align: center;
+        padding: 0;
+      }
+      .deadline-input-group input::placeholder {
+        color: var(--text-tertiary);
+        opacity: 0.6;
+      }
+      .dl-year { width: 42px; }
+      .dl-month { width: 24px; }
+      .dl-day { width: 24px; }
+      .deadline-tilde {
+        font-size: 16px;
+        color: var(--text-secondary);
+        padding: 0 4px;
+        user-select: none;
+      }
+      .deadline-info {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        margin-top: 8px;
+        padding-left: 2px;
+        min-height: 16px;
+      }
+      .deadline-info.info-highlight {
+        color: var(--primary);
+      }
+      .deadline-save-btn {
+        margin-top: 10px;
+        padding: 6px 14px;
+        font-size: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: linear-gradient(135deg, rgba(17,100,177,0.7), rgba(72,118,239,0.6));
+        color: #fff;
+        transition: var(--transition);
+        backdrop-filter: blur(8px);
+      }
+      .deadline-save-btn:hover {
+        background: linear-gradient(135deg, rgba(17,100,177,0.9), rgba(72,118,239,0.8));
+      }
+      .deadline-save-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .temp-deadline-section {
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+      }
+      .temp-deadline-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      /* Date picker calendar dropdown */
+      .dl-calendar-wrap { position: relative; display: inline-block; }
+      .dl-calendar {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        z-index: 1200;
+        background: var(--card-bg, #fff);
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        min-width: 260px;
+        display: none;
+      }
+      .dl-calendar.show { display: block; }
+      .dl-calendar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .dl-calendar-header button {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 4px 8px;
+        border-radius: 6px;
+      }
+      .dl-calendar-header button:hover { background: rgba(255,255,255,0.1); }
+      .dl-calendar-header span {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .dl-calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+      }
+      .dl-calendar-grid .cal-dow {
+        font-size: 10px;
+        text-align: center;
+        color: var(--text-tertiary);
+        padding: 4px 0;
+        font-weight: 600;
+      }
+      .dl-calendar-grid .cal-day {
+        font-size: 12px;
+        text-align: center;
+        padding: 6px 4px;
+        border-radius: 6px;
+        cursor: pointer;
+        color: var(--text-primary);
+        transition: background 0.15s;
+      }
+      .dl-calendar-grid .cal-day:hover { background: rgba(17,100,177,0.12); }
+      .dl-calendar-grid .cal-day.today { font-weight: 700; color: var(--primary); }
+      .dl-calendar-grid .cal-day.selected { background: var(--primary); color: #fff; font-weight: 600; }
+      .dl-calendar-grid .cal-day.other-month { opacity: 0.35; }
+
+      /* ===== Mapping Display Table ===== */
+      .mapping-display-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        margin-top: 10px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.15);
+      }
+      .mapping-display-table th,
+      .mapping-display-table td {
+        padding: 8px 6px;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.12);
+      }
+      .mapping-display-table th {
+        background: rgba(17,100,177,0.18);
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 12px;
+      }
+      .mapping-display-table td {
+        background: rgba(255,255,255,0.04);
+        color: var(--text-primary);
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      /* ===== Semester Folder (학기별 폴더) ===== */
+      .semester-folders {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .semester-folder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 14px 8px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: var(--transition);
+        background: rgba(255,255,255,0.04);
+        border: 1px solid transparent;
+      }
+      .semester-folder:hover {
+        background: rgba(17,100,177,0.08);
+        border-color: rgba(17,100,177,0.2);
+      }
+      .semester-folder.active {
+        background: rgba(17,100,177,0.12);
+        border-color: var(--primary);
+      }
+      .semester-folder-icon {
+        width: 48px;
+        height: 42px;
+        position: relative;
+      }
+      .semester-folder-icon .folder-back {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 48px;
+        height: 34px;
+        background: linear-gradient(135deg, #5ac8fa, #007aff);
+        border-radius: 2px 8px 8px 8px;
+      }
+      .semester-folder-icon .folder-tab {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        height: 10px;
+        background: linear-gradient(135deg, #5ac8fa, #34aadc);
+        border-radius: 4px 4px 0 0;
+      }
+      .semester-folder-icon .folder-front {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 48px;
+        height: 30px;
+        background: linear-gradient(180deg, #5ac8fa, #34aadc);
+        border-radius: 0 4px 8px 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      }
+      body.dark-mode .semester-folder-icon .folder-back {
+        background: linear-gradient(135deg, #1a5276, #2471a3);
+      }
+      body.dark-mode .semester-folder-icon .folder-tab {
+        background: linear-gradient(135deg, #1a5276, #1f618d);
+      }
+      body.dark-mode .semester-folder-icon .folder-front {
+        background: linear-gradient(180deg, #2e86c1, #1a5276);
+      }
+      .semester-folder-name {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-align: center;
+        line-height: 1.3;
+      }
+      .semester-folder-count {
+        font-size: 10px;
+        color: var(--text-tertiary);
+      }
+      .folder-breadcrumb {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .folder-breadcrumb .bc-link {
+        color: var(--primary);
+        cursor: pointer;
+      }
+      .folder-breadcrumb .bc-link:hover { text-decoration: underline; }
+      .folder-breadcrumb .bc-sep { user-select: none; }
+
+      /* Enrollment detail scroll */
+      .enrollment-detail-wrap {
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 400px;
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 10px;
+      }
+      .enrollment-detail-wrap table { min-width: max-content; }
+
       /* Column Mapping Popup */
       .mapping-overlay {
         position: fixed;
@@ -2982,7 +3286,7 @@
             ><span class="beta-ver" id="appVersion">0.0.01</span>
           </span>
         </div>
-        <span class="header-badge">2026-2학기</span>
+        <span class="header-badge" id="semesterBadge"></span>
       </div>
     </header>
     <script>
@@ -2991,10 +3295,31 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "0.2.04";
+      window.APP_VERSION = "4.0.0";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
+      })();
+
+      // ===== 학기 자동 계산 =====
+      window.getSemesterInfo = function(date) {
+        var d = date || new Date();
+        var y = d.getFullYear();
+        var m = d.getMonth() + 1;
+        var semester = (m >= 7) ? 2 : 1;
+        return {
+          year: y,
+          semester: semester,
+          full: y + '학년도 ' + semester + '학기',
+          short: y + '-' + semester + '학기',
+          label: y + '년 ' + semester + '학기'
+        };
+      };
+      (function() {
+        var si = window.getSemesterInfo();
+        document.title = si.full + ' 개인별 교육지원계획 수요조사';
+        var badge = document.getElementById('semesterBadge');
+        if (badge) badge.textContent = si.short;
       })();
     </script>
 
@@ -3105,7 +3430,8 @@
         <div class="glass-card intro-hero">
           <div class="hero-icon">🎓</div>
           <h1>개인별 교육지원계획 수요조사</h1>
-          <p class="subtitle">2026학년도 2학기</p>
+          <p class="subtitle" id="semesterSubtitle"></p>
+          <script>(function(){var s=document.getElementById('semesterSubtitle');if(s)s.textContent=window.getSemesterInfo().full;})()</script>
           <div class="intro-info">
             <p>
               안녕하세요!
@@ -3115,7 +3441,8 @@
             </p>
             <br />
             <p>
-              본 조사는 2026학년도 2학기 수업이나 대학 생활에서 필요한 지원을
+              본 조사는 <span id="semesterIntroText"></span> 수업이나 대학 생활에서 필요한 지원을
+              <script>(function(){var e=document.getElementById('semesterIntroText');if(e)e.textContent=window.getSemesterInfo().full;})()</script>
               파악하기 위한 조사입니다.
             </p>
             <p>
@@ -4923,6 +5250,61 @@
 
         <!-- Admin Settings -->
         <div id="adminSettings" style="display: none">
+          <!-- 설문조사 응답 기한 설정 -->
+          <div class="deadline-section" id="deadlineSection">
+            <div class="deadline-section-label">
+              <span>📅</span> 설문조사 응답 기한 설정
+            </div>
+            <div class="deadline-card">
+              <div class="deadline-input-group dl-calendar-wrap" id="dlStartWrap">
+                <input type="text" class="dl-year" id="dlStartYear" placeholder="YYYY" maxlength="4" inputmode="numeric" onfocus="openCalendar('start')" oninput="onDeadlineInput(this,'start','year')">
+                <span class="date-sep">.</span>
+                <input type="text" class="dl-month" id="dlStartMonth" placeholder="MM" maxlength="2" inputmode="numeric" onfocus="openCalendar('start')" oninput="onDeadlineInput(this,'start','month')">
+                <span class="date-sep">.</span>
+                <input type="text" class="dl-day" id="dlStartDay" placeholder="DD" maxlength="2" inputmode="numeric" onfocus="openCalendar('start')" oninput="onDeadlineInput(this,'start','day')">
+                <div class="dl-calendar" id="dlCalStart"></div>
+              </div>
+              <span class="deadline-tilde">~</span>
+              <div class="deadline-input-group dl-calendar-wrap" id="dlEndWrap">
+                <input type="text" class="dl-year" id="dlEndYear" placeholder="YYYY" maxlength="4" inputmode="numeric" onfocus="openCalendar('end')" oninput="onDeadlineInput(this,'end','year')">
+                <span class="date-sep">.</span>
+                <input type="text" class="dl-month" id="dlEndMonth" placeholder="MM" maxlength="2" inputmode="numeric" onfocus="openCalendar('end')" oninput="onDeadlineInput(this,'end','month')">
+                <span class="date-sep">.</span>
+                <input type="text" class="dl-day" id="dlEndDay" placeholder="DD" maxlength="2" inputmode="numeric" onfocus="openCalendar('end')" oninput="onDeadlineInput(this,'end','day')">
+                <div class="dl-calendar" id="dlCalEnd"></div>
+              </div>
+            </div>
+            <div class="deadline-info" id="dlMainInfo"></div>
+
+            <!-- 임시 응답 기한 -->
+            <div class="temp-deadline-section">
+              <div class="temp-deadline-label">
+                <span>⏳</span> 임시 응답 가능 기한
+              </div>
+              <div class="deadline-card">
+                <div class="deadline-input-group dl-calendar-wrap" id="dlTempStartWrap">
+                  <input type="text" class="dl-year" id="dlTempStartYear" placeholder="YYYY" maxlength="4" inputmode="numeric" onfocus="openCalendar('tempStart')" oninput="onDeadlineInput(this,'tempStart','year')">
+                  <span class="date-sep">.</span>
+                  <input type="text" class="dl-month" id="dlTempStartMonth" placeholder="MM" maxlength="2" inputmode="numeric" onfocus="openCalendar('tempStart')" oninput="onDeadlineInput(this,'tempStart','month')">
+                  <span class="date-sep">.</span>
+                  <input type="text" class="dl-day" id="dlTempStartDay" placeholder="DD" maxlength="2" inputmode="numeric" onfocus="openCalendar('tempStart')" oninput="onDeadlineInput(this,'tempStart','day')">
+                  <div class="dl-calendar" id="dlCalTempStart"></div>
+                </div>
+                <span class="deadline-tilde">~</span>
+                <div class="deadline-input-group dl-calendar-wrap" id="dlTempEndWrap">
+                  <input type="text" class="dl-year" id="dlTempEndYear" placeholder="YYYY" maxlength="4" inputmode="numeric" onfocus="openCalendar('tempEnd')" oninput="onDeadlineInput(this,'tempEnd','year')">
+                  <span class="date-sep">.</span>
+                  <input type="text" class="dl-month" id="dlTempEndMonth" placeholder="MM" maxlength="2" inputmode="numeric" onfocus="openCalendar('tempEnd')" oninput="onDeadlineInput(this,'tempEnd','month')">
+                  <span class="date-sep">.</span>
+                  <input type="text" class="dl-day" id="dlTempEndDay" placeholder="DD" maxlength="2" inputmode="numeric" onfocus="openCalendar('tempEnd')" oninput="onDeadlineInput(this,'tempEnd','day')">
+                  <div class="dl-calendar" id="dlCalTempEnd"></div>
+                </div>
+              </div>
+              <div class="deadline-info" id="dlTempInfo" style="font-size:10px;">정식 기한 내 응답하지 못한 학생을 위해 한시적으로 열어주는 기간입니다.</div>
+            </div>
+            <button class="deadline-save-btn" id="dlSaveBtn" onclick="saveDeadlineSettings()">💾 기한 저장</button>
+          </div>
+
           <div class="enrollment-section">
             <h4>📄 우선수강신청서 명단 관리</h4>
             <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:12px;">
@@ -5009,6 +5391,9 @@
           각 열(A, B, C...)이 어떤 데이터를 담고 있는지 지정하세요.
         </p>
         <div id="mappingPreview"></div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;">
+          <button class="btn btn-secondary" onclick="autoDetectMapping()" style="font-size:11px;padding:4px 10px;">🔍 헤더 자동 감지</button>
+        </div>
         <div id="mappingRows"></div>
         <div class="btn-row">
           <button class="btn btn-secondary" onclick="closeMappingPopup()" style="font-size:13px;">취소</button>
@@ -6060,7 +6445,41 @@
         if (tab === 'settings') {
           renderEnrollmentFiles();
           renderCurrentMapping();
+          loadDeadlineSettings();
         }
+      }
+
+      // ===== 학기 폴더 관련 =====
+      var currentSemesterFolder = null;
+
+      function getSemesterFromDate(dateStr) {
+        var d = new Date(dateStr);
+        if (isNaN(d.getTime())) return null;
+        var y = d.getFullYear();
+        var m = d.getMonth() + 1;
+        return { year: y, semester: (m >= 7) ? 2 : 1 };
+      }
+
+      function groupResponsesBySemester() {
+        var groups = {};
+        responses.forEach(function(r) {
+          if (!r.submittedAt) return;
+          var si = getSemesterFromDate(r.submittedAt);
+          if (!si) return;
+          var key = si.year + '-' + si.semester;
+          if (!groups[key]) groups[key] = { year: si.year, semester: si.semester, responses: [] };
+          groups[key].responses.push(r);
+        });
+        return Object.keys(groups).sort().reverse().map(function(k) { return groups[k]; });
+      }
+
+      function selectSemesterFolder(year, semester) {
+        if (year === null) {
+          currentSemesterFolder = null;
+        } else {
+          currentSemesterFolder = { year: year, semester: semester };
+        }
+        updateAdminPanel();
       }
 
       function updateAdminPanel() {
@@ -6073,63 +6492,85 @@
               r.submittedAt && new Date(r.submittedAt).toDateString() === today,
           ).length;
 
-        // Response list
         const list = document.getElementById('responseList');
-        list.innerHTML =
-          responses.length === 0
-            ? '<p style="text-align:center;color:var(--text-tertiary);padding:40px 0;">아직 응답이 없습니다.</p>'
-            : responses
-                .map((r, i) => {
-                  const modBadge = r.modifiedAt
-                    ? '<span class="modified-badge">수정됨</span>'
-                    : '';
-                  // Cross-reference with enrollment data
-                  var xref = crossReferenceResponse(r);
-                  var xrefBadge = '';
-                  if (xref) {
-                    if (xref.notFound) {
-                      xrefBadge = '<span class="mismatch-badge">명단 미등록</span>';
-                    } else if (!xref.matched) {
-                      xrefBadge = '<span class="mismatch-badge">정보 불일치</span>';
-                    } else {
-                      xrefBadge = '<span class="match-badge">검증완료</span>';
-                    }
-                  }
-                  return (
-                    '<div class="response-card" onclick="viewResponse(' +
-                    i +
-                    ')" style="position:relative;">' +
-                    '<div class="name">' +
-                    (r.name || '이름 없음') +
-                    modBadge +
-                    xrefBadge +
-                    '</div>' +
-                    '<div class="meta">' +
-                    (r.department || '') +
-                    ' · ' +
-                    (r.grade || '') +
-                    ' · ' +
-                    (r.submittedAt
-                      ? new Date(r.submittedAt).toLocaleDateString('ko-KR')
-                      : '') +
-                    (r.modifiedAt
-                      ? ' (수정: ' +
-                        new Date(r.modifiedAt).toLocaleDateString('ko-KR') +
-                        ')'
-                      : '') +
-                    '</div>' +
-                    '<button onclick="event.stopPropagation();deleteResponse(' +
-                    i +
-                    ')" ' +
-                    'style="position:absolute;top:8px;right:8px;background:#ff3b30;color:white;border:none;' +
-                    'border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;" title="삭제">삭제</button>' +
-                    '</div>'
-                  );
-                })
-                .join('');
 
+        if (responses.length === 0) {
+          currentSemesterFolder = null;
+          list.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:40px 0;">아직 응답이 없습니다.</p>';
+          updateLetterSelect();
+          return;
+        }
+
+        var groups = groupResponsesBySemester();
+
+        // Auto-select current semester if no folder selected
+        if (!currentSemesterFolder && groups.length > 0) {
+          currentSemesterFolder = { year: groups[0].year, semester: groups[0].semester };
+        }
+
+        // Folder grid (Apple Finder style)
+        var folderHtml = '<div class="semester-folders">';
+        groups.forEach(function(g) {
+          var isActive = currentSemesterFolder && currentSemesterFolder.year === g.year && currentSemesterFolder.semester === g.semester;
+          folderHtml += '<div class="semester-folder' + (isActive ? ' active' : '') + '" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">';
+          folderHtml += '<div class="semester-folder-icon"><div class="folder-tab"></div><div class="folder-back"></div><div class="folder-front"></div></div>';
+          folderHtml += '<div class="semester-folder-name">' + g.year + '년<br>' + g.semester + '학기</div>';
+          folderHtml += '<div class="semester-folder-count">' + g.responses.length + '건</div>';
+          folderHtml += '</div>';
+        });
+        folderHtml += '</div>';
+
+        // Breadcrumb
+        var bcHtml = '';
+        if (currentSemesterFolder) {
+          bcHtml = '<div class="folder-breadcrumb">';
+          bcHtml += '<span class="bc-link" onclick="selectSemesterFolder(null)">응답 목록</span>';
+          bcHtml += '<span class="bc-sep"> › </span>';
+          bcHtml += '<span>' + currentSemesterFolder.year + '년 ' + currentSemesterFolder.semester + '학기</span>';
+          bcHtml += '</div>';
+        }
+
+        // Filter responses for current folder
+        var filtered = responses;
+        if (currentSemesterFolder) {
+          filtered = responses.filter(function(r) {
+            if (!r.submittedAt) return false;
+            var si = getSemesterFromDate(r.submittedAt);
+            return si && si.year === currentSemesterFolder.year && si.semester === currentSemesterFolder.semester;
+          });
+        }
+
+        // Response cards
+        var cardsHtml = filtered.length === 0
+          ? '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">이 학기에는 응답이 없습니다.</p>'
+          : filtered.map(function(r) {
+              var i = responses.indexOf(r);
+              var modBadge = r.modifiedAt ? '<span class="modified-badge">수정됨</span>' : '';
+              var xref = crossReferenceResponse(r);
+              var xrefBadge = '';
+              if (xref) {
+                if (xref.notFound) xrefBadge = '<span class="mismatch-badge">명단 미등록</span>';
+                else if (!xref.matched) xrefBadge = '<span class="mismatch-badge">정보 불일치</span>';
+                else xrefBadge = '<span class="match-badge">검증완료</span>';
+              }
+              return '<div class="response-card" onclick="viewResponse(' + i + ')" style="position:relative;">' +
+                '<div class="name">' + (r.name || '이름 없음') + modBadge + xrefBadge + '</div>' +
+                '<div class="meta">' + (r.department || '') + ' · ' + (r.grade || '') + ' · ' +
+                (r.submittedAt ? new Date(r.submittedAt).toLocaleDateString('ko-KR') : '') +
+                (r.modifiedAt ? ' (수정: ' + new Date(r.modifiedAt).toLocaleDateString('ko-KR') + ')' : '') + '</div>' +
+                '<button onclick="event.stopPropagation();deleteResponse(' + i + ')" ' +
+                'style="position:absolute;top:8px;right:8px;background:#ff3b30;color:white;border:none;' +
+                'border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;" title="삭제">삭제</button></div>';
+            }).join('');
+
+        list.innerHTML = folderHtml + bcHtml + cardsHtml;
+        updateLetterSelect();
+      }
+
+      function updateLetterSelect() {
         // Letter student select
         const select = document.getElementById('letterStudentSelect');
+        if (!select) return;
         select.innerHTML =
           '<option value="">학생을 선택하세요</option>' +
           responses
@@ -7212,11 +7653,26 @@
 
       function showColumnMappingPopup() {
         if (!pendingExcelData || pendingExcelData.length === 0) {
-          showToast('먼저 엑셀 파일을 업로드하세요.');
+          if (enrollmentData.length > 0 && enrollmentData[0].columnMapping) {
+            try {
+              var sm = typeof enrollmentData[0].columnMapping === 'string' ? JSON.parse(enrollmentData[0].columnMapping) : enrollmentData[0].columnMapping;
+              Object.assign(columnMapping, sm);
+              renderCurrentMapping();
+              showToast('서버에 저장된 매핑을 불러왔습니다.');
+            } catch(e) {}
+          }
+          showToast('매핑을 확인하려면 엑셀 파일을 업로드하세요.');
           return;
         }
         var overlay = document.getElementById('mappingOverlay');
-        // Build preview table (first 3 data rows)
+        // 서버 저장 매핑 기본값 적용
+        if (enrollmentData.length > 0 && enrollmentData[0].columnMapping) {
+          try {
+            var sm = typeof enrollmentData[0].columnMapping === 'string' ? JSON.parse(enrollmentData[0].columnMapping) : enrollmentData[0].columnMapping;
+            for (var k in sm) { if (!columnMapping[k]) columnMapping[k] = sm[k]; }
+          } catch(e) {}
+        }
+        // Build preview table
         var previewHtml = '<div style="overflow-x:auto;"><table class="mapping-preview-table"><tr>';
         var cols = Object.keys(pendingExcelData[0]);
         cols.forEach(function(c) { previewHtml += '<th>' + c + '</th>'; });
@@ -7230,12 +7686,10 @@
         }
         previewHtml += '</table></div>';
         document.getElementById('mappingPreview').innerHTML = previewHtml;
-
         // Build mapping rows
         var fieldOptions = Object.entries(mappingLabels).map(function(entry) {
           return '<option value="' + entry[0] + '">' + entry[1] + '</option>';
         }).join('');
-
         var rowsHtml = '';
         cols.forEach(function(col) {
           var currentVal = columnMapping[col] || 'skip';
@@ -7250,6 +7704,39 @@
         });
         document.getElementById('mappingRows').innerHTML = rowsHtml;
         overlay.classList.add('show');
+      }
+
+      // 엑셀 헤더 자동 감지
+      function autoDetectMapping() {
+        if (!pendingExcelData || pendingExcelData.length === 0) return;
+        var headerRow = pendingExcelData[0];
+        var cols = Object.keys(headerRow);
+        var keywordMap = {
+          '성명': 'studentName', '이름': 'studentName', '학생명': 'studentName', '학생 성명': 'studentName',
+          '학번': 'studentId', '학생학번': 'studentId', '학생 학번': 'studentId',
+          '교과목': 'courseName', '과목명': 'courseName', '교과목명': 'courseName', '과목': 'courseName',
+          '교번': 'instructorId', '교강사교번': 'instructorId', '교강사 교번': 'instructorId', '교원번호': 'instructorId',
+          '교강사명': 'instructorName', '교수명': 'instructorName', '교강사': 'instructorName', '담당교수': 'instructorName',
+          '이메일': 'instructorEmail', '교강사 이메일': 'instructorEmail', '교수 이메일': 'instructorEmail',
+          '휴대폰': 'instructorPhone', '전화번호': 'instructorPhone', '휴대폰번호': 'instructorPhone', '교강사 휴대폰번호': 'instructorPhone'
+        };
+        var assigned = {};
+        cols.forEach(function(col) {
+          var val = String(headerRow[col] || '').trim();
+          for (var kw in keywordMap) {
+            if (val === kw || val.indexOf(kw) !== -1) {
+              var target = keywordMap[kw];
+              if (!assigned[target]) {
+                assigned[target] = col;
+                var sel = document.getElementById('mapping_' + col);
+                if (sel) sel.value = target;
+                break;
+              }
+            }
+          }
+        });
+        var count = Object.keys(assigned).length;
+        showToast(count > 0 ? count + '개 열이 자동 매핑되었습니다.' : '헤더에서 매핑 가능한 항목을 찾지 못했습니다. 첫 번째 행이 헤더인지 확인해주세요.');
       }
 
       function closeMappingPopup() {
@@ -7385,26 +7872,311 @@
       function viewEnrollmentFile(fileId) {
         var file = enrollmentData.find(function(f) { return f.id === fileId; });
         if (!file || !file.rows) return;
-        var html = '<button class="btn btn-secondary" onclick="renderEnrollmentFiles();showAdminTab(\'settings\')" style="margin-bottom:12px;font-size:13px;">← 돌아가기</button>';
-        html += '<h4 style="font-size:14px;margin-bottom:8px;">' + escapeHTML(file.fileName) + '</h4>';
-        html += '<div style="overflow-x:auto;"><table class="mapping-preview-table">';
-        html += '<tr><th>학생 성명</th><th>학번</th><th>교과목명</th><th>교강사명</th></tr>';
-        file.rows.forEach(function(r) {
-          html += '<tr><td>' + escapeHTML(r.studentName || '') + '</td><td>' + escapeHTML(r.studentId || '') + '</td><td>' + escapeHTML(r.courseName || '') + '</td><td>' + escapeHTML(r.instructorName || '') + '</td></tr>';
+        var allFields = ['studentName','studentId','courseName','instructorId','instructorName','instructorEmail','instructorPhone'];
+        var fieldLabels = {studentName:'학생 성명',studentId:'학번',courseName:'교과목명',instructorId:'교강사 교번',instructorName:'교강사명',instructorEmail:'교강사 이메일',instructorPhone:'교강사 휴대폰번호'};
+        var usedFields = allFields.filter(function(f) {
+          return file.rows.some(function(r) { return r[f] && String(r[f]).trim(); });
         });
-        html += '</table></div>';
-        document.getElementById('enrollmentFileList').innerHTML = html;
+        if (usedFields.length === 0) usedFields = allFields;
+        var h = '<button class="btn btn-secondary" onclick="renderEnrollmentFiles();showAdminTab(\'settings\')" style="margin-bottom:12px;font-size:13px;">← 돌아가기</button>';
+        h += '<h4 style="font-size:14px;margin-bottom:8px;">' + escapeHTML(file.fileName) + ' <span style="font-size:11px;color:var(--text-tertiary);">(' + file.rows.length + '건)</span></h4>';
+        h += '<div class="enrollment-detail-wrap"><table class="mapping-preview-table">';
+        h += '<tr>' + usedFields.map(function(f) { return '<th>' + (fieldLabels[f]||f) + '</th>'; }).join('') + '</tr>';
+        file.rows.forEach(function(r) {
+          h += '<tr>' + usedFields.map(function(f) { return '<td>' + escapeHTML(r[f] || '') + '</td>'; }).join('') + '</tr>';
+        });
+        h += '</table></div>';
+        document.getElementById('enrollmentFileList').innerHTML = h;
       }
 
       function renderCurrentMapping() {
         var el = document.getElementById('currentMappingDisplay');
         if (!el) return;
-        var parts = [];
-        for (var col in columnMapping) {
-          parts.push(col + '열 → ' + (mappingLabels[columnMapping[col]] || columnMapping[col]));
+        var cols = Object.keys(columnMapping);
+        if (cols.length === 0) {
+          el.innerHTML = '<p style="font-size:12px;color:var(--text-tertiary);">매핑이 설정되지 않았습니다.</p>';
+          return;
         }
-        el.textContent = parts.length > 0 ? '현재 매핑: ' + parts.join(', ') : '';
+        var t = '<table class="mapping-display-table"><tr>';
+        cols.forEach(function(c) { t += '<th>' + c + '열</th>'; });
+        t += '</tr><tr>';
+        cols.forEach(function(c) { t += '<td>' + (mappingLabels[columnMapping[c]] || columnMapping[c]) + '</td>'; });
+        t += '</tr></table>';
+        el.innerHTML = t;
       }
+
+      // ===== Deadline Settings (설문 기한) =====
+      var deadlineSettings = { survey_deadline: null, temp_deadline: null };
+
+      async function loadDeadlineSettings() {
+        if (!adminToken) return;
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/settings', {
+            headers: { 'Authorization': 'Bearer ' + adminToken }
+          });
+          var result = await resp.json();
+          if (resp.ok && result.settings) {
+            deadlineSettings = result.settings;
+            populateDeadlineUI();
+          }
+        } catch(e) { /* silent */ }
+      }
+
+      function populateDeadlineUI() {
+        var sd = deadlineSettings.survey_deadline;
+        if (sd && sd.start) {
+          var parts = sd.start.split('-');
+          document.getElementById('dlStartYear').value = parts[0] || '';
+          document.getElementById('dlStartMonth').value = parts[1] || '';
+          document.getElementById('dlStartDay').value = parts[2] || '';
+        }
+        if (sd && sd.end) {
+          var parts = sd.end.split('-');
+          document.getElementById('dlEndYear').value = parts[0] || '';
+          document.getElementById('dlEndMonth').value = parts[1] || '';
+          document.getElementById('dlEndDay').value = parts[2] || '';
+        }
+        var td = deadlineSettings.temp_deadline;
+        if (td && td.start) {
+          var parts = td.start.split('-');
+          document.getElementById('dlTempStartYear').value = parts[0] || '';
+          document.getElementById('dlTempStartMonth').value = parts[1] || '';
+          document.getElementById('dlTempStartDay').value = parts[2] || '';
+        }
+        if (td && td.end) {
+          var parts = td.end.split('-');
+          document.getElementById('dlTempEndYear').value = parts[0] || '';
+          document.getElementById('dlTempEndMonth').value = parts[1] || '';
+          document.getElementById('dlTempEndDay').value = parts[2] || '';
+        }
+        updateDeadlineInfo('main');
+        updateDeadlineInfo('temp');
+      }
+
+      function onDeadlineInput(el, group, part) {
+        var val = el.value.replace(/[^0-9]/g, '');
+        el.value = val;
+        var maxLen = part === 'year' ? 4 : 2;
+        if (val.length >= maxLen) {
+          var order;
+          if (group === 'start') order = ['dlStartYear','dlStartMonth','dlStartDay','dlEndYear','dlEndMonth','dlEndDay'];
+          else if (group === 'end') order = ['dlEndYear','dlEndMonth','dlEndDay'];
+          else if (group === 'tempStart') order = ['dlTempStartYear','dlTempStartMonth','dlTempStartDay','dlTempEndYear','dlTempEndMonth','dlTempEndDay'];
+          else if (group === 'tempEnd') order = ['dlTempEndYear','dlTempEndMonth','dlTempEndDay'];
+          var idx = order.indexOf(el.id);
+          if (idx >= 0 && idx < order.length - 1) {
+            var next = document.getElementById(order[idx + 1]);
+            if (next) { next.focus(); next.select(); }
+          }
+        }
+        updateDeadlineInfo(group === 'start' || group === 'end' ? 'main' : 'temp');
+      }
+
+      function getDeadlineDates(prefix) {
+        var sy = document.getElementById('dl' + prefix + 'Year').value;
+        var sm = document.getElementById('dl' + prefix + 'Month').value;
+        var sd = document.getElementById('dl' + prefix + 'Day').value;
+        if (sy.length === 4 && sm.length >= 1 && sd.length >= 1) {
+          return sy + '-' + sm.padStart(2,'0') + '-' + sd.padStart(2,'0');
+        }
+        return null;
+      }
+
+      function updateDeadlineInfo(type) {
+        if (type === 'main') {
+          var start = getDeadlineDates('Start');
+          var end = getDeadlineDates('End');
+          var el = document.getElementById('dlMainInfo');
+          if (!el) return;
+          if (start && end) {
+            var s = new Date(start);
+            var e = new Date(end);
+            if (isNaN(s.getTime()) || isNaN(e.getTime()) || s > e) {
+              el.textContent = '⚠️ 유효하지 않은 날짜 범위입니다.';
+              el.className = 'deadline-info';
+            } else {
+              var days = Math.round((e - s) / 86400000) + 1;
+              if (days === 1) {
+                el.textContent = '📌 ' + formatDateKR(s) + ' 하루동안만 설문조사에 응답할 수 있습니다.';
+              } else {
+                el.textContent = '📌 ' + formatDateKR(s) + ' ~ ' + formatDateKR(e) + ' (' + days + '일간) 설문조사에 응답할 수 있습니다.';
+              }
+              el.className = 'deadline-info info-highlight';
+            }
+          } else {
+            el.textContent = '기한을 설정하지 않으면 언제든 설문에 응답할 수 있습니다.';
+            el.className = 'deadline-info';
+          }
+        } else {
+          var start = getDeadlineDates('TempStart');
+          var end = getDeadlineDates('TempEnd');
+          var el = document.getElementById('dlTempInfo');
+          if (!el) return;
+          if (start && end) {
+            var s = new Date(start);
+            var e = new Date(end);
+            if (isNaN(s.getTime()) || isNaN(e.getTime()) || s > e) {
+              el.textContent = '⚠️ 유효하지 않은 날짜 범위입니다.';
+            } else {
+              var days = Math.round((e - s) / 86400000) + 1;
+              if (days === 1) {
+                el.textContent = '⏳ ' + formatDateKR(s) + ' 하루동안만 설문조사에 응답할 수 있습니다.';
+              } else {
+                el.textContent = '⏳ ' + formatDateKR(s) + ' ~ ' + formatDateKR(e) + ' (' + days + '일간) 설문조사에 응답할 수 있습니다.';
+              }
+            }
+          } else {
+            el.textContent = '정식 기한 내 응답하지 못한 학생을 위해 한시적으로 열어주는 기간입니다.';
+          }
+        }
+      }
+
+      function formatDateKR(d) {
+        return d.getFullYear() + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getDate()).padStart(2,'0');
+      }
+
+      async function saveDeadlineSettings() {
+        if (!adminToken) { showToast('관리자 로그인이 필요합니다.'); return; }
+        var btn = document.getElementById('dlSaveBtn');
+        if (btn) btn.disabled = true;
+
+        var start = getDeadlineDates('Start');
+        var end = getDeadlineDates('End');
+        var tempStart = getDeadlineDates('TempStart');
+        var tempEnd = getDeadlineDates('TempEnd');
+
+        // Validate date ranges
+        if (start && end) {
+          var s = new Date(start), e = new Date(end);
+          if (isNaN(s.getTime()) || isNaN(e.getTime()) || s > e) {
+            showToast('정식 기한의 날짜 범위가 올바르지 않습니다.');
+            if (btn) btn.disabled = false;
+            return;
+          }
+        }
+        if (tempStart && tempEnd) {
+          var s = new Date(tempStart), e = new Date(tempEnd);
+          if (isNaN(s.getTime()) || isNaN(e.getTime()) || s > e) {
+            showToast('임시 기한의 날짜 범위가 올바르지 않습니다.');
+            if (btn) btn.disabled = false;
+            return;
+          }
+        }
+
+        var settings = {};
+        if (start && end) {
+          settings.survey_deadline = { start: start, end: end };
+        } else {
+          settings.survey_deadline = { start: null, end: null };
+        }
+        if (tempStart && tempEnd) {
+          settings.temp_deadline = { start: tempStart, end: tempEnd };
+        } else {
+          settings.temp_deadline = { start: null, end: null };
+        }
+
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/settings', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+            body: JSON.stringify({ settings: settings })
+          });
+          var result = await resp.json();
+          if (!resp.ok) throw new Error(result.error || '저장 실패');
+          deadlineSettings = settings;
+          showToast('기한 설정이 저장되었습니다.');
+        } catch(err) {
+          showToast('기한 저장 오류: ' + err.message);
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      }
+
+      // ===== Calendar Popup =====
+      var activeCalendar = null;
+      var calendarMonth = null;
+      var calendarYear = null;
+
+      function openCalendar(type) {
+        document.querySelectorAll('.dl-calendar.show').forEach(function(c) { c.classList.remove('show'); });
+        var idMap = { start: 'dlCalStart', end: 'dlCalEnd', tempStart: 'dlCalTempStart', tempEnd: 'dlCalTempEnd' };
+        var cal = document.getElementById(idMap[type]);
+        if (!cal) return;
+        activeCalendar = { type: type, el: cal };
+        var now = new Date();
+        calendarYear = now.getFullYear();
+        calendarMonth = now.getMonth();
+        renderCalendar();
+        cal.classList.add('show');
+      }
+
+      function renderCalendar() {
+        if (!activeCalendar) return;
+        var cal = activeCalendar.el;
+        var today = new Date();
+        var firstDay = new Date(calendarYear, calendarMonth, 1);
+        var lastDay = new Date(calendarYear, calendarMonth + 1, 0);
+        var startDow = firstDay.getDay();
+        var daysInMonth = lastDay.getDate();
+
+        var h = '<div class="dl-calendar-header">';
+        h += '<button onclick="event.stopPropagation();calPrev()">◀</button>';
+        h += '<span>' + calendarYear + '년 ' + (calendarMonth + 1) + '월</span>';
+        h += '<button onclick="event.stopPropagation();calNext()">▶</button>';
+        h += '</div>';
+        h += '<div class="dl-calendar-grid">';
+        var dows = ['일','월','화','수','목','금','토'];
+        dows.forEach(function(d) { h += '<div class="cal-dow">' + d + '</div>'; });
+
+        var prevLast = new Date(calendarYear, calendarMonth, 0).getDate();
+        for (var i = 0; i < startDow; i++) {
+          var d = prevLast - startDow + i + 1;
+          h += '<div class="cal-day other-month" onclick="event.stopPropagation();selectCalDay(' + calendarYear + ',' + (calendarMonth - 1) + ',' + d + ')">' + d + '</div>';
+        }
+        for (var d = 1; d <= daysInMonth; d++) {
+          var cls = 'cal-day';
+          if (d === today.getDate() && calendarMonth === today.getMonth() && calendarYear === today.getFullYear()) cls += ' today';
+          h += '<div class="' + cls + '" onclick="event.stopPropagation();selectCalDay(' + calendarYear + ',' + calendarMonth + ',' + d + ')">' + d + '</div>';
+        }
+        var totalCells = startDow + daysInMonth;
+        var remaining = (7 - (totalCells % 7)) % 7;
+        for (var i = 1; i <= remaining; i++) {
+          h += '<div class="cal-day other-month" onclick="event.stopPropagation();selectCalDay(' + calendarYear + ',' + (calendarMonth + 1) + ',' + i + ')">' + i + '</div>';
+        }
+        h += '</div>';
+        cal.innerHTML = h;
+      }
+
+      function calPrev() { calendarMonth--; if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; } renderCalendar(); }
+      function calNext() { calendarMonth++; if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; } renderCalendar(); }
+
+      function selectCalDay(y, m, d) {
+        var dt = new Date(y, m, d);
+        if (!activeCalendar) return;
+        var type = activeCalendar.type;
+        var idPrefix;
+        if (type === 'start') idPrefix = 'dlStart';
+        else if (type === 'end') idPrefix = 'dlEnd';
+        else if (type === 'tempStart') idPrefix = 'dlTempStart';
+        else if (type === 'tempEnd') idPrefix = 'dlTempEnd';
+
+        document.getElementById(idPrefix + 'Year').value = String(dt.getFullYear());
+        document.getElementById(idPrefix + 'Month').value = String(dt.getMonth() + 1).padStart(2, '0');
+        document.getElementById(idPrefix + 'Day').value = String(dt.getDate()).padStart(2, '0');
+
+        activeCalendar.el.classList.remove('show');
+        activeCalendar = null;
+
+        updateDeadlineInfo(type === 'start' || type === 'end' ? 'main' : 'temp');
+      }
+
+      // Close calendar on outside click
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dl-calendar-wrap')) {
+          document.querySelectorAll('.dl-calendar.show').forEach(function(c) { c.classList.remove('show'); });
+          activeCalendar = null;
+        }
+      });
 
       // ===== Cross-reference enrollment with survey responses =====
       function getEnrollmentByStudentId(studentId) {
