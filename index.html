@@ -1047,6 +1047,7 @@
       .form-label.lf-settled .helper:not(.helper-sweep) {
         -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
+        font-weight: 400 !important;
       }
 
       /* 자식(필수표시 *, 도움말)은 밴드에서 제외하고 고유색 유지 */
@@ -1065,6 +1066,7 @@
         background: none !important;
         -webkit-background-clip: border-box !important;
         background-clip: border-box !important;
+        font-weight: 400 !important;
       }
 
       /* ── helper 부연설명 검정→회색 그라데이션 (본문 그라데이션 직후 재생) ── */
@@ -1080,6 +1082,7 @@
         background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         color: transparent !important;
+        font-weight: 400 !important;
         animation: helperSweep 1.4s ease-in-out 1 forwards !important;
       }
       .helper.helper-settled {
@@ -1088,6 +1091,7 @@
         background-clip: border-box !important;
         -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
+        font-weight: 400 !important;
         animation: none !important;
       }
 
@@ -1104,10 +1108,12 @@
       }
       .form-label .helper {
         font-size: 13px;
-        font-weight: 400;
+        font-weight: 400 !important;
         color: var(--text-secondary);
         display: block;
         margin-top: 3px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
 
       .form-input {
@@ -2529,54 +2535,35 @@
       .deadline-card {
         display: flex;
         align-items: center;
-        gap: 2px;
+        gap: 6px;
         flex-wrap: nowrap;
       }
       .deadline-input-group {
         display: flex;
         align-items: center;
-        gap: 0;
+        gap: 6px;
         padding: 0;
         position: relative;
+        flex: 1;
       }
-      .otp-digit {
-        width: 18px;
-        height: 26px;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 5px;
-        color: var(--text-primary);
+      .dl-date-input {
+        padding: 8px 6px !important;
+        font-size: 13px !important;
+        min-width: 0;
+      }
+      .dl-date-sep {
         font-size: 13px;
-        font-family: var(--font);
-        text-align: center;
-        padding: 0;
-        outline: none;
-        transition: var(--transition);
-        margin: 0;
-        caret-color: var(--primary);
-      }
-      .otp-digit:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 2px rgba(0,113,227,0.18);
-        background: rgba(0,113,227,0.08);
-      }
-      .otp-digit::placeholder {
+        font-weight: 600;
         color: var(--text-tertiary);
-        opacity: 0.5;
-        font-size: 9px;
-      }
-      .otp-sep {
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--text-secondary);
-        margin: 0;
         user-select: none;
+        flex-shrink: 0;
       }
       .deadline-tilde {
-        font-size: 13px;
+        font-size: 14px;
         color: var(--text-secondary);
-        padding: 0 2px;
+        padding: 0 4px;
         user-select: none;
+        flex-shrink: 0;
       }
       .deadline-info {
         font-size: 11px;
@@ -2689,20 +2676,21 @@
       /* ===== Mapping Display Table ===== */
       .mapping-display-table {
         width: 100%;
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 3px;
         font-size: 12px;
         margin-top: 10px;
         border-radius: 10px;
         overflow: hidden;
-        border: 1px solid rgba(255,255,255,0.15);
       }
       .mapping-display-table th,
       .mapping-display-table td {
         padding: 6px 6px;
         text-align: center;
-        border: 2.5px solid var(--card-bg, rgba(30,30,30,0.85));
-        width: 1%;
-        white-space: nowrap;
+        border: none;
+        white-space: normal;
+        word-break: keep-all;
+        overflow-wrap: break-word;
       }
       .mapping-display-table th {
         background: rgba(17,100,177,0.18);
@@ -2710,12 +2698,14 @@
         font-weight: 600;
         font-size: 11px;
         padding: 4px 6px;
+        border-radius: 6px;
       }
       .mapping-display-table td {
         background: rgba(255,255,255,0.12);
         color: var(--text-primary);
         font-size: 11px;
         font-weight: 500;
+        border-radius: 6px;
       }
 
       /* ===== Semester Folder (학기별 폴더) ===== */
@@ -3317,16 +3307,14 @@
           font-size: 10px;
           text-align: center;
         }
-        .otp-digit {
-          width: 16px;
-          height: 22px;
-          font-size: 11px;
-          margin: 0;
-          border-radius: 4px;
+        .dl-date-input {
+          padding: 6px 4px !important;
+          font-size: 12px !important;
         }
-        .otp-sep { font-size: 10px; margin: 0; }
-        .deadline-tilde { font-size: 10px; padding: 0 1px; }
-        .deadline-card { gap: 1px; }
+        .dl-date-sep { font-size: 11px; }
+        .deadline-tilde { font-size: 11px; padding: 0 2px; }
+        .deadline-card { gap: 4px; }
+        .deadline-input-group { gap: 4px; }
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -3355,7 +3343,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.1.1";
+      window.APP_VERSION = "4.1.2";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -5317,30 +5305,20 @@
             </div>
             <div class="deadline-card">
               <div class="deadline-input-group dl-calendar-wrap" id="dlStartWrap">
-                <input type="text" class="otp-digit" id="dlS_y1" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('start')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlS_y2" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('start')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlS_y3" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('start')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlS_y4" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('start')" oninput="otpMove(this)">
-                <span class="otp-sep">.</span>
-                <input type="text" class="otp-digit" id="dlS_m1" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('start')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlS_m2" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('start')" oninput="otpMove(this)">
-                <span class="otp-sep">.</span>
-                <input type="text" class="otp-digit" id="dlS_d1" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('start')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlS_d2" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('start')" oninput="otpMove(this)">
+                <input type="text" class="form-input dl-date-input" id="dlStartYear" inputmode="numeric" maxlength="4" placeholder="년(4자리)" style="flex:2;text-align:center;" onfocus="openCalendar('start')" oninput="dlDateAutoMove(this,'dlStartMonth')">
+                <span class="dl-date-sep">.</span>
+                <input type="text" class="form-input dl-date-input" id="dlStartMonth" inputmode="numeric" maxlength="2" placeholder="월" style="flex:1;text-align:center;" onfocus="openCalendar('start')" oninput="dlDateAutoMove(this,'dlStartDay')">
+                <span class="dl-date-sep">.</span>
+                <input type="text" class="form-input dl-date-input" id="dlStartDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('start')">
                 <div class="dl-calendar" id="dlCalStart"></div>
               </div>
               <span class="deadline-tilde">~</span>
               <div class="deadline-input-group dl-calendar-wrap" id="dlEndWrap">
-                <input type="text" class="otp-digit" id="dlE_y1" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('end')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlE_y2" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('end')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlE_y3" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('end')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlE_y4" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('end')" oninput="otpMove(this)">
-                <span class="otp-sep">.</span>
-                <input type="text" class="otp-digit" id="dlE_m1" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('end')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlE_m2" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('end')" oninput="otpMove(this)">
-                <span class="otp-sep">.</span>
-                <input type="text" class="otp-digit" id="dlE_d1" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('end')" oninput="otpMove(this)">
-                <input type="text" class="otp-digit" id="dlE_d2" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('end')" oninput="otpMove(this)">
+                <input type="text" class="form-input dl-date-input" id="dlEndYear" inputmode="numeric" maxlength="4" placeholder="년(4자리)" style="flex:2;text-align:center;" onfocus="openCalendar('end')" oninput="dlDateAutoMove(this,'dlEndMonth')">
+                <span class="dl-date-sep">.</span>
+                <input type="text" class="form-input dl-date-input" id="dlEndMonth" inputmode="numeric" maxlength="2" placeholder="월" style="flex:1;text-align:center;" onfocus="openCalendar('end')" oninput="dlDateAutoMove(this,'dlEndDay')">
+                <span class="dl-date-sep">.</span>
+                <input type="text" class="form-input dl-date-input" id="dlEndDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('end')">
                 <div class="dl-calendar" id="dlCalEnd"></div>
               </div>
             </div>
@@ -5353,30 +5331,20 @@
               </div>
               <div class="deadline-card">
                 <div class="deadline-input-group dl-calendar-wrap" id="dlTempStartWrap">
-                  <input type="text" class="otp-digit" id="dlTS_y1" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTS_y2" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTS_y3" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTS_y4" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
-                  <span class="otp-sep">.</span>
-                  <input type="text" class="otp-digit" id="dlTS_m1" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTS_m2" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
-                  <span class="otp-sep">.</span>
-                  <input type="text" class="otp-digit" id="dlTS_d1" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTS_d2" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('tempStart')" oninput="otpMove(this)">
+                  <input type="text" class="form-input dl-date-input" id="dlTempStartYear" inputmode="numeric" maxlength="4" placeholder="년(4자리)" style="flex:2;text-align:center;" onfocus="openCalendar('tempStart')" oninput="dlDateAutoMove(this,'dlTempStartMonth')">
+                  <span class="dl-date-sep">.</span>
+                  <input type="text" class="form-input dl-date-input" id="dlTempStartMonth" inputmode="numeric" maxlength="2" placeholder="월" style="flex:1;text-align:center;" onfocus="openCalendar('tempStart')" oninput="dlDateAutoMove(this,'dlTempStartDay')">
+                  <span class="dl-date-sep">.</span>
+                  <input type="text" class="form-input dl-date-input" id="dlTempStartDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('tempStart')">
                   <div class="dl-calendar" id="dlCalTempStart"></div>
                 </div>
                 <span class="deadline-tilde">~</span>
                 <div class="deadline-input-group dl-calendar-wrap" id="dlTempEndWrap">
-                  <input type="text" class="otp-digit" id="dlTE_y1" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTE_y2" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTE_y3" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTE_y4" maxlength="1" inputmode="numeric" placeholder="Y" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
-                  <span class="otp-sep">.</span>
-                  <input type="text" class="otp-digit" id="dlTE_m1" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTE_m2" maxlength="1" inputmode="numeric" placeholder="M" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
-                  <span class="otp-sep">.</span>
-                  <input type="text" class="otp-digit" id="dlTE_d1" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
-                  <input type="text" class="otp-digit" id="dlTE_d2" maxlength="1" inputmode="numeric" placeholder="D" onfocus="openCalendar('tempEnd')" oninput="otpMove(this)">
+                  <input type="text" class="form-input dl-date-input" id="dlTempEndYear" inputmode="numeric" maxlength="4" placeholder="년(4자리)" style="flex:2;text-align:center;" onfocus="openCalendar('tempEnd')" oninput="dlDateAutoMove(this,'dlTempEndMonth')">
+                  <span class="dl-date-sep">.</span>
+                  <input type="text" class="form-input dl-date-input" id="dlTempEndMonth" inputmode="numeric" maxlength="2" placeholder="월" style="flex:1;text-align:center;" onfocus="openCalendar('tempEnd')" oninput="dlDateAutoMove(this,'dlTempEndDay')">
+                  <span class="dl-date-sep">.</span>
+                  <input type="text" class="form-input dl-date-input" id="dlTempEndDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('tempEnd')">
                   <div class="dl-calendar" id="dlCalTempEnd"></div>
                 </div>
               </div>
@@ -5406,7 +5374,7 @@
             <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:12px;">
               업로드된 엑셀 파일의 각 열이 어떤 정보인지 설정합니다.
             </p>
-            <button class="btn btn-secondary" onclick="showColumnMappingPopup()" style="font-size:13px;" id="btnColumnMapping" disabled>
+            <button class="btn btn-secondary" onclick="showColumnMappingPopup()" style="font-size:13px;padding:6px 14px;border-radius:10px;backdrop-filter:blur(12px) saturate(170%);-webkit-backdrop-filter:blur(12px) saturate(170%);" id="btnColumnMapping" disabled>
               열 매핑 설정 열기
             </button>
             <div id="currentMappingDisplay" style="margin-top:8px;font-size:12px;color:var(--text-tertiary);"></div>
@@ -7928,6 +7896,8 @@
             }
           }
         } catch (err) { /* silent */ }
+        renderEnrollmentFiles();
+        renderCurrentMapping();
       }
 
       async function deleteEnrollmentFile(fileId) {
@@ -7996,7 +7966,7 @@
           el.innerHTML = '<p style="font-size:12px;color:var(--text-tertiary);">매핑이 설정되지 않았습니다.</p>';
           return;
         }
-        var t = '<table class="mapping-display-table"><tr>';
+        var t = '<table class="mapping-display-table" style="table-layout:fixed;"><tr>';
         cols.forEach(function(c) { t += '<th>' + c + '열</th>'; });
         t += '</tr><tr>';
         cols.forEach(function(c) { t += '<td>' + (mappingLabels[columnMapping[c]] || columnMapping[c]) + '</td>'; });
@@ -8021,98 +7991,66 @@
         } catch(e) { /* silent */ }
       }
 
-      // OTP prefix mapping: type -> ID prefix
-      var otpPrefixMap = { start: 'dlS_', end: 'dlE_', tempStart: 'dlTS_', tempEnd: 'dlTE_' };
-      // All digit IDs in order for each group (start flows to end, tempStart flows to tempEnd)
-      var otpOrder = {
-        main: ['dlS_y1','dlS_y2','dlS_y3','dlS_y4','dlS_m1','dlS_m2','dlS_d1','dlS_d2','dlE_y1','dlE_y2','dlE_y3','dlE_y4','dlE_m1','dlE_m2','dlE_d1','dlE_d2'],
-        temp: ['dlTS_y1','dlTS_y2','dlTS_y3','dlTS_y4','dlTS_m1','dlTS_m2','dlTS_d1','dlTS_d2','dlTE_y1','dlTE_y2','dlTE_y3','dlTE_y4','dlTE_m1','dlTE_m2','dlTE_d1','dlTE_d2']
+      // Date field ID mapping: type -> { year, month, day }
+      var dlDateFieldMap = {
+        start: { year: 'dlStartYear', month: 'dlStartMonth', day: 'dlStartDay' },
+        end: { year: 'dlEndYear', month: 'dlEndMonth', day: 'dlEndDay' },
+        tempStart: { year: 'dlTempStartYear', month: 'dlTempStartMonth', day: 'dlTempStartDay' },
+        tempEnd: { year: 'dlTempEndYear', month: 'dlTempEndMonth', day: 'dlTempEndDay' }
       };
+      // Legacy compatibility
+      var otpPrefixMap = { start: 'start', end: 'end', tempStart: 'tempStart', tempEnd: 'tempEnd' };
 
-      function otpMove(el) {
-        var val = el.value.replace(/[^0-9]/g, '');
-        el.value = val ? val.charAt(val.length - 1) : '';
-        if (el.value) {
-          var group = el.id.startsWith('dlTS_') || el.id.startsWith('dlTE_') ? 'temp' : 'main';
-          var order = otpOrder[group];
-          var idx = order.indexOf(el.id);
-          if (idx >= 0 && idx < order.length - 1) {
-            var next = document.getElementById(order[idx + 1]);
-            if (next) { next.focus(); next.select(); }
-          }
-          updateDeadlineInfo(group);
+      function dlDateAutoMove(el, nextId) {
+        el.value = el.value.replace(/[^0-9]/g, '');
+        if (el.value.length >= parseInt(el.maxLength)) {
+          var next = document.getElementById(nextId);
+          if (next) next.focus();
         }
+        if (el.id.indexOf('Temp') !== -1) updateDeadlineInfo('temp');
+        else updateDeadlineInfo('main');
       }
 
-      // Backspace handler for OTP digits
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Backspace' && e.target.classList.contains('otp-digit')) {
-          if (!e.target.value) {
-            var group = e.target.id.startsWith('dlTS_') || e.target.id.startsWith('dlTE_') ? 'temp' : 'main';
-            var order = otpOrder[group];
-            var idx = order.indexOf(e.target.id);
-            if (idx > 0) {
-              var prev = document.getElementById(order[idx - 1]);
-              if (prev) { prev.focus(); prev.select(); }
-            }
-            e.preventDefault();
-          }
-        }
-      });
-
-      function setOtpDigits(prefix, dateStr) {
-        // dateStr = "YYYY-MM-DD", prefix = "dlS_", "dlE_", "dlTS_", "dlTE_"
+      function setDateFields(type, dateStr) {
+        // dateStr = "YYYY-MM-DD", type = "start"/"end"/"tempStart"/"tempEnd"
+        var fields = dlDateFieldMap[type]; if (!fields) return;
         var parts = dateStr.split('-');
-        var y = parts[0] || '', m = parts[1] || '', d = parts[2] || '';
-        for (var i = 0; i < 4; i++) {
-          var el = document.getElementById(prefix + 'y' + (i+1));
-          if (el) el.value = y[i] || '';
-        }
-        for (var i = 0; i < 2; i++) {
-          var el = document.getElementById(prefix + 'm' + (i+1));
-          if (el) el.value = m[i] || '';
-        }
-        for (var i = 0; i < 2; i++) {
-          var el = document.getElementById(prefix + 'd' + (i+1));
-          if (el) el.value = d[i] || '';
-        }
+        var yEl = document.getElementById(fields.year);
+        var mEl = document.getElementById(fields.month);
+        var dEl = document.getElementById(fields.day);
+        if (yEl) yEl.value = parts[0] || '';
+        if (mEl) mEl.value = parts[1] || '';
+        if (dEl) dEl.value = parts[2] || '';
       }
 
-      function getOtpDate(prefix) {
-        // prefix = "dlS_", "dlE_", "dlTS_", "dlTE_"
-        var y = '', m = '', d = '';
-        for (var i = 1; i <= 4; i++) {
-          var el = document.getElementById(prefix + 'y' + i);
-          y += el ? el.value : '';
-        }
-        for (var i = 1; i <= 2; i++) {
-          var el = document.getElementById(prefix + 'm' + i);
-          m += el ? el.value : '';
-        }
-        for (var i = 1; i <= 2; i++) {
-          var el = document.getElementById(prefix + 'd' + i);
-          d += el ? el.value : '';
-        }
-        if (y.length === 4 && m.length === 2 && d.length === 2) {
-          return y + '-' + m + '-' + d;
+      function getDateFromFields(type) {
+        var fields = dlDateFieldMap[type]; if (!fields) return null;
+        var yEl = document.getElementById(fields.year);
+        var mEl = document.getElementById(fields.month);
+        var dEl = document.getElementById(fields.day);
+        var y = yEl ? yEl.value.trim() : '';
+        var m = mEl ? mEl.value.trim() : '';
+        var d = dEl ? dEl.value.trim() : '';
+        if (y.length === 4 && m.length >= 1 && d.length >= 1) {
+          return y + '-' + m.padStart(2, '0') + '-' + d.padStart(2, '0');
         }
         return null;
       }
 
       function populateDeadlineUI() {
         var sd = deadlineSettings.survey_deadline;
-        if (sd && sd.start) setOtpDigits('dlS_', sd.start);
-        if (sd && sd.end) setOtpDigits('dlE_', sd.end);
+        if (sd && sd.start) setDateFields('start', sd.start);
+        if (sd && sd.end) setDateFields('end', sd.end);
         var td = deadlineSettings.temp_deadline;
-        if (td && td.start) setOtpDigits('dlTS_', td.start);
-        if (td && td.end) setOtpDigits('dlTE_', td.end);
+        if (td && td.start) setDateFields('tempStart', td.start);
+        if (td && td.end) setDateFields('tempEnd', td.end);
         updateDeadlineInfo('main');
         updateDeadlineInfo('temp');
       }
 
       function getDeadlineDates(prefix) {
-        var map = { Start: 'dlS_', End: 'dlE_', TempStart: 'dlTS_', TempEnd: 'dlTE_' };
-        return getOtpDate(map[prefix]);
+        var map = { Start: 'start', End: 'end', TempStart: 'tempStart', TempEnd: 'tempEnd' };
+        return getDateFromFields(map[prefix]);
       }
 
       function updateDeadlineInfo(type) {
@@ -8287,9 +8225,8 @@
         var dt = new Date(y, m, d);
         if (!activeCalendar) return;
         var type = activeCalendar.type;
-        var prefix = otpPrefixMap[type];
         var dateStr = String(dt.getFullYear()) + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
-        setOtpDigits(prefix, dateStr);
+        setDateFields(type, dateStr);
 
         activeCalendar.el.classList.remove('show');
         activeCalendar = null;
@@ -9346,20 +9283,47 @@
         // ── 라벨 클래스 제어 ──
         function clearLabel(label){
           if (!label) return;
+          label._helperLoopDone = true; // 진행 중인 루프 helper 트리거 방지
           label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once');
           var helper = label.querySelector('.helper');
           if (helper) helper.classList.remove('helper-sweep', 'helper-settled');
         }
         function applyFocusSolid(label){          // 파랑 solid (규칙3)
           if (!label) return;
+          label._helperLoopDone = true; // 진행 중인 루프 helper 트리거 방지
           label.classList.remove('lf-sweep', 'lf-loop', 'lf-once');
           label.classList.add('lf-focus');
+          // 답변 완료 시 helper도 settled 상태로 고정
+          var helper = label.querySelector('.helper');
+          if (helper) {
+            helper.classList.remove('helper-sweep');
+            helper.classList.add('helper-settled');
+          }
         }
         function applyFocusLoop(label){           // 파랑 + 밴드 루프 (규칙1·2)
           if (!label) return;
           label.classList.remove('lf-once', 'lf-sweep', 'lf-loop');
+          var helper = label.querySelector('.helper');
+          if (helper) helper.classList.remove('helper-sweep', 'helper-settled');
           void label.offsetWidth;                 // 애니메이션 재시작
           label.classList.add('lf-focus', 'lf-sweep', 'lf-loop');
+          // 루프 첫 iteration 완료 후 helper 그라데이션 1회 재생
+          if (helper && helper.textContent.trim()) {
+            label._helperLoopDone = false;
+            var onIter = function(e) {
+              if (e.target !== label || label._helperLoopDone) return;
+              label._helperLoopDone = true;
+              label.removeEventListener('animationiteration', onIter);
+              helper.classList.remove('helper-settled');
+              void helper.offsetWidth;
+              helper.classList.add('helper-sweep');
+              helper.addEventListener('animationend', function hDone(){
+                helper.classList.add('helper-settled');
+                helper.classList.remove('helper-sweep');
+              }, { once: true });
+            };
+            label.addEventListener('animationiteration', onIter);
+          }
         }
         function playOnce(label){                 // 검정 + 밴드 1회 (규칙4)
           if (!label) return false;
