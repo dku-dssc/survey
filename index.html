@@ -1045,7 +1045,11 @@
         color: var(--danger) !important;
       }
       .form-label.lf-settled .helper:not(.helper-sweep) {
-        -webkit-text-fill-color: var(--text-secondary) !important;
+        background-image: linear-gradient(90deg, var(--text-secondary), var(--text-secondary)) !important;
+        background-size: 100% 100%;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
         color: var(--text-secondary) !important;
         font-weight: 400 !important;
       }
@@ -1061,11 +1065,12 @@
       }
       .form-label.lf-sweep .helper:not(.helper-sweep),
       .form-label.lf-focus .helper:not(.helper-sweep) {
-        -webkit-text-fill-color: var(--text-secondary) !important;
+        background-image: linear-gradient(90deg, var(--text-secondary), var(--text-secondary)) !important;
+        background-size: 100% 100%;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
         color: var(--text-secondary) !important;
-        background: none !important;
-        -webkit-background-clip: border-box !important;
-        background-clip: border-box !important;
         font-weight: 400 !important;
       }
 
@@ -1087,10 +1092,11 @@
         animation: helperSweep 2.1s cubic-bezier(.4,0,.2,1) 1 forwards !important;
       }
       .helper.helper-settled {
-        background: none !important;
-        -webkit-background-clip: border-box !important;
-        background-clip: border-box !important;
-        -webkit-text-fill-color: var(--text-secondary) !important;
+        background-image: linear-gradient(90deg, var(--text-secondary), var(--text-secondary)) !important;
+        background-size: 100% 100%;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
         color: var(--text-secondary) !important;
         font-weight: 400 !important;
         animation: none !important;
