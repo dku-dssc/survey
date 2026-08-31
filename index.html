@@ -1045,12 +1045,8 @@
         color: var(--danger) !important;
       }
       .form-label.lf-settled .helper:not(.helper-sweep) {
-        background-image: linear-gradient(90deg, var(--text-secondary), var(--text-secondary)) !important;
-        background-size: 100% 100%;
-        -webkit-background-clip: text !important;
-        background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
         color: var(--text-secondary) !important;
+        -webkit-text-fill-color: var(--text-secondary) !important;
         font-weight: 400 !important;
       }
 
@@ -1065,39 +1061,24 @@
       }
       .form-label.lf-sweep .helper:not(.helper-sweep),
       .form-label.lf-focus .helper:not(.helper-sweep) {
-        background-image: linear-gradient(90deg, var(--text-secondary), var(--text-secondary)) !important;
-        background-size: 100% 100%;
-        -webkit-background-clip: text !important;
-        background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
         color: var(--text-secondary) !important;
+        -webkit-text-fill-color: var(--text-secondary) !important;
         font-weight: 400 !important;
       }
 
-      /* ── helper 부연설명 검정→회색 그라데이션 (본문 그라데이션 직후 재생) ── */
-      @keyframes helperSweep {
-        0%   { background-position: 100% 0; }
-        100% { background-position: 0% 0; }
+      /* ── helper 부연설명 회색→검정→회색 color 애니메이션 (clip-text 미사용) ── */
+      @keyframes helperColorPulse {
+        0%, 15%  { color: var(--text-secondary); -webkit-text-fill-color: var(--text-secondary); }
+        45%, 55% { color: var(--text-primary);   -webkit-text-fill-color: var(--text-primary); }
+        85%, 100%{ color: var(--text-secondary); -webkit-text-fill-color: var(--text-secondary); }
       }
       .helper.helper-sweep {
-        background-image: linear-gradient(90deg, var(--text-secondary) 0%, var(--text-secondary) 35%, var(--text-primary) 45%, var(--text-primary) 55%, var(--text-secondary) 65%, var(--text-secondary) 100%) !important;
-        background-size: 300% 100%;
-        background-position: 100% 0;
-        background-repeat: no-repeat;
-        -webkit-background-clip: text !important;
-        background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-        color: transparent !important;
         font-weight: 400 !important;
-        animation: helperSweep 2.1s cubic-bezier(.4,0,.2,1) 1 forwards !important;
+        animation: helperColorPulse 2.1s cubic-bezier(.4,0,.2,1) 1 forwards !important;
       }
       .helper.helper-settled {
-        background-image: linear-gradient(90deg, var(--text-secondary), var(--text-secondary)) !important;
-        background-size: 100% 100%;
-        -webkit-background-clip: text !important;
-        background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
         color: var(--text-secondary) !important;
+        -webkit-text-fill-color: var(--text-secondary) !important;
         font-weight: 400 !important;
         animation: none !important;
       }
@@ -1121,10 +1102,6 @@
         margin-top: 3px;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        background-image: linear-gradient(90deg, var(--text-secondary), var(--text-secondary));
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
       }
 
       .form-input {
