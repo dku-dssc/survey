@@ -1075,7 +1075,7 @@
         100% { background-position: 0% 0; }
       }
       .helper.helper-sweep {
-        background: linear-gradient(90deg, var(--text-secondary) 0%, var(--text-secondary) 40%, #111 50%, var(--text-secondary) 60%, var(--text-secondary) 100%) !important;
+        background: linear-gradient(90deg, var(--text-secondary) 0%, var(--text-secondary) 35%, var(--text-primary) 45%, var(--text-primary) 55%, var(--text-secondary) 65%, var(--text-secondary) 100%) !important;
         background-size: 300% 100% !important;
         background-position: 100% 0 !important;
         -webkit-background-clip: text !important;
@@ -1083,7 +1083,7 @@
         -webkit-text-fill-color: transparent !important;
         color: transparent !important;
         font-weight: 400 !important;
-        animation: helperSweep 1.4s ease-in-out 1 forwards !important;
+        animation: helperSweep 1.2s cubic-bezier(.4,0,.2,1) 1 forwards !important;
       }
       .helper.helper-settled {
         background: none !important;
@@ -1144,12 +1144,17 @@
       .form-input:-webkit-autofill,
       .form-input:-webkit-autofill:hover,
       .form-input:-webkit-autofill:focus,
-      .form-input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 40px rgba(0, 113, 227, 0.12) inset !important;
-        box-shadow: 0 0 0 40px rgba(0, 113, 227, 0.12) inset !important;
+      .form-input:-webkit-autofill:active,
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 9999px rgba(0, 113, 227, 0.10) inset !important;
+        box-shadow: 0 0 0 9999px rgba(0, 113, 227, 0.10) inset !important;
         -webkit-text-fill-color: var(--text-primary) !important;
         caret-color: var(--text-primary) !important;
-        transition: background-color 5000s ease-in-out 0s;
+        background-color: rgba(0, 113, 227, 0.10) !important;
+        transition: background-color 5000s ease-in-out 0s !important;
       }
       textarea.form-input {
         resize: vertical;
@@ -2535,21 +2540,23 @@
       .deadline-card {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         flex-wrap: nowrap;
       }
       .deadline-input-group {
-        display: flex;
+        display: flex !important;
         align-items: center;
-        gap: 6px;
+        gap: 3px;
         padding: 0;
         position: relative;
         flex: 1;
+        min-width: 0;
       }
       .dl-date-input {
-        padding: 8px 6px !important;
+        padding: 8px 4px !important;
         font-size: 13px !important;
         min-width: 0;
+        flex-shrink: 1;
       }
       .dl-date-sep {
         font-size: 13px;
@@ -2561,7 +2568,7 @@
       .deadline-tilde {
         font-size: 14px;
         color: var(--text-secondary);
-        padding: 0 4px;
+        padding: 0 3px;
         user-select: none;
         flex-shrink: 0;
       }
@@ -2609,7 +2616,8 @@
         gap: 4px;
       }
       /* Date picker calendar dropdown */
-      .dl-calendar-wrap { position: relative; display: inline-block; }
+      .dl-calendar-wrap { position: relative; }
+      .deadline-input-group.dl-calendar-wrap { display: flex !important; }
       .dl-calendar {
         position: absolute;
         top: calc(100% + 6px);
@@ -3308,13 +3316,13 @@
           text-align: center;
         }
         .dl-date-input {
-          padding: 6px 4px !important;
+          padding: 6px 3px !important;
           font-size: 12px !important;
         }
         .dl-date-sep { font-size: 11px; }
-        .deadline-tilde { font-size: 11px; padding: 0 2px; }
-        .deadline-card { gap: 4px; }
-        .deadline-input-group { gap: 4px; }
+        .deadline-tilde { font-size: 11px; padding: 0 1px; }
+        .deadline-card { gap: 3px; }
+        .deadline-input-group { gap: 2px; }
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
