@@ -1075,9 +1075,10 @@
         100% { background-position: 0% 0; }
       }
       .helper.helper-sweep {
-        background: linear-gradient(90deg, var(--text-secondary) 0%, var(--text-secondary) 35%, var(--text-primary) 45%, var(--text-primary) 55%, var(--text-secondary) 65%, var(--text-secondary) 100%) !important;
-        background-size: 300% 100% !important;
-        background-position: 100% 0 !important;
+        background-image: linear-gradient(90deg, var(--text-secondary) 0%, var(--text-secondary) 35%, var(--text-primary) 45%, var(--text-primary) 55%, var(--text-secondary) 65%, var(--text-secondary) 100%) !important;
+        background-size: 300% 100%;
+        background-position: 100% 0;
+        background-repeat: no-repeat;
         -webkit-background-clip: text !important;
         background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
