@@ -1084,7 +1084,7 @@
         -webkit-text-fill-color: transparent !important;
         color: transparent !important;
         font-weight: 400 !important;
-        animation: helperSweep 1.2s cubic-bezier(.4,0,.2,1) 1 forwards !important;
+        animation: helperSweep 1.6s cubic-bezier(.4,0,.2,1) 1 forwards !important;
       }
       .helper.helper-settled {
         background: none !important;
@@ -3352,7 +3352,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.1.3";
+      window.APP_VERSION = "4.1.4";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -9425,7 +9425,7 @@
           }
           return true;
         }
-        // 필수 완료 후, 현재 화면에 완전히 보이는 비필수 서술형을 1회 스윕
+        // 필수 완료 후, 현재 화면에 완전히 보이는 문항을 1회 스윕
         function sweepVisibleOptionalOnce(pageEl){
           observed.forEach(function(l){
             if (l.closest('.survey-page') !== pageEl) return;
@@ -9484,8 +9484,8 @@
           if (!pageEl) return;
           var groups = Array.from(pageEl.querySelectorAll('.form-group'));
 
-          // 규칙4: 비필수 서술형 라벨 관찰 등록
-          groups.forEach(function(g){ if (isNonReqText(g)){ var l = getLabel(g); if (l) observeLabel(l); } });
+          // 규칙4: 모든 라벨 관찰 등록 (스크롤 재등장 시 1회 그라데이션)
+          groups.forEach(function(g){ var l = getLabel(g); if (l) observeLabel(l); });
 
           // 규칙1: 첫 포커스 가능 미응답 문항 → 루프
           var target = firstFocusableUnanswered(pageEl);
@@ -9496,12 +9496,10 @@
             if (!isNaN(pageNum) && pageNum !== 1) scrollFieldIntoView(getLabel(target) || target);
           }
 
-          // 규칙4: 이미 완전히 보이는 비필수 서술형은 즉시 1회 재생
+          // 규칙4: 이미 완전히 보이는 문항은 즉시 1회 재생
           groups.forEach(function(g){
-            if (isNonReqText(g)){
-              var l = getLabel(g);
-              if (l && isFullyVisible(l)){ if (playOnce(l)) wasOut.set(l, false); }
-            }
+            var l = getLabel(g);
+            if (l && isFullyVisible(l)){ if (playOnce(l)) wasOut.set(l, false); }
           });
         }
 
