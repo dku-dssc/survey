@@ -1045,6 +1045,7 @@
         color: var(--danger) !important;
       }
       .form-label.lf-settled .helper:not(.helper-sweep) {
+        -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
         font-weight: 400 !important;
       }
@@ -1060,19 +1061,30 @@
       }
       .form-label.lf-sweep .helper:not(.helper-sweep),
       .form-label.lf-focus .helper:not(.helper-sweep) {
+        -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
+        background: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
         font-weight: 400 !important;
       }
 
       /* ── helper 글자별 스윕 애니메이션 (clip-text 미사용, 두께 변화 없음) ── */
       @keyframes hCharPulse {
-        0%, 5%   { color: var(--text-primary); }
-        95%, 100%{ color: var(--text-secondary); }
+        0%, 5%   { color: var(--text-primary); -webkit-text-fill-color: var(--text-primary); }
+        95%, 100%{ color: var(--text-secondary); -webkit-text-fill-color: var(--text-secondary); }
+      }
+      .helper.helper-sweep {
+        -webkit-text-fill-color: var(--text-primary) !important;
+        background: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
       }
       .helper .hc {
         animation: hCharPulse 0.8s ease-in-out 1 both;
       }
       .helper.helper-settled {
+        -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
         font-weight: 400 !important;
       }
