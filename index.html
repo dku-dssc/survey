@@ -1046,7 +1046,6 @@
       }
       .form-label.lf-settled .helper:not(.helper-sweep) {
         color: var(--text-secondary) !important;
-        -webkit-text-fill-color: var(--text-secondary) !important;
         font-weight: 400 !important;
       }
 
@@ -1062,25 +1061,21 @@
       .form-label.lf-sweep .helper:not(.helper-sweep),
       .form-label.lf-focus .helper:not(.helper-sweep) {
         color: var(--text-secondary) !important;
-        -webkit-text-fill-color: var(--text-secondary) !important;
         font-weight: 400 !important;
       }
 
-      /* ── helper 부연설명 회색→검정→회색 color 애니메이션 (clip-text 미사용) ── */
-      @keyframes helperColorPulse {
-        0%, 15%  { color: var(--text-secondary); -webkit-text-fill-color: var(--text-secondary); }
-        45%, 55% { color: var(--text-primary);   -webkit-text-fill-color: var(--text-primary); }
-        85%, 100%{ color: var(--text-secondary); -webkit-text-fill-color: var(--text-secondary); }
+      /* ── helper 글자별 스윕 애니메이션 (clip-text 미사용, 두께 변화 없음) ── */
+      @keyframes hCharPulse {
+        0%, 5%   { color: var(--text-secondary); }
+        45%, 55% { color: var(--text-primary); }
+        95%, 100%{ color: var(--text-secondary); }
       }
-      .helper.helper-sweep {
-        font-weight: 400 !important;
-        animation: helperColorPulse 2.1s cubic-bezier(.4,0,.2,1) 1 forwards !important;
+      .helper .hc {
+        animation: hCharPulse 0.8s ease-in-out 1 both;
       }
       .helper.helper-settled {
         color: var(--text-secondary) !important;
-        -webkit-text-fill-color: var(--text-secondary) !important;
         font-weight: 400 !important;
-        animation: none !important;
       }
 
       /* 모션 최소화 선호 시 애니메이션 정지(정적 표시) */
@@ -9276,23 +9271,61 @@
           return false;
         }
 
+        // ── helper 글자별 스윕 유틸 ──
+        function clearHelperSweep(helper){
+          if (!helper) return;
+          helper.classList.remove('helper-sweep', 'helper-settled');
+          if (helper._origText !== undefined) {
+            helper.textContent = helper._origText;
+            delete helper._origText;
+          }
+        }
+        function sweepHelper(helper){
+          if (!helper || !helper.textContent.trim()) return;
+          // 이미 진행 중이면 정리
+          if (helper._origText !== undefined) helper.textContent = helper._origText;
+          var text = helper.textContent;
+          helper._origText = text;
+          helper.classList.add('helper-sweep');
+          helper.classList.remove('helper-settled');
+          helper.innerHTML = '';
+          var totalMs = 2100, charMs = 800;
+          var maxDelay = totalMs - charMs;
+          var chars = text.split('');
+          var len = chars.length;
+          for (var i = 0; i < len; i++) {
+            var sp = document.createElement('span');
+            sp.className = 'hc';
+            sp.textContent = chars[i];
+            sp.style.animationDelay = (len > 1 ? Math.round(maxDelay * i / (len - 1)) : 0) + 'ms';
+            helper.appendChild(sp);
+          }
+          var lastSp = helper.lastElementChild;
+          if (lastSp) {
+            lastSp.addEventListener('animationend', function(){
+              helper.textContent = text;
+              delete helper._origText;
+              helper.classList.remove('helper-sweep');
+              helper.classList.add('helper-settled');
+            }, { once: true });
+          }
+        }
+
         // ── 라벨 클래스 제어 ──
         function clearLabel(label){
           if (!label) return;
-          label._helperLoopDone = true; // 진행 중인 루프 helper 트리거 방지
+          label._helperLoopDone = true;
           label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once');
-          var helper = label.querySelector('.helper');
-          if (helper) helper.classList.remove('helper-sweep', 'helper-settled');
+          clearHelperSweep(label.querySelector('.helper'));
         }
         function applyFocusSolid(label){          // 파랑 solid (규칙3)
           if (!label) return;
-          label._helperLoopDone = true; // 진행 중인 루프 helper 트리거 방지
+          label._helperLoopDone = true;
           label.classList.remove('lf-sweep', 'lf-loop', 'lf-once');
           label.classList.add('lf-focus');
-          // 답변 완료 시 helper도 settled 상태로 고정
           var helper = label.querySelector('.helper');
           if (helper) {
-            helper.classList.remove('helper-sweep');
+            clearHelperSweep(helper);
             helper.classList.add('helper-settled');
           }
         }
@@ -9300,51 +9333,35 @@
           if (!label) return;
           label.classList.remove('lf-once', 'lf-sweep', 'lf-loop');
           var helper = label.querySelector('.helper');
-          if (helper) helper.classList.remove('helper-sweep', 'helper-settled');
-          void label.offsetWidth;                 // 애니메이션 재시작
+          if (helper) clearHelperSweep(helper);
+          void label.offsetWidth;
           label.classList.add('lf-focus', 'lf-sweep', 'lf-loop');
-          // 루프 첫 iteration 완료 후 helper 그라데이션 1회 재생
           if (helper && helper.textContent.trim()) {
             label._helperLoopDone = false;
             var onIter = function(e) {
               if (e.target !== label || label._helperLoopDone) return;
               label._helperLoopDone = true;
               label.removeEventListener('animationiteration', onIter);
-              helper.classList.remove('helper-settled');
-              void helper.offsetWidth;
-              helper.classList.add('helper-sweep');
-              helper.addEventListener('animationend', function hDone(){
-                helper.classList.add('helper-settled');
-                helper.classList.remove('helper-sweep');
-              }, { once: true });
+              sweepHelper(helper);
             };
             label.addEventListener('animationiteration', onIter);
           }
         }
         function playOnce(label){                 // 검정 + 밴드 1회 (규칙4)
           if (!label) return false;
-          if (label === getLabel(focusedGroup)) return false; // 포커스 라벨엔 1회 스윕 안 함
-          if (!pageAllRequiredAnswered(label)) return false;  // [전제] 해당 페이지 필수 문항 모두 완료
+          if (label === getLabel(focusedGroup)) return false;
+          if (!pageAllRequiredAnswered(label)) return false;
           label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once', 'lf-settled');
-          // helper 초기화
           var helper = label.querySelector('.helper');
-          if (helper) { helper.classList.remove('helper-sweep', 'helper-settled'); }
+          if (helper) clearHelperSweep(helper);
           void label.offsetWidth;
           label.classList.add('lf-sweep', 'lf-once');
           label.addEventListener('animationend', function done(e){
-            if (e.target !== label) return; // helper의 animationend 무시
-            // [버그수정] 클래스 제거 시 투명 프레임(흰 깜빡) 방지: 먼저 solid 기본색 고정
+            if (e.target !== label) return;
             label.classList.add('lf-settled');
             label.classList.remove('lf-sweep', 'lf-once');
-            // 라벨 그라데이션 완료 후 → helper 회색 그라데이션 시작
             if (helper && helper.textContent.trim()) {
-              helper.classList.remove('helper-settled');
-              void helper.offsetWidth;
-              helper.classList.add('helper-sweep');
-              helper.addEventListener('animationend', function hDone(){
-                helper.classList.add('helper-settled');
-                helper.classList.remove('helper-sweep');
-              }, { once: true });
+              sweepHelper(helper);
             }
           }, { once: true });
           return true;
