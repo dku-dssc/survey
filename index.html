@@ -1066,8 +1066,7 @@
 
       /* ── helper 글자별 스윕 애니메이션 (clip-text 미사용, 두께 변화 없음) ── */
       @keyframes hCharPulse {
-        0%, 5%   { color: var(--text-secondary); }
-        45%, 55% { color: var(--text-primary); }
+        0%, 5%   { color: var(--text-primary); }
         95%, 100%{ color: var(--text-secondary); }
       }
       .helper .hc {
@@ -9342,7 +9341,8 @@
               if (e.target !== label || label._helperLoopDone) return;
               label._helperLoopDone = true;
               label.removeEventListener('animationiteration', onIter);
-              sweepHelper(helper);
+              // 라벨 그라데이션 이후에 helper 시작 (동시 재생 방지)
+              setTimeout(function(){ sweepHelper(helper); }, 400);
             };
             label.addEventListener('animationiteration', onIter);
           }
