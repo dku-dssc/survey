@@ -1089,7 +1089,6 @@
         -webkit-text-fill-color: transparent !important;
         color: transparent !important;
         font-weight: 400 !important;
-        -webkit-text-stroke: 0.2px var(--text-secondary) !important;
         animation: helperSweep 2.1s cubic-bezier(.4,0,.2,1) 1 forwards !important;
       }
       .helper.helper-settled {
@@ -1100,7 +1099,6 @@
         -webkit-text-fill-color: transparent !important;
         color: var(--text-secondary) !important;
         font-weight: 400 !important;
-        -webkit-text-stroke: 0.2px var(--text-secondary) !important;
         animation: none !important;
       }
 
@@ -1123,6 +1121,10 @@
         margin-top: 3px;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        background-image: linear-gradient(90deg, var(--text-secondary), var(--text-secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
 
       .form-input {
@@ -3360,7 +3362,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.1.6";
+      window.APP_VERSION = "4.1.4";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
