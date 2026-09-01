@@ -995,7 +995,7 @@
       }
 
       /* ── label-main: 그라데이션은 .label-main에만 적용, helper는 상속 차단 ── */
-      .label-main { display: inline; }
+      .label-main { display: block; }
 
       /* ── 포커스된(파란) 라벨: solid 파랑, 그라데이션 없음 (규칙 3) ── */
       .form-label.lf-focus .label-main {
@@ -1062,8 +1062,8 @@
 
       /* ── helper 마스크 스윕 애니메이션 (글자 쪼개기 없음, 두께 변화 없음) ── */
       @keyframes helperMaskSweep {
-        0%   { -webkit-mask-position: -60% 0; mask-position: -60% 0; }
-        100% { -webkit-mask-position: 160% 0; mask-position: 160% 0; }
+        0%   { -webkit-mask-position: -70% 0; mask-position: -70% 0; }
+        100% { -webkit-mask-position: 170% 0; mask-position: 170% 0; }
       }
       /* 클론: label 밖에 absolute 배치, 검은 글씨 + 마스크로 물결 효과 */
       .helper-clone {
@@ -1074,10 +1074,10 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         margin: 0; padding: 0;
-        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 30%, black 70%, transparent 100%);
-        mask-image: linear-gradient(90deg, transparent 0%, black 30%, black 70%, transparent 100%);
-        -webkit-mask-size: 45% 100%;
-        mask-size: 45% 100%;
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 45%, black 55%, transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0%, black 45%, black 55%, transparent 100%);
+        -webkit-mask-size: 55% 100%;
+        mask-size: 55% 100%;
         -webkit-mask-repeat: no-repeat;
         mask-repeat: no-repeat;
         animation: helperMaskSweep 2.6s ease-in-out 1 both;
