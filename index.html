@@ -1074,8 +1074,8 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         margin: 0; padding: 0;
-        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 50%, transparent 100%);
-        mask-image: linear-gradient(90deg, transparent 0%, black 50%, transparent 100%);
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 40%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.15) 78%, transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0%, black 40%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.15) 78%, transparent 100%);
         -webkit-mask-size: 50% 100%;
         mask-size: 50% 100%;
         -webkit-mask-repeat: no-repeat;
@@ -1341,6 +1341,75 @@
       .btn-primary.btn-nudge {
         animation: btnNudgePulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
+      /* 로그인 버튼 호버 애니메이션 (다음 버튼과 동일한 팝 효과) */
+      .login-btn {
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .login-btn:hover {
+        transform: scale(1.08);
+      }
+      .login-btn:active {
+        transform: scale(0.95);
+      }
+
+      /* ── 로그인 도넛 로딩 스피너 ── */
+      @keyframes loginDonutSpin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+      @keyframes loginDonutFill {
+        0% { border-width: 4px; width: 40px; height: 40px; background: transparent; }
+        100% { border-width: 20px; width: 40px; height: 40px; background: var(--primary); }
+      }
+      @keyframes loginCircleExpand {
+        0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(60); opacity: 0; }
+      }
+      .login-donut-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.15);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+      }
+      .login-donut {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px; height: 40px;
+        border: 4px solid var(--primary);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: loginDonutSpin 0.8s linear infinite;
+        box-sizing: border-box;
+      }
+      .login-donut.fill {
+        animation: loginDonutFill 0.4s ease forwards;
+        border-color: var(--primary);
+        border-radius: 50%;
+      }
+      .login-donut.expand {
+        animation: loginCircleExpand 0.6s ease-out forwards;
+        border: none;
+        width: 40px; height: 40px;
+        background: var(--primary);
+        border-radius: 50%;
+      }
+
+      /* ── 로그인 실패 필드 진동 ── */
+      @keyframes loginShake {
+        0%, 100% { transform: translateX(0); }
+        10%, 50%, 90% { transform: translateX(-6px); }
+        30%, 70% { transform: translateX(6px); }
+      }
+      .login-shake {
+        animation: loginShake 0.4s ease;
+      }
+
       /* 다음 버튼 팝! 효과 (필수 응답 완료 + 버튼 완전히 보일 때) */
       @keyframes btnReadyPop {
         0% { transform: scale(1); box-shadow: 0 8px 20px rgba(17, 100, 177, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.2); }
@@ -3344,7 +3413,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.1.4";
+      window.APP_VERSION = "4.1.6";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -3981,132 +4050,132 @@
           <div class="form-group">
             <label class="form-label">
               주장애 <span class="required">*</span>
-              <span class="helper">중복 선택 가능합니다.</span>
+              <span class="helper">하나만 선택하세요.</span>
             </label>
             <div
               class="option-group grid"
               data-name="disabilityType"
-              data-type="checkbox"
+              data-type="radio"
               data-required="true"
             >
               <div
                 class="option-item"
                 data-value="지체장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">지체장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="뇌병변장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">뇌병변장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="시각장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">시각장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="청각장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">청각장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="언어장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">언어장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="안면장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">안면장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="신장장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">신장장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="심장장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">심장장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="간장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">간장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="호흡기장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">호흡기장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="장루·요루장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">장루·요루장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="뇌전증장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">뇌전증장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="지적장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">지적장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="자폐성장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">자폐성장애</span>
               </div>
               <div
                 class="option-item"
                 data-value="정신장애"
-                onclick="toggleCheckbox(this)"
+                onclick="selectOption(this)"
               >
-                <div class="custom-checkbox"></div>
+                <div class="custom-radio"></div>
                 <span class="option-label">정신장애</span>
               </div>
             </div>
@@ -5161,7 +5230,7 @@
           <input type="password" id="adminPasswordInput" class="form-input" placeholder="비밀번호"
             style="max-width:280px;margin:0 auto 14px;display:block;"
             onkeypress="if(event.key==='Enter'){event.preventDefault();adminLoginSubmit();}" />
-          <button class="btn btn-primary" onclick="event.preventDefault();adminLoginSubmit();" style="font-size:14px;">로그인</button>
+          <button class="btn btn-primary login-btn" id="loginBtn" onclick="event.preventDefault();adminLoginSubmit();" style="font-size:14px;">로그인</button>
         </div>
       </div>
 
@@ -6346,6 +6415,7 @@
 
       // ===== Admin Panel =====
       function toggleAdmin() {
+        if (_loginInProgress) return;  // 로그인 진행 중에는 토글 무시
         const panel = document.getElementById('adminPanel');
         const overlay = document.getElementById('overlay');
         panel.classList.toggle('open');
@@ -6369,8 +6439,8 @@
           window.scrollTo(0, scrollY);
         }
 
-        // 로그인 안 된 상태면 로그인 화면 표시
-        if (panel.classList.contains('open') && !adminToken) {
+        // 로그인 안 된 상태면 로그인 화면 표시 (이미 로그인 됐으면 표시 안 함)
+        if (panel.classList.contains('open') && !adminToken && !isMasterMode) {
           showAdminLogin();
         }
       }
@@ -6392,7 +6462,60 @@
       var isMasterMode = false;
       var masterToken = null;
 
+      var _loginInProgress = false;  // 로그인 중복 실행 방지
+
+      function showLoginDonut() {
+        var existing = document.querySelector('.login-donut-overlay');
+        if (existing) existing.remove();
+        var overlay = document.createElement('div');
+        overlay.className = 'login-donut-overlay';
+        overlay.id = 'loginDonutOverlay';
+        var donut = document.createElement('div');
+        donut.className = 'login-donut';
+        donut.id = 'loginDonut';
+        overlay.appendChild(donut);
+        document.body.appendChild(overlay);
+        return { overlay: overlay, donut: donut };
+      }
+
+      function loginSuccessAnimation(callback) {
+        var donut = document.getElementById('loginDonut');
+        var overlay = document.getElementById('loginDonutOverlay');
+        if (!donut || !overlay) { if (callback) callback(); return; }
+        // 1단계: 도넛 내부 채우기 (원이 됨)
+        donut.style.animation = 'none';
+        void donut.offsetWidth;
+        donut.className = 'login-donut fill';
+        setTimeout(function() {
+          // 2단계: 원이 화면 가득 확대 + 페이드
+          donut.className = 'login-donut expand';
+          donut.addEventListener('animationend', function() {
+            overlay.remove();
+            if (callback) callback();
+          }, { once: true });
+        }, 400);
+      }
+
+      function loginFailAnimation() {
+        // 도넛 제거
+        var overlay = document.querySelector('.login-donut-overlay');
+        if (overlay) overlay.remove();
+        // 아이디/비번 필드 진동
+        var idInput = document.getElementById('adminIdInput');
+        var pwInput = document.getElementById('adminPasswordInput');
+        [idInput, pwInput].forEach(function(el) {
+          if (!el) return;
+          el.classList.remove('login-shake');
+          void el.offsetWidth;
+          el.classList.add('login-shake');
+          el.addEventListener('animationend', function() {
+            el.classList.remove('login-shake');
+          }, { once: true });
+        });
+      }
+
       async function adminLoginSubmit() {
+        if (_loginInProgress) return;  // 중복 실행 방지
         // 스크롤 방지: 현재 스크롤 위치 보존
         var scrollPos = window.scrollY;
         window.scrollTo(0, scrollPos);
@@ -6405,6 +6528,9 @@
           return;
         }
 
+        _loginInProgress = true;
+        showLoginDonut();
+
         try {
           const resp = await fetch(API_BASE + '/api/admin/login', {
             method: 'POST',
@@ -6414,6 +6540,8 @@
 
           const result = await resp.json();
           if (!resp.ok) {
+            _loginInProgress = false;
+            loginFailAnimation();
             showToast(result.error || '로그인에 실패했습니다.');
             return;
           }
@@ -6423,27 +6551,36 @@
             masterToken = result.token;
             isMasterMode = true;
             adminLoggedInId = adminId;
-            toggleAdmin(); // 패널 닫기
-            startNewSurvey();
-            showToast('마스터 모드로 설문을 시작합니다.');
+            loginSuccessAnimation(function() {
+              _loginInProgress = false;
+              toggleAdmin(); // 패널 닫기
+              startNewSurvey();
+              showToast('마스터 모드로 설문을 시작합니다.');
+            });
           } else {
             // 일반 관리자
             adminToken = result.token;
             adminLoggedInId = adminId;
             startAdminSessionTimer();
-            showToast('관리자 로그인 성공!');
-            showAdminContent();
-            showAdminTab('responses');
-            await loadAdminResponses();
-            await loadEnrollmentData();
-            await loadLinkedEmail();
-            var emailBar = document.getElementById('emailLinkBar');
-            if (emailBar) {
-              emailBar.style.display = 'flex';
-              emailBar.classList.add('animate-in');
-            }
+            // 로그인 성공 애니메이션 후 관리자 패널 표시
+            loginSuccessAnimation(async function() {
+              _loginInProgress = false;
+              showAdminContent();
+              showAdminTab('responses');
+              showToast('관리자 로그인 성공!');
+              await loadAdminResponses();
+              await loadEnrollmentData();
+              await loadLinkedEmail();
+              var emailBar = document.getElementById('emailLinkBar');
+              if (emailBar) {
+                emailBar.style.display = 'flex';
+                emailBar.classList.add('animate-in');
+              }
+            });
           }
         } catch (err) {
+          _loginInProgress = false;
+          loginFailAnimation();
           showToast('서버 연결 실패');
         }
       }
