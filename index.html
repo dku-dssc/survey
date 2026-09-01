@@ -1069,20 +1069,30 @@
         font-weight: 400 !important;
       }
 
-      /* ── helper 글자별 스윕 애니메이션 (clip-text 미사용, 두께 변화 없음) ── */
+      /* ── helper 글자별 스윕 애니메이션 (clone 방식: 두께 변화 없음) ── */
       @keyframes hCharPulse {
         0%        { color: var(--text-secondary); }
         40%, 60%  { color: var(--text-primary); }
         100%      { color: var(--text-secondary); }
       }
-      .helper.helper-sweep {
-        -webkit-text-fill-color: var(--text-secondary) !important;
-        background: none !important;
-        -webkit-background-clip: border-box !important;
-        background-clip: border-box !important;
+      /* 원본 helper는 건드리지 않음 — sweep 중 visibility:hidden만 적용 */
+      .helper.helper-sweep-hidden {
+        visibility: hidden !important;
       }
-      .helper .hc {
-        -webkit-text-fill-color: currentColor;
+      /* clone은 label 밖에 위치 → -webkit-text-fill-color 상속 없음 → 두께 변화 없음 */
+      .helper-clone {
+        position: absolute;
+        pointer-events: none;
+        font-size: 13px;
+        font-weight: 400 !important;
+        color: var(--text-secondary);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        white-space: pre-wrap;
+        line-height: normal;
+        margin: 0; padding: 0;
+      }
+      .helper-clone .hc {
         animation: hCharPulse 1.4s ease-in-out 1 both;
       }
       .helper.helper-settled {
@@ -9284,24 +9294,53 @@
           return false;
         }
 
-        // ── helper 글자별 스윕 유틸 ──
+        // ── helper 글자별 스윕 유틸 (clone 방식 — 원본 두께 변화 없음) ──
         function clearHelperSweep(helper){
           if (!helper) return;
-          helper.classList.remove('helper-sweep', 'helper-settled');
-          if (helper._origText !== undefined) {
-            helper.textContent = helper._origText;
-            delete helper._origText;
+          // 클론 제거
+          if (helper._sweepClone) {
+            if (helper._sweepClone.parentNode) helper._sweepClone.parentNode.removeChild(helper._sweepClone);
+            delete helper._sweepClone;
           }
+          helper.classList.remove('helper-sweep-hidden', 'helper-settled');
         }
         function sweepHelper(helper){
           if (!helper || !helper.textContent.trim()) return;
           // 이미 진행 중이면 정리
-          if (helper._origText !== undefined) helper.textContent = helper._origText;
+          clearHelperSweep(helper);
           var text = helper.textContent;
-          helper._origText = text;
-          helper.classList.add('helper-sweep');
-          helper.classList.remove('helper-settled');
-          helper.innerHTML = '';
+
+          // ★ 핵심: 원본 helper는 숨기기만 하고 건드리지 않음
+          // label 밖에 클론을 만들어 거기서 애니메이션 → -webkit-text-fill-color 상속 없음 → 두께 변화 없음
+
+          // 클론 생성 — label의 form-group에 absolute로 배치
+          // 위치 측정은 숨기기 전에 수행
+          var rect = helper.getBoundingClientRect();
+          helper.classList.add('helper-sweep-hidden');
+          var group = helper.closest('.form-group');
+          if (!group) group = helper.parentNode;
+          var groupRect = group.getBoundingClientRect();
+          var groupStyle = getComputedStyle(group);
+
+          // form-group에 position이 없으면 추가
+          if (groupStyle.position === 'static') {
+            group.style.position = 'relative';
+          }
+
+          var clone = document.createElement('span');
+          clone.className = 'helper-clone';
+          // 원본과 동일한 폰트 속성 복사
+          var helperStyle = getComputedStyle(helper);
+          clone.style.fontFamily = helperStyle.fontFamily;
+          clone.style.fontSize = helperStyle.fontSize;
+          clone.style.fontWeight = helperStyle.fontWeight;
+          clone.style.lineHeight = helperStyle.lineHeight;
+          clone.style.letterSpacing = helperStyle.letterSpacing;
+          // 원본 위치에 정확히 배치
+          clone.style.top = (rect.top - groupRect.top + group.scrollTop) + 'px';
+          clone.style.left = (rect.left - groupRect.left + group.scrollLeft) + 'px';
+          clone.style.width = rect.width + 'px';
+
           var totalMs = 2600, charMs = 1400;
           var maxDelay = totalMs - charMs;
           var chars = text.split('');
@@ -9311,14 +9350,19 @@
             sp.className = 'hc';
             sp.textContent = chars[i];
             sp.style.animationDelay = (len > 1 ? Math.round(maxDelay * i / (len - 1)) : 0) + 'ms';
-            helper.appendChild(sp);
+            clone.appendChild(sp);
           }
-          var lastSp = helper.lastElementChild;
+
+          group.appendChild(clone);
+          helper._sweepClone = clone;
+
+          var lastSp = clone.lastElementChild;
           if (lastSp) {
             lastSp.addEventListener('animationend', function(){
-              helper.textContent = text;
-              delete helper._origText;
-              helper.classList.remove('helper-sweep');
+              // 클론 제거, 원본 복원
+              if (clone.parentNode) clone.parentNode.removeChild(clone);
+              delete helper._sweepClone;
+              helper.classList.remove('helper-sweep-hidden');
               helper.classList.add('helper-settled');
             }, { once: true });
           }
