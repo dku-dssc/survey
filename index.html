@@ -1060,27 +1060,32 @@
         background-clip: border-box !important;
       }
 
-      /* ── helper 마스크 스윕 애니메이션 (글자 쪼개기 없음, 두께 변화 없음) ── */
-      @keyframes helperMaskSweep {
-        0%   { -webkit-mask-position: -80% 0; mask-position: -80% 0; }
-        100% { -webkit-mask-position: 180% 0; mask-position: 180% 0; }
+      /* ── helper 컬러 스윕 애니메이션: 회색→검정→회색 연속 그라데이션 물결 ── */
+      @keyframes helperColorSweep {
+        0%   { background-position: 100% 0; }
+        100% { background-position: 0% 0; }
       }
-      /* 클론: label 밖에 absolute 배치, 검은 글씨 + 마스크로 물결 효과 */
+      /* 클론: label 밖에 absolute 배치, background-clip:text로 회색↔검정 물결 */
       .helper-clone {
         position: absolute;
         display: block;
         pointer-events: none;
-        color: var(--text-primary);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         margin: 0; padding: 0;
-        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 35%, black 40%, transparent 100%);
-        mask-image: linear-gradient(90deg, transparent 0%, black 35%, black 40%, transparent 100%);
-        -webkit-mask-size: 65% 100%;
-        mask-size: 65% 100%;
-        -webkit-mask-repeat: no-repeat;
-        mask-repeat: no-repeat;
-        animation: helperMaskSweep 2.6s ease-in-out 1 both;
+        /* 회색(원본과 동일) → 검정(밴드) → 회색: 경계가 완전히 자연스러움 */
+        background-image: linear-gradient(90deg,
+          var(--text-secondary) 40%,
+          var(--text-primary) 47%,
+          var(--text-primary) 53%,
+          var(--text-secondary) 60%);
+        background-size: 400% 100%;
+        background-position: 100% 0;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        animation: helperColorSweep 2.6s ease-in-out 1 forwards;
       }
       /* helper-settled: 애니메이션 종료 후 — -webkit-text-fill-color 절대 사용하지 않음 (두께 변화 원인) */
       .helper.helper-settled {
