@@ -1358,19 +1358,12 @@
         100% { transform: translate(-50%, -50%) rotate(360deg); }
       }
       @keyframes loginDonutFill {
-        0% { border-width: 4px; width: 40px; height: 40px; background: transparent; }
-        100% { border-width: 20px; width: 40px; height: 40px; background: var(--primary); }
+        0% { border-width: 6px; width: 44px; height: 44px; background: transparent; }
+        100% { border-width: 22px; width: 44px; height: 44px; background: var(--primary); }
       }
       @keyframes loginCircleExpand {
-        0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        100% { transform: translate(-50%, -50%) scale(60); opacity: 0; }
-      }
-      .login-donut.expand {
-        animation: loginCircleExpand 0.5s ease-out forwards !important;
-        border: none !important;
-        width: 40px; height: 40px;
-        background: var(--primary);
-        border-radius: 50%;
+        0% { transform: translate(-50%, -50%) scale(1); }
+        100% { transform: translate(-50%, -50%) scale(80); }
       }
       .login-donut-overlay {
         position: fixed;
@@ -1379,16 +1372,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(0,0,0,0.15);
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
+        background: radial-gradient(circle, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.25) 100%);
       }
       .login-donut {
         position: absolute;
         top: 50%; left: 50%;
         transform: translate(-50%, -50%);
-        width: 40px; height: 40px;
-        border: 4px solid var(--primary);
+        width: 44px; height: 44px;
+        border: 6px solid var(--primary);
         border-top-color: transparent;
         border-radius: 50%;
         animation: loginDonutSpin 0.8s linear infinite;
@@ -1398,6 +1389,22 @@
         animation: loginDonutFill 0.3s ease forwards;
         border-color: var(--primary);
         border-radius: 50%;
+      }
+      .login-donut.expand {
+        animation: loginCircleExpand 0.5s ease-out forwards !important;
+        border: none !important;
+        width: 44px; height: 44px;
+        background: var(--primary);
+        border-radius: 50%;
+      }
+      /* iris-out 공개 효과 */
+      .login-iris-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 10001;
+        background: var(--primary);
+        -webkit-mask-image: radial-gradient(circle at center, transparent 0%, transparent calc(var(--iris-r, 0px) - 6px), black calc(var(--iris-r, 0px) + 6px), black 100%);
+        mask-image: radial-gradient(circle at center, transparent 0%, transparent calc(var(--iris-r, 0px) - 6px), black calc(var(--iris-r, 0px) + 6px), black 100%);
       }
 
       /* ── 로그인 실패 필드 진동 ── */
@@ -6482,17 +6489,60 @@
         var donut = document.getElementById('loginDonut');
         var overlay = document.getElementById('loginDonutOverlay');
         if (!donut || !overlay) { if (callback) callback(); return; }
-        // 1단계: 도넛 내부 채우기 (0.3s)
+
+        // 1단계: 도넛 내부 채우기 → 원 (0.3s)
         donut.style.animation = 'none';
         void donut.offsetWidth;
         donut.className = 'login-donut fill';
+
         setTimeout(function() {
-          // 2단계: 원이 화면 가득 확대 + 페이드 (0.5s)
+          // 2단계: 원이 화면 전체를 불투명하게 덮음 (0.5s)
           donut.className = 'login-donut expand';
-          void donut.offsetWidth;  // 애니메이션 강제 재시작
+          void donut.offsetWidth;
+
           setTimeout(function() {
+            // 3단계: donut overlay 제거, iris overlay로 교체
             overlay.remove();
+
+            // primary 색으로 화면 완전히 덮는 iris 오버레이 생성
+            var iris = document.createElement('div');
+            iris.className = 'login-iris-overlay';
+            iris.id = 'loginIrisOverlay';
+            iris.style.setProperty('--iris-r', '0px');
+            document.body.appendChild(iris);
+
+            // callback 먼저 실행 — 뒤에서 UI 준비
             if (callback) callback();
+
+            // 4단계: 중앙에서 투명 원(구멍)이 커지며 화면 공개 (iris-out)
+            var vw = window.innerWidth;
+            var vh = window.innerHeight;
+            var maxR = Math.ceil(Math.sqrt(vw * vw + vh * vh) / 2) + 20;
+            var startTime = null;
+            var duration = 600; // ms
+
+            function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+            function animateIris(ts) {
+              if (!startTime) startTime = ts;
+              var elapsed = ts - startTime;
+              var progress = Math.min(elapsed / duration, 1);
+              var easedProgress = easeOutCubic(progress);
+              var r = Math.round(easedProgress * maxR);
+              iris.style.setProperty('--iris-r', r + 'px');
+
+              if (progress < 1) {
+                requestAnimationFrame(animateIris);
+              } else {
+                iris.remove();
+              }
+            }
+
+            // 살짝 딜레이 후 iris 시작 (화면 전환 인지)
+            setTimeout(function() {
+              requestAnimationFrame(animateIris);
+            }, 80);
+
           }, 520);
         }, 320);
       }
