@@ -994,8 +994,11 @@
         100% { background-position: 0% 0, 0 0; }
       }
 
+      /* ── label-main: 그라데이션은 .label-main에만 적용, helper는 상속 차단 ── */
+      .label-main { display: inline; }
+
       /* ── 포커스된(파란) 라벨: solid 파랑, 그라데이션 없음 (규칙 3) ── */
-      .form-label.lf-focus {
+      .form-label.lf-focus .label-main {
         color: var(--lf-solid);
         -webkit-text-fill-color: var(--lf-solid);
       }
@@ -1003,6 +1006,8 @@
       /* ── 그라데이션 밴드 스윕: 기본색 위에 반투명 밴드 합성 ── */
       .form-label.lf-sweep {
         --lf-band-base: var(--text-primary);   /* 비포커스 기본색 = 검정 */
+      }
+      .form-label.lf-sweep .label-main {
         background-image:
           linear-gradient(90deg,
             rgba(var(--lf-blue), 0)   40%,
@@ -1024,15 +1029,15 @@
       }
 
       /* 루프(포커스 미응답, 규칙1·2) vs 1회(규칙4) */
-      .form-label.lf-sweep.lf-loop {
+      .form-label.lf-sweep.lf-loop .label-main {
         animation: lfSweep 2.5s linear infinite;
       }
-      .form-label.lf-sweep.lf-once {
+      .form-label.lf-sweep.lf-once .label-main {
         animation: lfSweep 2.5s linear 1 forwards;
       }
       /* [버그수정] 1회 스윕 종료 후 클래스 제거 시 투명 프레임(흰 깜빡) 방지:
          클립을 끄고 기본색을 즉시 solid로 고정 */
-      .form-label.lf-settled {
+      .form-label.lf-settled .label-main {
         background-image: none !important;
         -webkit-background-clip: border-box !important;
         background-clip: border-box !important;
@@ -1044,29 +1049,15 @@
         -webkit-text-fill-color: var(--danger) !important;
         color: var(--danger) !important;
       }
-      .form-label.lf-settled .helper:not(.helper-sweep) {
-        -webkit-text-fill-color: var(--text-secondary) !important;
-        color: var(--text-secondary) !important;
-        font-weight: 400 !important;
-      }
 
-      /* 자식(필수표시 *, 도움말)은 밴드에서 제외하고 고유색 유지 */
-      .form-label.lf-sweep .required,
-      .form-label.lf-focus .required {
+      /* 자식(필수표시 *)은 밴드에서 제외하고 고유색 유지 — label-main 내부이므로 background-clip 오버라이드 필요 */
+      .form-label.lf-sweep .label-main .required,
+      .form-label.lf-focus .label-main .required {
         -webkit-text-fill-color: var(--danger) !important;
         color: var(--danger) !important;
         background: none !important;
         -webkit-background-clip: border-box !important;
         background-clip: border-box !important;
-      }
-      .form-label.lf-sweep .helper:not(.helper-sweep),
-      .form-label.lf-focus .helper:not(.helper-sweep) {
-        -webkit-text-fill-color: var(--text-secondary) !important;
-        color: var(--text-secondary) !important;
-        background: none !important;
-        -webkit-background-clip: border-box !important;
-        background-clip: border-box !important;
-        font-weight: 400 !important;
       }
 
       /* ── helper 마스크 스윕 애니메이션 (글자 쪼개기 없음, 두께 변화 없음) ── */
@@ -1091,16 +1082,16 @@
         mask-repeat: no-repeat;
         animation: helperMaskSweep 2.6s ease-in-out 1 both;
       }
+      /* helper-settled: 애니메이션 종료 후 — -webkit-text-fill-color 절대 사용하지 않음 (두께 변화 원인) */
       .helper.helper-settled {
-        -webkit-text-fill-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
         font-weight: 400 !important;
       }
 
       /* 모션 최소화 선호 시 애니메이션 정지(정적 표시) */
       @media (prefers-reduced-motion: reduce) {
-        .form-label.lf-sweep.lf-loop,
-        .form-label.lf-sweep.lf-once {
+        .form-label.lf-sweep.lf-loop .label-main,
+        .form-label.lf-sweep.lf-once .label-main {
           animation: none;
         }
       }
@@ -9248,6 +9239,21 @@
         var SWEEP_DUR = 2500;              // CSS lfSweep 지속시간과 일치
         var focusedGroup = null;          // 현재 포커스된 form-group (단 1개)
 
+        // ── label-main 래퍼 초기화: 메인 텍스트만 감싸서 그라데이션 격리 ──
+        // helper가 -webkit-text-fill-color: transparent를 상속받지 않게 하기 위함
+        document.querySelectorAll('.form-label').forEach(function(label) {
+          var main = document.createElement('span');
+          main.className = 'label-main';
+          var children = Array.from(label.childNodes);
+          for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            // helper는 label-main 바깥에 남김
+            if (child.nodeType === 1 && child.classList && child.classList.contains('helper')) continue;
+            main.appendChild(child);
+          }
+          label.insertBefore(main, label.firstChild);
+        });
+
         // ── 재등장 1회 그라데이션(규칙4)용 관찰 ──
         var _obs = null;
         var observed = new Set();
@@ -9353,7 +9359,7 @@
         function clearLabel(label){
           if (!label) return;
           label._helperLoopDone = true;
-          label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once');
+          label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once', 'lf-settled');
           clearHelperSweep(label.querySelector('.helper'));
         }
         function applyFocusSolid(label){          // 파랑 solid (규칙3)
@@ -9372,12 +9378,13 @@
           label.classList.remove('lf-once', 'lf-sweep', 'lf-loop');
           var helper = label.querySelector('.helper');
           if (helper) clearHelperSweep(helper);
-          void label.offsetWidth;
+          var main = label.querySelector('.label-main');
+          if (main) void main.offsetWidth;
           label.classList.add('lf-focus', 'lf-sweep', 'lf-loop');
           if (helper && helper.textContent.trim()) {
             label._helperLoopDone = false;
             var onIter = function(e) {
-              if (e.target !== label || label._helperLoopDone) return;
+              if (e.target !== main || label._helperLoopDone) return;
               label._helperLoopDone = true;
               label.removeEventListener('animationiteration', onIter);
               // 라벨 그라데이션 이후에 helper 시작 (동시 재생 방지)
@@ -9393,10 +9400,11 @@
           label.classList.remove('lf-focus', 'lf-sweep', 'lf-loop', 'lf-once', 'lf-settled');
           var helper = label.querySelector('.helper');
           if (helper) clearHelperSweep(helper);
-          void label.offsetWidth;
+          var main = label.querySelector('.label-main');
+          if (main) void main.offsetWidth;
           label.classList.add('lf-sweep', 'lf-once');
           label.addEventListener('animationend', function done(e){
-            if (e.target !== label) return;
+            if (e.target !== main) return;
             label.classList.add('lf-settled');
             label.classList.remove('lf-sweep', 'lf-once');
             if (helper && helper.textContent.trim()) {
