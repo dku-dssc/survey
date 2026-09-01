@@ -1062,8 +1062,8 @@
 
       /* ── helper 마스크 스윕 애니메이션 (글자 쪼개기 없음, 두께 변화 없음) ── */
       @keyframes helperMaskSweep {
-        0%   { -webkit-mask-position: -70% 0; mask-position: -70% 0; }
-        100% { -webkit-mask-position: 170% 0; mask-position: 170% 0; }
+        0%   { -webkit-mask-position: -80% 0; mask-position: -80% 0; }
+        100% { -webkit-mask-position: 180% 0; mask-position: 180% 0; }
       }
       /* 클론: label 밖에 absolute 배치, 검은 글씨 + 마스크로 물결 효과 */
       .helper-clone {
@@ -1074,10 +1074,10 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         margin: 0; padding: 0;
-        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 45%, black 55%, transparent 100%);
-        mask-image: linear-gradient(90deg, transparent 0%, black 45%, black 55%, transparent 100%);
-        -webkit-mask-size: 55% 100%;
-        mask-size: 55% 100%;
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 35%, black 40%, transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0%, black 35%, black 40%, transparent 100%);
+        -webkit-mask-size: 65% 100%;
+        mask-size: 65% 100%;
         -webkit-mask-repeat: no-repeat;
         mask-repeat: no-repeat;
         animation: helperMaskSweep 2.6s ease-in-out 1 both;
