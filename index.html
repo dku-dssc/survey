@@ -1069,31 +1069,27 @@
         font-weight: 400 !important;
       }
 
-      /* ── helper 글자별 스윕 애니메이션 (clone 방식: 두께 변화 없음) ── */
-      @keyframes hCharPulse {
-        0%        { color: var(--text-secondary); }
-        40%, 60%  { color: var(--text-primary); }
-        100%      { color: var(--text-secondary); }
+      /* ── helper 마스크 스윕 애니메이션 (글자 쪼개기 없음, 두께 변화 없음) ── */
+      @keyframes helperMaskSweep {
+        0%   { -webkit-mask-position: -60% 0; mask-position: -60% 0; }
+        100% { -webkit-mask-position: 160% 0; mask-position: 160% 0; }
       }
-      /* 원본 helper는 건드리지 않음 — sweep 중 visibility:hidden만 적용 */
-      .helper.helper-sweep-hidden {
-        visibility: hidden !important;
-      }
-      /* clone은 label 밖에 위치 → -webkit-text-fill-color 상속 없음 → 두께 변화 없음 */
+      /* 클론: label 밖에 absolute 배치, 검은 글씨 + 마스크로 물결 효과 */
       .helper-clone {
         position: absolute;
+        display: block;
         pointer-events: none;
-        font-size: 13px;
-        font-weight: 400 !important;
-        color: var(--text-secondary);
+        color: var(--text-primary);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        white-space: pre-wrap;
-        line-height: normal;
         margin: 0; padding: 0;
-      }
-      .helper-clone .hc {
-        animation: hCharPulse 1.4s ease-in-out 1 both;
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 30%, black 70%, transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0%, black 30%, black 70%, transparent 100%);
+        -webkit-mask-size: 45% 100%;
+        mask-size: 45% 100%;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        animation: helperMaskSweep 2.6s ease-in-out 1 both;
       }
       .helper.helper-settled {
         -webkit-text-fill-color: var(--text-secondary) !important;
@@ -9294,7 +9290,7 @@
           return false;
         }
 
-        // ── helper 글자별 스윕 유틸 (clone 방식 — 원본 두께 변화 없음) ──
+        // ── helper 마스크 스윕 유틸 (글자 쪼개기 없음, 두께·레이아웃 변화 없음) ──
         function clearHelperSweep(helper){
           if (!helper) return;
           // 클론 제거
@@ -9302,7 +9298,7 @@
             if (helper._sweepClone.parentNode) helper._sweepClone.parentNode.removeChild(helper._sweepClone);
             delete helper._sweepClone;
           }
-          helper.classList.remove('helper-sweep-hidden', 'helper-settled');
+          helper.classList.remove('helper-settled');
         }
         function sweepHelper(helper){
           if (!helper || !helper.textContent.trim()) return;
@@ -9310,13 +9306,12 @@
           clearHelperSweep(helper);
           var text = helper.textContent;
 
-          // ★ 핵심: 원본 helper는 숨기기만 하고 건드리지 않음
-          // label 밖에 클론을 만들어 거기서 애니메이션 → -webkit-text-fill-color 상속 없음 → 두께 변화 없음
+          // ★ 핵심: 원본 helper는 절대 건드리지 않음 (숨기지도 않음)
+          // label 밖에 검은색 클론을 만들고 CSS mask로 물결 스윕
+          // 클론이 원본 위에 겹쳐지면서 회색→검정→회색 효과 연출
+          // 글자 쪼개기 없음 → 레이아웃/두께 변화 원천 차단
 
-          // 클론 생성 — label의 form-group에 absolute로 배치
-          // 위치 측정은 숨기기 전에 수행
           var rect = helper.getBoundingClientRect();
-          helper.classList.add('helper-sweep-hidden');
           var group = helper.closest('.form-group');
           if (!group) group = helper.parentNode;
           var groupRect = group.getBoundingClientRect();
@@ -9329,6 +9324,7 @@
 
           var clone = document.createElement('span');
           clone.className = 'helper-clone';
+          clone.textContent = text;  // 단일 텍스트 노드 — 글자 쪼개기 없음!
           // 원본과 동일한 폰트 속성 복사
           var helperStyle = getComputedStyle(helper);
           clone.style.fontFamily = helperStyle.fontFamily;
@@ -9336,36 +9332,21 @@
           clone.style.fontWeight = helperStyle.fontWeight;
           clone.style.lineHeight = helperStyle.lineHeight;
           clone.style.letterSpacing = helperStyle.letterSpacing;
+          clone.style.textAlign = helperStyle.textAlign;
           // 원본 위치에 정확히 배치
           clone.style.top = (rect.top - groupRect.top + group.scrollTop) + 'px';
           clone.style.left = (rect.left - groupRect.left + group.scrollLeft) + 'px';
           clone.style.width = rect.width + 'px';
 
-          var totalMs = 2600, charMs = 1400;
-          var maxDelay = totalMs - charMs;
-          var chars = text.split('');
-          var len = chars.length;
-          for (var i = 0; i < len; i++) {
-            var sp = document.createElement('span');
-            sp.className = 'hc';
-            sp.textContent = chars[i];
-            sp.style.animationDelay = (len > 1 ? Math.round(maxDelay * i / (len - 1)) : 0) + 'ms';
-            clone.appendChild(sp);
-          }
-
           group.appendChild(clone);
           helper._sweepClone = clone;
 
-          var lastSp = clone.lastElementChild;
-          if (lastSp) {
-            lastSp.addEventListener('animationend', function(){
-              // 클론 제거, 원본 복원
-              if (clone.parentNode) clone.parentNode.removeChild(clone);
-              delete helper._sweepClone;
-              helper.classList.remove('helper-sweep-hidden');
-              helper.classList.add('helper-settled');
-            }, { once: true });
-          }
+          // animationend로 정리
+          clone.addEventListener('animationend', function(){
+            if (clone.parentNode) clone.parentNode.removeChild(clone);
+            delete helper._sweepClone;
+            helper.classList.add('helper-settled');
+          }, { once: true });
         }
 
         // ── 라벨 클래스 제어 ──
