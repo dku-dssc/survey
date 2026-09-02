@@ -1150,6 +1150,21 @@
         background-image: none !important;
         transition: background-color 5000s ease-in-out 0s, box-shadow 5000s ease-in-out 0s !important;
       }
+      /* 관리자 로그인 입력 필드 — autofill 노란색 절대 차단 (v4.2.0 강화) */
+      #adminLoginScreen input:-webkit-autofill,
+      #adminLoginScreen input:-webkit-autofill:hover,
+      #adminLoginScreen input:-webkit-autofill:focus,
+      #adminLoginScreen input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 9999px rgba(255, 255, 255, 0.1) inset !important;
+        box-shadow: 0 0 0 9999px rgba(255, 255, 255, 0.1) inset !important;
+        -webkit-text-fill-color: var(--text-primary) !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        background-image: none !important;
+        transition: background-color 9999s ease-in-out 0s, box-shadow 9999s ease-in-out 0s !important;
+      }
+      #adminLoginScreen input {
+        background: rgba(255, 255, 255, 0.1) !important;
+      }
       textarea.form-input {
         resize: vertical;
         min-height: 80px;
@@ -1353,7 +1368,7 @@
         transform: scale(0.95);
       }
 
-      /* ── 로그인 도넛 로딩 스피너 (v11 — 청량 하늘색 + CSS div 전환) ── */
+      /* ── 로그인 도넛 로딩 스피너 (v11.1 — 투명 배경 + 블러 + 페더 iris) ── */
 
       .login-donut-overlay {
         position: fixed;
@@ -1362,8 +1377,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(240,244,248,0.3);
-        backdrop-filter: blur(1.5px); -webkit-backdrop-filter: blur(1.5px);
+        background: transparent;
+        backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
       }
 
       .login-donut-svg {
@@ -1407,7 +1422,7 @@
         animation-delay: var(--bdelay, 0s);
       }
 
-      /* ── Iris-out (sharp edge) ── */
+      /* ── Iris-out (페더 엣지 + opacity 페이드) ── */
       .login-iris-overlay {
         position: fixed; top: 0; left: 0; right: 0; bottom: 0;
         z-index: 10001; pointer-events: none;
@@ -1418,11 +1433,13 @@
             #e2f8ff 0%, #b8efff 20%, #8ce3ff 40%,
             #62d4ff 60%, #3dbef5 80%, #1da8e9 100%);
         -webkit-mask-image: radial-gradient(circle at center,
-          transparent 0%, transparent var(--iris-r, 0px),
-          black var(--iris-r, 0px), black 100%);
+          transparent 0%, transparent calc(var(--iris-r, 0px) * 0.6),
+          rgba(0,0,0,0.4) var(--iris-r, 0px),
+          black calc(var(--iris-r, 0px) + 120px), black 100%);
         mask-image: radial-gradient(circle at center,
-          transparent 0%, transparent var(--iris-r, 0px),
-          black var(--iris-r, 0px), black 100%);
+          transparent 0%, transparent calc(var(--iris-r, 0px) * 0.6),
+          rgba(0,0,0,0.4) var(--iris-r, 0px),
+          black calc(var(--iris-r, 0px) + 120px), black 100%);
       }
 
       /* ── 플래시 효과 ── */
@@ -1438,7 +1455,6 @@
           rgba(220,245,255,0.55) 0%, rgba(174,234,255,0.2) 35%, transparent 60%);
         animation: loginFlash 0.4s ease-out forwards;
       }
-
 
 
       /* ── 로그인 실패 필드 진동 ── */
@@ -2285,6 +2301,118 @@
         font-weight: 600;
       }
 
+
+      /* ===== iPad Multitasking Panel Divider (v4.2.0) ===== */
+      .panel-divider {
+        position: fixed;
+        top: 0;
+        width: 12px;
+        height: 100vh;
+        z-index: 302;
+        cursor: col-resize;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.2s ease;
+      }
+      .panel-divider.active {
+        display: flex;
+      }
+      .panel-divider-handle {
+        width: 5px;
+        height: 38px;
+        border-radius: 3px;
+        background: rgba(120, 120, 128, 0.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      }
+      .panel-divider:hover .panel-divider-handle {
+        width: 6px;
+        height: 44px;
+        background: rgba(100, 100, 108, 0.5);
+      }
+      .panel-divider.dragging .panel-divider-handle {
+        width: 6px;
+        height: 50px;
+        background: rgba(80, 80, 90, 0.6);
+      }
+      body.dark-mode .panel-divider-handle {
+        background: rgba(180, 180, 190, 0.35);
+      }
+      body.dark-mode .panel-divider:hover .panel-divider-handle {
+        background: rgba(200, 200, 210, 0.5);
+      }
+
+      /* Admin panel blur when being pushed away */
+      .admin-panel.panel-blurring {
+        transition: filter 0.15s ease, opacity 0.15s ease;
+      }
+
+      /* Right edge handle (when admin panel is fully pushed away) */
+      .panel-edge-handle {
+        position: fixed;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 60px;
+        z-index: 305;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 8px 0 0 8px;
+        background: rgba(120, 120, 128, 0.18);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        border: 1px solid rgba(200, 210, 230, 0.3);
+        border-right: none;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: -2px 0 8px rgba(0,0,0,0.06);
+      }
+      .panel-edge-handle:hover {
+        width: 26px;
+        background: rgba(120, 120, 128, 0.3);
+      }
+      .panel-edge-handle.visible {
+        display: flex;
+      }
+      .panel-edge-handle-bar {
+        width: 3px;
+        height: 28px;
+        border-radius: 2px;
+        background: rgba(120, 120, 128, 0.5);
+      }
+      body.dark-mode .panel-edge-handle {
+        background: rgba(180, 180, 190, 0.15);
+        border-color: rgba(100, 110, 130, 0.3);
+      }
+
+      /* Fullscreen button for left panel */
+      .compose-fullscreen-btn {
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(120,120,128,0.12);
+        color: var(--text-secondary);
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        margin-right: 6px;
+      }
+      .compose-fullscreen-btn:hover {
+        background: rgba(120,120,128,0.2);
+        transform: scale(1.1);
+      }
+      .compose-fullscreen-btn:active {
+        transform: scale(0.92);
+      }
+
       /* ===== Email Compose Panel (공문 발송 — 왼쪽 전체 화면) ===== */
       .email-compose-overlay {
         display: none;
@@ -2819,10 +2947,243 @@
         border-radius: 6px;
       }
 
+
+      /* ===== Folder Management Buttons (v4.2.0) ===== */
+      .folder-mgmt-bar {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        padding-top: 12px;
+      }
+      .folder-mgmt-btn {
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(200, 210, 230, 0.4);
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        color: var(--text-primary);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06), inset 0 0 8px rgba(255,255,255,0.1);
+      }
+      .folder-mgmt-btn:hover {
+        background: rgba(255, 255, 255, 0.28);
+        transform: translateY(-1px);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08), inset 0 0 12px rgba(255,255,255,0.15);
+      }
+      .folder-mgmt-btn:active {
+        transform: scale(0.96);
+      }
+      body.dark-mode .folder-mgmt-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      body.dark-mode .folder-mgmt-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+      .folder-mgmt-btn.delete-mode {
+        background: rgba(255, 59, 48, 0.12) !important;
+        border-color: rgba(255, 59, 48, 0.3) !important;
+        color: #ff3b30 !important;
+      }
+      .folder-mgmt-btn.delete-mode:hover {
+        background: rgba(255, 59, 48, 0.22) !important;
+      }
+
+      /* Sort dropdown */
+      .folder-sort-dropdown {
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 0;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(24px) saturate(200%);
+        -webkit-backdrop-filter: blur(24px) saturate(200%);
+        border: 1px solid rgba(200, 210, 230, 0.4);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        padding: 6px;
+        z-index: 310;
+        min-width: 150px;
+        display: none;
+        animation: sortDropIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes sortDropIn {
+        from { opacity: 0; transform: translateY(6px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      body.dark-mode .folder-sort-dropdown {
+        background: rgba(40, 40, 50, 0.92);
+        border-color: rgba(100, 110, 130, 0.3);
+      }
+      .folder-sort-dropdown.open { display: block; }
+      .folder-sort-option {
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        color: var(--text-primary);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: background 0.15s ease;
+        white-space: nowrap;
+      }
+      .folder-sort-option:hover {
+        background: rgba(0, 113, 227, 0.08);
+      }
+      .folder-sort-option .sort-arrow {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        margin-left: 8px;
+      }
+      .folder-sort-option.active {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      /* Folder delete checkbox */
+      .folder-delete-check {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid rgba(120, 120, 128, 0.3);
+        background: rgba(255, 255, 255, 0.6);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 2;
+      }
+      .folder-delete-check.visible { display: flex; }
+      .folder-delete-check.checked {
+        background: #ff3b30;
+        border-color: #ff3b30;
+      }
+      .folder-delete-check.checked::after {
+        content: '✓';
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      /* Folder name editing */
+      .semester-folder-name-input {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-align: center;
+        width: 80px;
+        border: 1px solid var(--primary);
+        border-radius: 4px;
+        padding: 2px 4px;
+        background: rgba(255,255,255,0.8);
+        outline: none;
+      }
+      body.dark-mode .semester-folder-name-input {
+        background: rgba(40,40,50,0.8);
+      }
+
+      /* Folder transition for add animation */
+      .semester-folder.folder-entering {
+        animation: folderSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes folderSlideIn {
+        from { opacity: 0; transform: scale(0.8) translateY(10px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+
+      /* Delete warning modal */
+      .folder-delete-modal-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+      }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      .folder-delete-modal {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border-radius: 16px;
+        padding: 28px 32px;
+        max-width: 360px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+        animation: modalBounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes modalBounce {
+        from { opacity: 0; transform: scale(0.85); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      body.dark-mode .folder-delete-modal {
+        background: rgba(40, 40, 50, 0.95);
+      }
+      .folder-delete-modal h4 {
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        color: #ff3b30;
+      }
+      .folder-delete-modal p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0 0 20px;
+        line-height: 1.5;
+      }
+      .folder-delete-modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+      .folder-delete-modal-actions button {
+        padding: 10px 24px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .folder-delete-modal-actions .cancel-btn {
+        background: rgba(120,120,128,0.12);
+        color: var(--text-primary);
+      }
+      .folder-delete-modal-actions .cancel-btn:hover {
+        background: rgba(120,120,128,0.2);
+      }
+      .folder-delete-modal-actions .confirm-delete-btn {
+        background: #ff3b30;
+        color: white;
+      }
+      .folder-delete-modal-actions .confirm-delete-btn:hover {
+        background: #e8342d;
+        transform: translateY(-1px);
+      }
+      .folder-delete-modal-actions button:active {
+        transform: scale(0.96);
+      }
+
       /* ===== Semester Folder (학기별 폴더) ===== */
       .semester-folders {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 12px;
         padding: 8px 0;
       }
@@ -2836,6 +3197,7 @@
         cursor: pointer;
         transition: var(--transition);
         border: 1px solid transparent;
+        position: relative;
       }
       .semester-folder:hover {
         background: rgba(255,255,255,0.06);
@@ -3454,7 +3816,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.1.9";
+      window.APP_VERSION = "4.2.0";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -5267,8 +5629,10 @@
           <div style="font-size:48px;margin-bottom:16px;">🔒</div>
           <p style="margin-bottom:24px;color:var(--text-secondary);font-size:14px;">관리자 인증이 필요합니다</p>
           <input type="text" id="adminIdInput" class="form-input" placeholder="아이디"
+            autocomplete="off" data-lpignore="true" data-form-type="other"
             style="max-width:280px;margin:0 auto 10px;display:block;" />
           <input type="password" id="adminPasswordInput" class="form-input" placeholder="비밀번호"
+            autocomplete="new-password" data-lpignore="true" data-form-type="other"
             style="max-width:280px;margin:0 auto 14px;display:block;"
             onkeypress="if(event.key==='Enter'){event.preventDefault();adminLoginSubmit();}" />
           <button class="btn btn-primary login-btn" id="loginBtn" onclick="event.preventDefault();adminLoginSubmit();" style="font-size:14px;">로그인</button>
@@ -5496,10 +5860,22 @@
 
     <!-- 이메일 작성 패널 (공문 발송 — 왼쪽 전체 화면, admin-panel 바깥) -->
     <div id="emailComposeOverlay" class="email-compose-overlay" onclick="closeEmailCompose()"></div>
+    <!-- iPad 멀티태스킹 패널 경계선 (v4.2.0) -->
+    <div id="panelDivider" class="panel-divider">
+      <div class="panel-divider-handle"></div>
+    </div>
+    <div id="panelEdgeHandle" class="panel-edge-handle" onclick="restorePanelFromEdge()" title="관리자 패널 복원">
+      <div class="panel-edge-handle-bar"></div>
+    </div>
     <div id="emailComposePanel" class="email-compose-panel">
       <div class="email-compose-header">
         <h4>📨 공문 발송</h4>
-        <button class="email-compose-close" onclick="closeEmailCompose()">✕</button>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <button class="compose-fullscreen-btn" id="composeFullscreenBtn" onclick="toggleComposeFullscreen()" title="전체 화면">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6V3a1 1 0 011-1h3M14 6V3a1 1 0 00-1-1h-3M2 10v3a1 1 0 001 1h3M14 10v3a1 1 0 01-1 1h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="email-compose-close" onclick="closeEmailCompose()">✕</button>
+        </div>
       </div>
       <div class="email-compose-body">
         <div class="email-compose-meta">
@@ -6455,6 +6831,14 @@
       }
 
       // ===== Admin Panel =====
+      // Close folder sort dropdown on outside click (v4.2.0)
+      document.addEventListener('click', function(e) {
+        var dd = document.getElementById('folderSortDropdown');
+        if (dd && dd.classList.contains('open') && !e.target.closest('.folder-mgmt-btn') && !e.target.closest('.folder-sort-dropdown')) {
+          dd.classList.remove('open');
+        }
+      });
+
       function toggleAdmin() {
         if (_loginInProgress) return;  // 로그인 진행 중에는 토글 무시
         const panel = document.getElementById('adminPanel');
@@ -6489,10 +6873,32 @@
       function showAdminLogin() {
         document.getElementById('adminLoginScreen').style.display = 'block';
         document.getElementById('adminContent').style.display = 'none';
-        var idInput = document.getElementById('adminIdInput');
-        var pwInput = document.getElementById('adminPasswordInput');
-        if (idInput) idInput.value = '';
-        if (pwInput) pwInput.value = '';
+        // ★ 근본 해결: input 요소를 완전히 교체하여 브라우저 autofill 상태를 근절
+        // .value = '' 만으로는 :-webkit-autofill 의사 클래스가 해제되지 않아
+        // 노란색 배경이 잔존하는 문제가 있었음 (v4.2.0 수정)
+        resetAdminInputElement('adminIdInput', 'text', '아이디', 'off');
+        resetAdminInputElement('adminPasswordInput', 'password', '비밀번호', 'new-password');
+      }
+
+      function resetAdminInputElement(id, type, placeholder, autocompleteVal) {
+        var old = document.getElementById(id);
+        if (!old) return;
+        var fresh = document.createElement('input');
+        fresh.type = type;
+        fresh.id = id;
+        fresh.className = 'form-input';
+        fresh.placeholder = placeholder;
+        fresh.setAttribute('autocomplete', autocompleteVal);
+        fresh.setAttribute('data-lpignore', 'true');
+        fresh.setAttribute('data-form-type', 'other');
+        fresh.style.cssText = old.style.cssText;
+        // password 필드의 Enter 키 핸들러 복원
+        if (type === 'password') {
+          fresh.onkeypress = function(event) {
+            if (event.key === 'Enter') { event.preventDefault(); adminLoginSubmit(); }
+          };
+        }
+        old.parentNode.replaceChild(fresh, old);
       }
 
       function showAdminContent() {
@@ -6632,7 +7038,6 @@
             if (p < 1) {
               requestAnimationFrame(animate2);
             } else {
-              // ★ SVG 위에 CSS div 겹침 → 빈 프레임 원천 차단 ★
               overlay.style.backdropFilter = 'none';
               overlay.style.webkitBackdropFilter = 'none';
               overlay.style.background = 'transparent';
@@ -6655,44 +7060,8 @@
           requestAnimationFrame(animate2);
         }
 
-        // ─── Phase 3: 펄스 + 물방울 (CSS div, rAF 수동 제어) ───
+        // ─── Phase 3+4 통합: 펄스(커짐→점)→끊김 없이 확장 ───
         var cssCircleRef = null;
-        function phase3(circle) {
-          cssCircleRef = circle;
-          spawnLoginBubbles(overlay, 6);
-
-          var pulseStart = null;
-          var PULSE_DUR = 550;
-          var keyframes = [
-            { t: 0, s: 1 }, { t: 0.30, s: 1.2 }, { t: 0.50, s: 0.93 },
-            { t: 0.70, s: 1.06 }, { t: 0.85, s: 0.98 }, { t: 1, s: 1 }
-          ];
-          function getScale(p) {
-            for (var i = 0; i < keyframes.length - 1; i++) {
-              if (p >= keyframes[i].t && p <= keyframes[i + 1].t) {
-                var local = (p - keyframes[i].t) / (keyframes[i + 1].t - keyframes[i].t);
-                local = local < 0.5 ? 4 * local * local * local : 1 - Math.pow(-2 * local + 2, 3) / 2;
-                return keyframes[i].s + (keyframes[i + 1].s - keyframes[i].s) * local;
-              }
-            }
-            return 1;
-          }
-          function animatePulse(ts) {
-            if (!pulseStart) pulseStart = ts;
-            var p = Math.min((ts - pulseStart) / PULSE_DUR, 1);
-            circle.style.transform = 'translate(-50%,-50%) scale(' + getScale(p).toFixed(4) + ')';
-            if (p < 1) {
-              requestAnimationFrame(animatePulse);
-            } else {
-              circle.style.transform = 'translate(-50%,-50%) scale(1)';
-              showLoginFlash();
-              phase4();
-            }
-          }
-          requestAnimationFrame(animatePulse);
-        }
-
-        // ─── Phase 4: 확대 + 바이킹 그라데이션 ───
         var flowRAF = null;
         var vikingStart = null;
 
@@ -6701,15 +7070,13 @@
           function flow(ts) {
             if (!vikingStart) vikingStart = ts;
             var elapsed = (ts - vikingStart) / 1000;
-            var freq = 3.5;
-            var amp = 70 + elapsed * 60;
-            amp = Math.min(amp, 140);
-            var raw = Math.sin(elapsed * freq * Math.PI * 2);
-            var chewy = Math.sign(raw) * Math.pow(Math.abs(raw), 0.55);
-            var micro = Math.sin(elapsed * 8.5 * Math.PI * 2) * 12;
-            var angle = 60 + chewy * amp + micro;
+            var baseSpeed = 180 + elapsed * 120;
+            baseSpeed = Math.min(baseSpeed, 360);
+            var angle = 150 + elapsed * baseSpeed;
+            var ripple = Math.sin(elapsed * 4 * Math.PI * 2) * 8;
+            angle = angle + ripple;
             if (cssCircleRef) {
-              cssCircleRef.style.background = 'linear-gradient(' + angle.toFixed(1) + 'deg, #e2f8ff 0%, #b8efff 20%, #62d4ff 45%, #3dbef5 70%, #1da8e9 100%)';
+              cssCircleRef.style.background = 'linear-gradient(' + (angle % 360).toFixed(1) + 'deg, #e2f8ff 0%, #b8efff 20%, #62d4ff 45%, #3dbef5 70%, #1da8e9 100%)';
             }
             flowRAF = requestAnimationFrame(flow);
           }
@@ -6717,46 +7084,71 @@
         }
         function stopGradientFlow() { if (flowRAF) cancelAnimationFrame(flowRAF); }
 
-        function phase4() {
+        function phase3(circle) {
+          cssCircleRef = circle;
+          spawnLoginBubbles(overlay, 6);
+
           var vw = window.innerWidth;
           var vh = window.innerHeight;
           var maxDim = Math.max(vw, vh);
           var targetScale = Math.ceil((maxDim * 1.6) / 54);
 
-          startGradientFlow();
+          var DUR_A = 180;
+          var DUR_B = 260;
+          var DUR_C = 420;
+          var TOTAL = DUR_A + DUR_B + DUR_C;
 
-          var p4Start = null;
-          var P4_DUR = 420;
+          var PEAK = 1.18;
+          var POINT = 0.02;
+          var pStart = null;
+          var gradientStarted = false;
+          var flashShown = false;
 
-          function animate4(ts) {
-            if (!p4Start) p4Start = ts;
-            var p = Math.min((ts - p4Start) / P4_DUR, 1);
-            var ep;
-            if (p < 0.3) {
-              ep = 2.5 * p * p;
+          function animate(ts) {
+            if (!pStart) pStart = ts;
+            var elapsed = ts - pStart;
+            var scale;
+
+            if (elapsed < DUR_A) {
+              var t = elapsed / DUR_A;
+              scale = 1 + (PEAK - 1) * (1 - Math.pow(1 - t, 3));
+            } else if (elapsed < DUR_A + DUR_B) {
+              var t = (elapsed - DUR_A) / DUR_B;
+              scale = PEAK + (POINT - PEAK) * (t * t * t);
             } else {
-              var t = (p - 0.3) / 0.7;
-              ep = 0.225 + 0.775 * (1 - Math.pow(1 - t, 2.8));
-            }
-            var scale = 1 + (targetScale - 1) * ep;
-            if (cssCircleRef) {
-              cssCircleRef.style.animation = 'none';
-              cssCircleRef.style.transform = 'translate(-50%, -50%) scale(' + scale.toFixed(2) + ')';
+              if (!gradientStarted) { startGradientFlow(); gradientStarted = true; }
+              if (!flashShown) { showLoginFlash(); flashShown = true; }
+
+              var t = (elapsed - DUR_A - DUR_B) / DUR_C;
+              t = Math.min(t, 1);
+              var ep;
+              if (t < 0.3) {
+                ep = 2.5 * t * t;
+              } else {
+                var t2 = (t - 0.3) / 0.7;
+                ep = 0.225 + 0.775 * (1 - Math.pow(1 - t2, 2.8));
+              }
+              scale = POINT + (targetScale - POINT) * ep;
+
               var glow = Math.max(0, 1 - ep * 2.5);
-              cssCircleRef.style.boxShadow = '0 0 ' + (10 * glow).toFixed(1) + 'px rgba(77,200,246,' + (0.35 * glow).toFixed(2) + ')';
+              circle.style.boxShadow = '0 0 ' + (10 * glow).toFixed(1) + 'px rgba(77,200,246,' + (0.35 * glow).toFixed(2) + ')';
             }
-            if (p < 1) {
-              requestAnimationFrame(animate4);
+
+            circle.style.animation = 'none';
+            circle.style.transform = 'translate(-50%,-50%) scale(' + Math.max(scale, 0.01).toFixed(4) + ')';
+
+            if (elapsed < TOTAL) {
+              requestAnimationFrame(animate);
             } else {
               stopGradientFlow();
               overlay.remove();
               phase5();
             }
           }
-          requestAnimationFrame(animate4);
+          requestAnimationFrame(animate);
         }
 
-        // ─── Phase 5: Iris-out (sharp edge, 150ms) ───
+        // ─── Phase 5: Iris-out (페더 엣지 + opacity 페이드, 600ms) ───
         function phase5() {
           var vw = window.innerWidth;
           var vh = window.innerHeight;
@@ -6766,36 +7158,38 @@
           iris.className = 'login-iris-overlay';
           iris.id = 'loginIrisOverlay';
           iris.style.setProperty('--iris-r', '0px');
+          iris.style.opacity = '1';
           document.body.appendChild(iris);
 
           if (callback) callback();
 
           setTimeout(function() {
             var p5Start = null;
-            var P5_DUR = 150;
+            var P5_DUR = 600;
 
-            function chewySpring(t) {
-              if (t >= 1) return 1;
-              var base = 1 - Math.pow(1 - t, 5);
-              var bounce = Math.sin(t * Math.PI * 5) * 0.08 * Math.pow(1 - t, 0.6);
-              return base + bounce;
+            function easeOut(t) {
+              return 1 - Math.pow(1 - t, 3.5);
             }
 
             function animate5(ts) {
               if (!p5Start) p5Start = ts;
               var progress = Math.min((ts - p5Start) / P5_DUR, 1);
-              var r = Math.round(chewySpring(progress) * maxR);
+
+              var r = Math.round(easeOut(progress) * maxR);
               iris.style.setProperty('--iris-r', r + 'px');
+
+              var opacity = Math.pow(1 - progress, 1.2);
+              iris.style.opacity = opacity.toFixed(3);
+
               if (progress < 1) {
                 requestAnimationFrame(animate5);
               } else {
-                iris.style.transition = 'opacity 0.15s ease';
                 iris.style.opacity = '0';
-                setTimeout(function() { iris.remove(); }, 180);
+                setTimeout(function() { iris.remove(); }, 30);
               }
             }
             requestAnimationFrame(animate5);
-          }, 100);
+          }, 80);
         }
 
         requestAnimationFrame(phase1);
@@ -6830,6 +7224,7 @@
         document.body.appendChild(f);
         setTimeout(function() { f.remove(); }, 450);
       }
+
 
 
 
@@ -6974,6 +7369,193 @@
         }
       }
 
+
+      // ===== 폴더 관리 (v4.2.0) =====
+      var customFolders = []; // [{id, name, createdAt, items: []}]
+      var folderDeleteMode = false;
+      var folderSortKey = 'name'; // 'name', 'created', 'size'
+      var folderSortDir = 'asc'; // 'asc', 'desc'
+      var selectedCustomFolder = null;
+      var checkedFolderIds = new Set();
+
+      function generateFolderId() {
+        return 'f_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+      }
+
+      function addNewFolder() {
+        folderDeleteMode = false;
+        checkedFolderIds.clear();
+        var newFolder = {
+          id: generateFolderId(),
+          name: '새 폴더',
+          createdAt: new Date().toISOString(),
+          items: []
+        };
+        customFolders.push(newFolder);
+        updateAdminPanel();
+        // Start editing the new folder name
+        setTimeout(function() {
+          var nameEl = document.querySelector('[data-folder-id="' + newFolder.id + '"] .semester-folder-name');
+          if (nameEl) startFolderNameEdit(nameEl, newFolder.id);
+        }, 100);
+      }
+
+      function toggleFolderDeleteMode() {
+        folderDeleteMode = !folderDeleteMode;
+        checkedFolderIds.clear();
+        updateAdminPanel();
+      }
+
+      function toggleFolderCheck(folderId, e) {
+        if (e) e.stopPropagation();
+        if (checkedFolderIds.has(folderId)) {
+          checkedFolderIds.delete(folderId);
+        } else {
+          checkedFolderIds.add(folderId);
+        }
+        updateAdminPanel();
+      }
+
+      function confirmDeleteFolders() {
+        if (checkedFolderIds.size === 0) return;
+        var count = checkedFolderIds.size;
+        // Show custom modal
+        var modalHtml = '<div class="folder-delete-modal-overlay" id="folderDeleteModal">' +
+          '<div class="folder-delete-modal">' +
+          '<h4>⚠️ 폴더 삭제</h4>' +
+          '<p>선택한 ' + count + '개 폴더와 안에 있는 모든 내용물은<br/><strong>복구할 수 없습니다.</strong><br/>정말 삭제하시겠습니까?</p>' +
+          '<div class="folder-delete-modal-actions">' +
+          '<button class="cancel-btn" onclick="closeFolderDeleteModal()">취소</button>' +
+          '<button class="confirm-delete-btn" onclick="executeDeleteFolders()">삭제</button>' +
+          '</div></div></div>';
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+      }
+
+      function closeFolderDeleteModal() {
+        var m = document.getElementById('folderDeleteModal');
+        if (m) m.remove();
+      }
+
+      function executeDeleteFolders() {
+        customFolders = customFolders.filter(function(f) {
+          return !checkedFolderIds.has(f.id);
+        });
+        checkedFolderIds.clear();
+        folderDeleteMode = false;
+        closeFolderDeleteModal();
+        updateAdminPanel();
+        showToast('폴더가 삭제되었습니다.');
+      }
+
+      function toggleFolderSort() {
+        var dropdown = document.getElementById('folderSortDropdown');
+        if (dropdown) {
+          dropdown.classList.toggle('open');
+        }
+      }
+
+      function setFolderSort(key) {
+        if (folderSortKey === key) {
+          folderSortDir = folderSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          folderSortKey = key;
+          folderSortDir = 'asc';
+        }
+        var dropdown = document.getElementById('folderSortDropdown');
+        if (dropdown) dropdown.classList.remove('open');
+        sortCustomFolders();
+        updateAdminPanel();
+      }
+
+      function sortCustomFolders() {
+        var dir = folderSortDir === 'asc' ? 1 : -1;
+        customFolders.sort(function(a, b) {
+          var result = 0;
+          if (folderSortKey === 'name') {
+            result = a.name.localeCompare(b.name, 'ko');
+          } else if (folderSortKey === 'created') {
+            result = new Date(a.createdAt) - new Date(b.createdAt);
+          } else if (folderSortKey === 'size') {
+            var sizeA = (a.items || []).length;
+            var sizeB = (b.items || []).length;
+            result = sizeA - sizeB;
+            // 동급이면 이름순
+            if (result === 0) result = a.name.localeCompare(b.name, 'ko');
+          }
+          return result * dir;
+        });
+      }
+
+      function startFolderNameEdit(nameEl, folderId) {
+        var folder = customFolders.find(function(f) { return f.id === folderId; });
+        if (!folder) return;
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'semester-folder-name-input';
+        input.value = folder.name;
+        input.setAttribute('data-folder-id', folderId);
+
+        function finishEdit() {
+          var newName = input.value.trim() || '새 폴더';
+          folder.name = newName;
+          updateAdminPanel();
+        }
+
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') { e.preventDefault(); finishEdit(); }
+          if (e.key === 'Escape') { finishEdit(); }
+        });
+        input.addEventListener('blur', finishEdit);
+
+        nameEl.innerHTML = '';
+        nameEl.appendChild(input);
+        input.focus();
+        input.select();
+      }
+
+      function selectCustomFolder(folderId) {
+        if (folderDeleteMode) return;
+        selectedCustomFolder = folderId;
+        updateAdminPanel();
+      }
+
+      function backToFolders() {
+        selectedCustomFolder = null;
+        updateAdminPanel();
+      }
+
+      // Drag & drop for folder reorder (simplified for grid)
+      var folderDragState = { dragging: null, overTarget: null };
+
+      function onFolderDragStart(e, folderId) {
+        if (folderDeleteMode) { e.preventDefault(); return; }
+        folderDragState.dragging = folderId;
+        e.dataTransfer.effectAllowed = 'move';
+        e.target.style.opacity = '0.5';
+      }
+
+      function onFolderDragOver(e, folderId) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        folderDragState.overTarget = folderId;
+      }
+
+      function onFolderDragEnd(e) {
+        e.target.style.opacity = '1';
+        if (folderDragState.dragging && folderDragState.overTarget &&
+            folderDragState.dragging !== folderDragState.overTarget) {
+          var fromIdx = customFolders.findIndex(function(f) { return f.id === folderDragState.dragging; });
+          var toIdx = customFolders.findIndex(function(f) { return f.id === folderDragState.overTarget; });
+          if (fromIdx >= 0 && toIdx >= 0) {
+            var item = customFolders.splice(fromIdx, 1)[0];
+            customFolders.splice(toIdx, 0, item);
+            updateAdminPanel();
+          }
+        }
+        folderDragState.dragging = null;
+        folderDragState.overTarget = null;
+      }
+
       // ===== 학기 폴더 관련 =====
       var currentSemesterFolder = null;
 
@@ -7028,9 +7610,10 @@
 
         var groups = groupResponsesBySemester();
 
-        // STATE 1: No folder selected → show only folders
-        if (!currentSemesterFolder) {
+        // STATE 1: No folder selected → show only folders (v4.2.0: + custom folders + mgmt buttons)
+        if (!currentSemesterFolder && !selectedCustomFolder) {
           var folderHtml = '<div class="semester-folders">';
+          // Semester folders
           groups.forEach(function(g) {
             var hasDocs = g.responses.length > 0;
             var folderClass = 'semester-folder ' + (hasDocs ? 'folder-has' : 'folder-empty');
@@ -7048,10 +7631,87 @@
             folderHtml += '<div class="semester-folder-count">' + g.responses.length + '건</div>';
             folderHtml += '</div>';
           });
+          // Custom folders (v4.2.0)
+          customFolders.forEach(function(cf) {
+            var hasItems = cf.items && cf.items.length > 0;
+            var cfClass = 'semester-folder ' + (hasItems ? 'folder-has' : 'folder-empty');
+            var isChecked = checkedFolderIds.has(cf.id);
+            folderHtml += '<div class="' + cfClass + '" data-folder-id="' + cf.id + '"' +
+              ' onclick="' + (folderDeleteMode ? 'toggleFolderCheck(\'' + cf.id + '\',event)' : 'selectCustomFolder(\'' + cf.id + '\')') + '"' +
+              ' draggable="' + (!folderDeleteMode) + '"' +
+              ' ondragstart="onFolderDragStart(event,\'' + cf.id + '\')"' +
+              ' ondragover="onFolderDragOver(event,\'' + cf.id + '\')"' +
+              ' ondragend="onFolderDragEnd(event)">';
+            // Delete checkbox
+            folderHtml += '<div class="folder-delete-check ' + (folderDeleteMode ? 'visible' : '') + (isChecked ? ' checked' : '') + '"></div>';
+            var cDocsSvg = hasItems ? '<rect class="folder-docs" x="6" y="12" width="52" height="7" rx="1.5" fill="white"/>' : '';
+            folderHtml += '<div class="semester-folder-icon">' +
+              '<svg viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+              '<path class="folder-tab-shape" d="M1 14 L1 8 C1 6 2.5 5 4.5 5 L20 5 C22 5 23 6 24 7.5 L27.5 14 Z" fill="#5EB2DE"/>' +
+              '<rect class="folder-back-shape" x="1" y="10" width="62" height="20" rx="4" ry="4" fill="#5EB2DE"/>' +
+              cDocsSvg +
+              '<rect class="folder-front-shape" x="0.5" y="15" width="63" height="36.5" rx="4.5" ry="4.5" fill="#7DCBEA"/>' +
+              '</svg></div>';
+            folderHtml += '<div class="semester-folder-name" ondblclick="event.stopPropagation();startFolderNameEdit(this,\'' + cf.id + '\')">' + cf.name + '</div>';
+            folderHtml += '<div class="semester-folder-count">' + (cf.items ? cf.items.length : 0) + '건</div>';
+            folderHtml += '</div>';
+          });
           folderHtml += '</div>';
+
+          // Folder management buttons (v4.2.0)
+          folderHtml += '<div class="folder-mgmt-bar">';
+          folderHtml += '<button class="folder-mgmt-btn" onclick="addNewFolder()">➕ 폴더 추가</button>';
+          if (folderDeleteMode && checkedFolderIds.size > 0) {
+            folderHtml += '<button class="folder-mgmt-btn delete-mode" onclick="confirmDeleteFolders()">🗑️ 삭제 (' + checkedFolderIds.size + ')</button>';
+          } else {
+            folderHtml += '<button class="folder-mgmt-btn' + (folderDeleteMode ? ' delete-mode' : '') + '" onclick="toggleFolderDeleteMode()">' +
+              (folderDeleteMode ? '✕ 취소' : '🗑️ 폴더 삭제') + '</button>';
+          }
+          folderHtml += '<div style="position:relative;display:inline-block;">';
+          folderHtml += '<button class="folder-mgmt-btn" onclick="toggleFolderSort()">⇅ 정렬</button>';
+          // Sort dropdown
+          var sortOptions = [
+            {key:'name', label:'이름순'},
+            {key:'created', label:'생성일순'},
+            {key:'size', label:'크기순'}
+          ];
+          folderHtml += '<div class="folder-sort-dropdown" id="folderSortDropdown">';
+          sortOptions.forEach(function(opt) {
+            var isActive = folderSortKey === opt.key;
+            var arrow = isActive ? (folderSortDir === 'asc' ? '↑' : '↓') : '';
+            folderHtml += '<div class="folder-sort-option ' + (isActive ? 'active' : '') + '" onclick="setFolderSort(\'' + opt.key + '\')">' +
+              opt.label + '<span class="sort-arrow">' + arrow + '</span></div>';
+          });
+          folderHtml += '</div></div>';
+          folderHtml += '</div>';
+
           list.innerHTML = folderHtml;
           updateLetterSelect();
           return;
+        }
+
+        // STATE 1.5: Custom folder selected (v4.2.0)
+        if (selectedCustomFolder) {
+          var cf = customFolders.find(function(f) { return f.id === selectedCustomFolder; });
+          if (!cf) { selectedCustomFolder = null; /* fall through */ }
+          else {
+            var cfBcHtml = '<div class="folder-breadcrumb">';
+            cfBcHtml += '<span class="bc-link" onclick="backToFolders()">📂 응답 목록</span>';
+            cfBcHtml += '<span class="bc-sep"> › </span>';
+            cfBcHtml += '<span>' + cf.name + '</span>';
+            cfBcHtml += '</div>';
+            var cfContent = cf.items && cf.items.length > 0
+              ? cf.items.map(function(item, idx) {
+                  return '<div class="response-card" style="position:relative;">' +
+                    '<div class="name">' + (item.name || '항목 ' + (idx+1)) + '</div>' +
+                    '<div class="meta">' + (item.description || '') + '</div>' +
+                    '</div>';
+                }).join('')
+              : '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">이 폴더는 비어 있습니다.</p>';
+            list.innerHTML = cfBcHtml + cfContent;
+            updateLetterSelect();
+            return;
+          }
         }
 
         // STATE 2: Folder selected → breadcrumb + response cards only
@@ -8767,6 +9427,202 @@
         return { matched: mismatches.length === 0, mismatches: mismatches, enrollRecord: enrollRec, notFound: false };
       }
 
+
+      // ===== iPad 멀티태스킹 패널 경계선 (v4.2.0) =====
+      var panelDividerState = {
+        isDragging: false,
+        startX: 0,
+        startLeft: 0,
+        leftPanelRatio: 0,  // 0 = default, 1 = full
+        adminPushedAway: false
+      };
+
+      function initPanelDivider() {
+        var divider = document.getElementById('panelDivider');
+        if (!divider) return;
+
+        divider.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          panelDividerState.isDragging = true;
+          panelDividerState.startX = e.clientX;
+          divider.classList.add('dragging');
+          document.body.style.cursor = 'col-resize';
+          document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', function(e) {
+          if (!panelDividerState.isDragging) return;
+          var compose = document.getElementById('emailComposePanel');
+          var admin = document.getElementById('adminPanel');
+          if (!compose || !admin) return;
+
+          var vw = window.innerWidth;
+          var adminW = 480;
+          var maxLeftW = vw - 20; // leave 20px for edge handle
+          var minLeftW = 300;
+          var defaultLeftW = vw - adminW;
+
+          // Calculate new left panel width based on mouse X
+          var newLeftW = Math.min(maxLeftW, Math.max(minLeftW, e.clientX));
+
+          compose.style.width = newLeftW + 'px';
+          compose.style.transition = 'none';
+
+          // Position divider
+          var divider = document.getElementById('panelDivider');
+          divider.style.left = (newLeftW - 6) + 'px';
+
+          // Calculate how far admin panel should be pushed
+          var adminLeft = newLeftW;
+          var adminVisibleW = vw - adminLeft;
+          var pushRatio = Math.max(0, 1 - (adminVisibleW / adminW));
+
+          // Admin panel blur and push
+          if (pushRatio > 0) {
+            admin.style.right = -(pushRatio * adminW) + 'px';
+            admin.style.filter = 'blur(' + (pushRatio * 8) + 'px)';
+            admin.style.opacity = Math.max(0.3, 1 - pushRatio * 0.7);
+            admin.style.transition = 'none';
+          } else {
+            admin.style.right = '0';
+            admin.style.filter = 'none';
+            admin.style.opacity = '1';
+            admin.style.transition = 'none';
+          }
+
+          // Check if admin panel center has been crossed
+          var adminCenter = vw - adminW / 2;
+          if (newLeftW >= adminCenter) {
+            panelDividerState.leftPanelRatio = (newLeftW - defaultLeftW) / (maxLeftW - defaultLeftW);
+          }
+        });
+
+        document.addEventListener('mouseup', function(e) {
+          if (!panelDividerState.isDragging) return;
+          panelDividerState.isDragging = false;
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+          var divider = document.getElementById('panelDivider');
+          divider.classList.remove('dragging');
+
+          var compose = document.getElementById('emailComposePanel');
+          var admin = document.getElementById('adminPanel');
+          if (!compose || !admin) return;
+
+          var vw = window.innerWidth;
+          var adminW = 480;
+          var adminCenter = vw - adminW / 2;
+          var currentLeftW = parseInt(compose.style.width) || (vw - adminW);
+
+          // If dragged past admin center → push admin away completely
+          if (currentLeftW >= adminCenter) {
+            pushAdminAway();
+          } else {
+            // Snap back to default
+            restorePanelLayout();
+          }
+        });
+      }
+
+      function pushAdminAway() {
+        var compose = document.getElementById('emailComposePanel');
+        var admin = document.getElementById('adminPanel');
+        var divider = document.getElementById('panelDivider');
+        var edgeHandle = document.getElementById('panelEdgeHandle');
+        if (!compose || !admin) return;
+
+        panelDividerState.adminPushedAway = true;
+
+        // Animate left panel to full width
+        compose.style.transition = 'width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        compose.style.width = '100vw';
+
+        // Animate admin panel out
+        admin.style.transition = 'right 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.45s ease, opacity 0.45s ease';
+        admin.style.right = '-500px';
+        admin.style.filter = 'blur(12px)';
+        admin.style.opacity = '0';
+
+        // Hide divider, show edge handle
+        if (divider) divider.classList.remove('active');
+        if (edgeHandle) {
+          setTimeout(function() {
+            edgeHandle.classList.add('visible');
+          }, 350);
+        }
+      }
+
+      function restorePanelFromEdge() {
+        restorePanelLayout();
+      }
+
+      function restorePanelLayout() {
+        var compose = document.getElementById('emailComposePanel');
+        var admin = document.getElementById('adminPanel');
+        var divider = document.getElementById('panelDivider');
+        var edgeHandle = document.getElementById('panelEdgeHandle');
+        if (!compose || !admin) return;
+
+        panelDividerState.adminPushedAway = false;
+
+        var vw = window.innerWidth;
+        var adminW = 480;
+        var defaultLeftW = vw - adminW;
+
+        compose.style.transition = 'width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        compose.style.width = defaultLeftW + 'px';
+
+        admin.style.transition = 'right 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.45s ease, opacity 0.45s ease';
+        admin.style.right = '0';
+        admin.style.filter = 'none';
+        admin.style.opacity = '1';
+
+        // Reposition divider
+        if (divider) {
+          divider.style.left = (defaultLeftW - 6) + 'px';
+          divider.classList.add('active');
+        }
+
+        if (edgeHandle) edgeHandle.classList.remove('visible');
+      }
+
+      function toggleComposeFullscreen() {
+        if (panelDividerState.adminPushedAway) {
+          restorePanelLayout();
+        } else {
+          pushAdminAway();
+        }
+      }
+
+      // Show divider when email compose panel is opened
+      function showPanelDivider() {
+        var divider = document.getElementById('panelDivider');
+        var compose = document.getElementById('emailComposePanel');
+        if (!divider || !compose) return;
+        var vw = window.innerWidth;
+        var adminW = 480;
+        var leftW = vw - adminW;
+        divider.style.left = (leftW - 6) + 'px';
+        divider.classList.add('active');
+        panelDividerState.adminPushedAway = false;
+      }
+
+      function hidePanelDivider() {
+        var divider = document.getElementById('panelDivider');
+        var edgeHandle = document.getElementById('panelEdgeHandle');
+        if (divider) divider.classList.remove('active');
+        if (edgeHandle) edgeHandle.classList.remove('visible');
+        panelDividerState.adminPushedAway = false;
+        // Restore admin panel
+        var admin = document.getElementById('adminPanel');
+        if (admin) {
+          admin.style.right = '0';
+          admin.style.filter = 'none';
+          admin.style.opacity = '1';
+          admin.style.transition = '';
+        }
+      }
+
       // ===== Send Official Letter =====
       // ===== 공문 발송 이메일 작성 =====
       var composePdfBase64 = null;
@@ -8820,6 +9676,9 @@
         // 왼쪽 패널 + 오버레이 표시
         document.getElementById('emailComposeOverlay').style.display = 'block';
         document.getElementById('emailComposePanel').style.display = 'flex';
+        // iPad 멀티태스킹 경계선 표시 (v4.2.0)
+        showPanelDivider();
+        initPanelDivider();
 
         // PDF 생성 (html2pdf.js 사용)
         generateLetterPdf();
@@ -8876,6 +9735,11 @@
       function closeEmailCompose() {
         document.getElementById('emailComposeOverlay').style.display = 'none';
         document.getElementById('emailComposePanel').style.display = 'none';
+        // iPad 멀티태스킹 경계선 숨기기 (v4.2.0)
+        hidePanelDivider();
+        // 이메일 패널 width 초기화
+        var compose = document.getElementById('emailComposePanel');
+        if (compose) { compose.style.width = ''; compose.style.transition = ''; }
         composePdfBase64 = null;
         composePdfFilename = '';
         composeStudentName = '';
