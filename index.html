@@ -1353,24 +1353,9 @@
         transform: scale(0.95);
       }
 
-      /* ── 로그인 도넛 로딩 스피너 ── */
-      @keyframes loginDonutSpin {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-      }
-      @keyframes loginDonutFill {
-        0% { border-width: 6px; width: 44px; height: 44px; background: transparent; }
-        100% { border-width: 22px; width: 44px; height: 44px; background: linear-gradient(135deg, #74b9ff, #0984e3, #6c5ce7); }
-      }
-      @keyframes loginCircleExpand {
-        0% { transform: translate(-50%, -50%) scale(1); }
-        100% { transform: translate(-50%, -50%) scale(80); }
-      }
-      @keyframes loginGradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-      }
+      /* ── 로그인 도넛 로딩 스피너 (v4.1.9 — SVG 기반 전면 개편) ── */
+
+      /* ── 도넛 오버레이 (배경 딤) ── */
       .login-donut-overlay {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
@@ -1378,42 +1363,119 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: radial-gradient(circle, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.25) 100%);
+        background: radial-gradient(circle, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.22) 100%);
       }
-      .login-donut {
+
+      /* ── SVG 도넛 컨테이너 ── */
+      .login-donut-svg {
         position: absolute;
         top: 50%; left: 50%;
         transform: translate(-50%, -50%);
-        width: 44px; height: 44px;
-        border: 6px solid #0984e3;
-        border-top-color: transparent;
-        border-radius: 50%;
-        animation: loginDonutSpin 0.8s linear infinite;
-        box-sizing: border-box;
+        width: 52px; height: 52px;
+        /* 글로우 — 회전하며 색 변화 */
+        filter: drop-shadow(0 0 8px rgba(9, 132, 227, 0.5)) drop-shadow(0 0 20px rgba(108, 92, 231, 0.3));
+        transition: filter 0.3s ease;
       }
-      .login-donut.fill {
-        animation: loginDonutFill 0.3s ease forwards;
-        border-color: #0984e3;
-        border-radius: 50%;
+
+      /* ── SVG 도넛 트랙 (배경 원) ── */
+      .login-donut-track {
+        fill: none;
+        stroke: rgba(9, 132, 227, 0.12);
+        stroke-width: 5;
       }
-      .login-donut.expand {
-        animation: loginCircleExpand 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
-        border: none !important;
-        width: 44px; height: 44px;
-        background: linear-gradient(135deg, #74b9ff, #0984e3, #a29bfe, #6c5ce7);
-        background-size: 300% 300%;
-        border-radius: 50%;
+
+      /* ── SVG 도넛 아크 (메인 스트로크) ── */
+      .login-donut-arc {
+        fill: none;
+        stroke: url(#loginDonutGrad);
+        stroke-width: 5;
+        stroke-linecap: round;
+        /* 둘레≈138.2, 70% 아크 + 30% 갭 */
+        stroke-dasharray: 97 41.2;
+        stroke-dashoffset: 0;
+        transform-origin: center;
       }
-      /* iris-out 공개 효과 — 청량한 그라데이션 */
+
+      /* ── 그라데이션 회전 (SVG 전체를 회전시키되 그라데이션도 함께) ── */
+      @keyframes loginDonutSpin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+      /* ── 글로우 펄스 (회전 중 은은하게) ── */
+      @keyframes loginGlowPulse {
+        0%, 100% { filter: drop-shadow(0 0 8px rgba(9, 132, 227, 0.5)) drop-shadow(0 0 20px rgba(108, 92, 231, 0.3)); }
+        50% { filter: drop-shadow(0 0 14px rgba(116, 185, 255, 0.7)) drop-shadow(0 0 28px rgba(162, 155, 254, 0.45)); }
+      }
+      .login-donut-svg.spinning {
+        animation: loginDonutSpin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite, loginGlowPulse 2s ease-in-out infinite;
+      }
+
+      /* ── Fill 완료 시 펄스 ── */
+      @keyframes loginFillPulse {
+        0% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 8px rgba(9, 132, 227, 0.5)) drop-shadow(0 0 20px rgba(108, 92, 231, 0.3)); }
+        40% { transform: translate(-50%, -50%) scale(1.25); filter: drop-shadow(0 0 24px rgba(116, 185, 255, 0.9)) drop-shadow(0 0 48px rgba(162, 155, 254, 0.7)); }
+        70% { transform: translate(-50%, -50%) scale(0.95); }
+        100% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 10px rgba(9, 132, 227, 0.6)) drop-shadow(0 0 24px rgba(108, 92, 231, 0.4)); }
+      }
+      .login-donut-svg.fill-pulse {
+        animation: loginFillPulse 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      /* ── 파티클/스파클 ── */
+      @keyframes loginParticle {
+        0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+        30% { transform: translate(var(--px), var(--py)) scale(1.2); opacity: 1; }
+        100% { transform: translate(calc(var(--px) * 1.8), calc(var(--py) * 1.8)) scale(0); opacity: 0; }
+      }
+      .login-particle {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 5px; height: 5px;
+        border-radius: 50%;
+        background: var(--pc, #74b9ff);
+        pointer-events: none;
+        animation: loginParticle 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        box-shadow: 0 0 6px var(--pc, #74b9ff);
+      }
+
+      /* ── 통합 iris 오버레이 (expand + iris-out 단일 요소) ── */
       .login-iris-overlay {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
         z-index: 10001;
-        background: linear-gradient(135deg, #74b9ff, #0984e3, #a29bfe, #6c5ce7);
-        background-size: 400% 400%;
-        animation: loginGradientShift 2s ease infinite;
-        -webkit-mask-image: radial-gradient(circle at center, transparent 0%, transparent calc(var(--iris-r, 0px) - 8px), black calc(var(--iris-r, 0px) + 8px), black 100%);
-        mask-image: radial-gradient(circle at center, transparent 0%, transparent calc(var(--iris-r, 0px) - 8px), black calc(var(--iris-r, 0px) + 8px), black 100%);
+        pointer-events: none;
+        /* Conic gradient — 시계방향 회전 + 물결 색상 */
+        background: conic-gradient(from var(--iris-angle, 0deg) at 50% 50%,
+          #74b9ff 0deg, #0984e3 60deg, #6c5ce7 120deg, #a29bfe 180deg,
+          #0984e3 240deg, #74b9ff 300deg, #74b9ff 360deg);
+        /* 마스크로 iris-out 구멍 제어 */
+        -webkit-mask-image: radial-gradient(circle at center,
+          transparent 0%,
+          transparent calc(var(--iris-r, 0px) - 10px),
+          rgba(0,0,0,0.3) calc(var(--iris-r, 0px) - 4px),
+          black var(--iris-r, 0px),
+          black 100%);
+        mask-image: radial-gradient(circle at center,
+          transparent 0%,
+          transparent calc(var(--iris-r, 0px) - 10px),
+          rgba(0,0,0,0.3) calc(var(--iris-r, 0px) - 4px),
+          black var(--iris-r, 0px),
+          black 100%);
+      }
+
+      /* ── 플래시 효과 (fill 완료 순간) ── */
+      @keyframes loginFlash {
+        0% { opacity: 0; }
+        30% { opacity: 0.5; }
+        100% { opacity: 0; }
+      }
+      .login-flash {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 10000;
+        background: radial-gradient(circle at center, rgba(116, 185, 255, 0.4) 0%, transparent 60%);
+        pointer-events: none;
+        animation: loginFlash 0.4s ease-out forwards;
       }
 
       /* ── 로그인 실패 필드 진동 ── */
@@ -3429,7 +3491,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.1.8";
+      window.APP_VERSION = "4.1.9";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -6486,63 +6548,191 @@
         var overlay = document.createElement('div');
         overlay.className = 'login-donut-overlay';
         overlay.id = 'loginDonutOverlay';
-        var donut = document.createElement('div');
-        donut.className = 'login-donut';
-        donut.id = 'loginDonut';
-        overlay.appendChild(donut);
+
+        // SVG 기반 도넛 (둥근 말단 + 그라데이션 스트로크)
+        var svgNS = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('viewBox', '0 0 52 52');
+        svg.setAttribute('class', 'login-donut-svg spinning');
+        svg.id = 'loginDonutSvg';
+
+        // 그라데이션 정의 (하늘색~보라 시계방향)
+        var defs = document.createElementNS(svgNS, 'defs');
+        var grad = document.createElementNS(svgNS, 'linearGradient');
+        grad.id = 'loginDonutGrad';
+        grad.setAttribute('x1', '0%'); grad.setAttribute('y1', '0%');
+        grad.setAttribute('x2', '100%'); grad.setAttribute('y2', '100%');
+        var stops = [
+          { offset: '0%', color: '#74b9ff' },
+          { offset: '35%', color: '#0984e3' },
+          { offset: '65%', color: '#a29bfe' },
+          { offset: '100%', color: '#6c5ce7' }
+        ];
+        stops.forEach(function(s) {
+          var stop = document.createElementNS(svgNS, 'stop');
+          stop.setAttribute('offset', s.offset);
+          stop.setAttribute('stop-color', s.color);
+          grad.appendChild(stop);
+        });
+        defs.appendChild(grad);
+        svg.appendChild(defs);
+
+        // 배경 트랙
+        var track = document.createElementNS(svgNS, 'circle');
+        track.setAttribute('class', 'login-donut-track');
+        track.setAttribute('cx', '26'); track.setAttribute('cy', '26'); track.setAttribute('r', '22');
+        svg.appendChild(track);
+
+        // 메인 아크 (둥근 말단)
+        var arc = document.createElementNS(svgNS, 'circle');
+        arc.setAttribute('class', 'login-donut-arc');
+        arc.id = 'loginDonutArc';
+        arc.setAttribute('cx', '26'); arc.setAttribute('cy', '26'); arc.setAttribute('r', '22');
+        svg.appendChild(arc);
+
+        overlay.appendChild(svg);
         document.body.appendChild(overlay);
-        return { overlay: overlay, donut: donut };
+        return { overlay: overlay, svg: svg };
       }
 
       function loginSuccessAnimation(callback) {
-        var donut = document.getElementById('loginDonut');
+        var svg = document.getElementById('loginDonutSvg');
         var overlay = document.getElementById('loginDonutOverlay');
-        if (!donut || !overlay) { if (callback) callback(); return; }
+        var arc = document.getElementById('loginDonutArc');
+        if (!svg || !overlay || !arc) { if (callback) callback(); return; }
 
-        // 1단계: 도넛 내부 채우기 → 원 (0.3s)
-        donut.style.animation = 'none';
-        void donut.offsetWidth;
-        donut.className = 'login-donut fill';
+        var circumference = 2 * Math.PI * 22; // ≈138.23
 
-        setTimeout(function() {
-          // 2단계: 원이 화면 전체를 불투명하게 덮음 (bouncy cubic-bezier)
-          donut.className = 'login-donut expand';
-          void donut.offsetWidth;
+        // ── 1단계: 도넛 fill (아크가 점점 전체 원으로 채워짐, 0.5s) ──
+        svg.classList.remove('spinning');
+        // 부드럽게 dasharray 갭을 0으로 줄이기 (rAF 기반)
+        var fillStart = null;
+        var fillDuration = 500;
+        var initDash = 97; // 시작 아크 길이
+        var initGap = circumference - initDash;
 
-          setTimeout(function() {
-            // 3단계: donut overlay 제거, iris overlay로 교체
+        function animateFill(ts) {
+          if (!fillStart) fillStart = ts;
+          var p = Math.min((ts - fillStart) / fillDuration, 1);
+          // ease-out
+          var ep = 1 - Math.pow(1 - p, 3);
+          var currentDash = initDash + (circumference - initDash) * ep;
+          var currentGap = circumference - currentDash;
+          arc.setAttribute('stroke-dasharray', currentDash + ' ' + currentGap);
+          // 스트로크 두께 약간 증가 (5→7)
+          arc.setAttribute('stroke-width', 5 + 2 * ep);
+          if (p < 1) {
+            requestAnimationFrame(animateFill);
+          } else {
+            // fill 완료 → 파티클 + 펄스 + 플래시
+            spawnLoginParticles(overlay);
+            showLoginFlash();
+            svg.classList.add('fill-pulse');
+            setTimeout(function() { startExpandAndIris(svg, overlay, callback); }, 550);
+          }
+        }
+        requestAnimationFrame(animateFill);
+      }
+
+      // ── 파티클 생성 (fill 완료 순간) ──
+      function spawnLoginParticles(container) {
+        var colors = ['#74b9ff', '#0984e3', '#a29bfe', '#6c5ce7', '#dfe6e9', '#81ecec'];
+        var count = 10;
+        for (var i = 0; i < count; i++) {
+          var angle = (2 * Math.PI / count) * i + (Math.random() - 0.5) * 0.5;
+          var dist = 40 + Math.random() * 30;
+          var px = Math.cos(angle) * dist;
+          var py = Math.sin(angle) * dist;
+          var particle = document.createElement('div');
+          particle.className = 'login-particle';
+          particle.style.setProperty('--px', px + 'px');
+          particle.style.setProperty('--py', py + 'px');
+          particle.style.setProperty('--pc', colors[i % colors.length]);
+          particle.style.width = (3 + Math.random() * 4) + 'px';
+          particle.style.height = particle.style.width;
+          particle.style.animationDelay = (Math.random() * 0.1) + 's';
+          particle.style.animationDuration = (0.5 + Math.random() * 0.3) + 's';
+          container.appendChild(particle);
+          // 자동 제거
+          (function(p){ setTimeout(function(){ p.remove(); }, 900); })(particle);
+        }
+      }
+
+      // ── 플래시 효과 ──
+      function showLoginFlash() {
+        var flash = document.createElement('div');
+        flash.className = 'login-flash';
+        document.body.appendChild(flash);
+        setTimeout(function() { flash.remove(); }, 450);
+      }
+
+      // ── 2~4단계: expand + iris 통합 (단일 요소, 끊김 없음) ──
+      function startExpandAndIris(svg, overlay, callback) {
+        // SVG를 확대하여 화면 전체를 덮음
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        var maxDim = Math.max(vw, vh);
+        var svgSize = 52;
+        var targetScale = Math.ceil((maxDim * 1.5) / svgSize);
+
+        // expand 애니메이션 (rAF 기반, 부드러운 ease-in-out)
+        var expandStart = null;
+        var expandDuration = 450;
+
+        function animateExpand(ts) {
+          if (!expandStart) expandStart = ts;
+          var p = Math.min((ts - expandStart) / expandDuration, 1);
+          // ease-in-out cubic
+          var ep = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+          var scale = 1 + (targetScale - 1) * ep;
+          svg.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+          // 글로우 감소 (확대되면서 자연스럽게)
+          var glowOpacity = 1 - ep * 0.8;
+          svg.style.filter = 'drop-shadow(0 0 ' + (10 * glowOpacity) + 'px rgba(9,132,227,' + (0.5 * glowOpacity) + '))';
+
+          if (p < 1) {
+            requestAnimationFrame(animateExpand);
+          } else {
+            // expand 완료 → overlay를 iris-overlay로 전환 (같은 DOM 위에!)
             overlay.remove();
 
-            // 그라데이션 iris 오버레이 생성
+            // iris 오버레이 생성
             var iris = document.createElement('div');
             iris.className = 'login-iris-overlay';
             iris.id = 'loginIrisOverlay';
             iris.style.setProperty('--iris-r', '0px');
+            iris.style.setProperty('--iris-angle', '0deg');
             document.body.appendChild(iris);
 
-            // callback 먼저 실행 — 뒤에서 UI 준비
+            // callback 실행 (뒤에서 UI 준비)
             if (callback) callback();
 
-            // 4단계: 중앙에서 투명 원(구멍)이 탄성 있게 커지며 화면 공개
-            var vw = window.innerWidth;
-            var vh = window.innerHeight;
-            var maxR = Math.ceil(Math.sqrt(vw * vw + vh * vh) / 2) + 20;
-            var startTime = null;
-            var duration = 700; // ms
+            // conic gradient 회전 + iris-out 동시 진행
+            var irisStart = null;
+            var irisDuration = 1100; // 700→1100ms로 늘림
+            var maxR = Math.ceil(Math.sqrt(vw * vw + vh * vh) / 2) + 30;
 
-            // 물방울 튀는 듯한 탄성 이징 (overshoot 후 settle)
-            function easeOutElastic(t) {
-              if (t === 0 || t === 1) return t;
-              return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
+            // 부드러운 spring 이징 (overshoot 약간 + settle)
+            function easeOutBack(t) {
+              var c1 = 1.70158;
+              var c3 = c1 + 1;
+              return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
             }
 
             function animateIris(ts) {
-              if (!startTime) startTime = ts;
-              var elapsed = ts - startTime;
-              var progress = Math.min(elapsed / duration, 1);
-              var easedProgress = easeOutElastic(progress);
-              var r = Math.round(easedProgress * maxR);
+              if (!irisStart) irisStart = ts;
+              var elapsed = ts - irisStart;
+              var progress = Math.min(elapsed / irisDuration, 1);
+
+              // iris 반경: easeOutBack으로 살짝 overshoot
+              var easedR = easeOutBack(progress);
+              var r = Math.round(easedR * maxR);
               iris.style.setProperty('--iris-r', r + 'px');
+
+              // conic gradient 회전 (시계방향, 물결 느낌으로 속도 변화)
+              var angleSpeed = 120 + 60 * Math.sin(progress * Math.PI * 2);
+              var angle = progress * angleSpeed;
+              iris.style.setProperty('--iris-angle', angle + 'deg');
 
               if (progress < 1) {
                 requestAnimationFrame(animateIris);
@@ -6551,19 +6741,21 @@
               }
             }
 
-            // 살짝 딜레이 후 iris 시작
+            // 짧은 딜레이 후 iris 시작
             setTimeout(function() {
               requestAnimationFrame(animateIris);
-            }, 60);
-
-          }, 520);
-        }, 320);
+            }, 40);
+          }
+        }
+        requestAnimationFrame(animateExpand);
       }
 
       function loginFailAnimation() {
-        // 도넛 제거
+        // 도넛(SVG) 제거
         var overlay = document.querySelector('.login-donut-overlay');
         if (overlay) overlay.remove();
+        var iris = document.getElementById('loginIrisOverlay');
+        if (iris) iris.remove();
         // 아이디/비번 필드 진동
         var idInput = document.getElementById('adminIdInput');
         var pwInput = document.getElementById('adminPasswordInput');
