@@ -1133,7 +1133,7 @@
       .form-input::placeholder {
         color: var(--text-tertiary);
       }
-      /* 브라우저 자동완성 배경 — 리퀴드 글라스 하늘색 */
+      /* 브라우저 자동완성 배경 — 리퀴드 글라스 하늘색 (노란색 절대 방지) */
       .form-input:-webkit-autofill,
       .form-input:-webkit-autofill:hover,
       .form-input:-webkit-autofill:focus,
@@ -1142,12 +1142,13 @@
       input:-webkit-autofill:hover,
       input:-webkit-autofill:focus,
       input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 9999px rgba(0, 113, 227, 0.10) inset !important;
-        box-shadow: 0 0 0 9999px rgba(0, 113, 227, 0.10) inset !important;
+        -webkit-box-shadow: 0 0 0 9999px rgba(0, 113, 227, 0.14) inset !important;
+        box-shadow: 0 0 0 9999px rgba(0, 113, 227, 0.14) inset !important;
         -webkit-text-fill-color: var(--text-primary) !important;
         caret-color: var(--text-primary) !important;
-        background-color: rgba(0, 113, 227, 0.10) !important;
-        transition: background-color 5000s ease-in-out 0s !important;
+        background-color: rgba(0, 113, 227, 0.14) !important;
+        background-image: none !important;
+        transition: background-color 5000s ease-in-out 0s, box-shadow 5000s ease-in-out 0s !important;
       }
       textarea.form-input {
         resize: vertical;
@@ -1359,11 +1360,16 @@
       }
       @keyframes loginDonutFill {
         0% { border-width: 6px; width: 44px; height: 44px; background: transparent; }
-        100% { border-width: 22px; width: 44px; height: 44px; background: var(--primary); }
+        100% { border-width: 22px; width: 44px; height: 44px; background: linear-gradient(135deg, #74b9ff, #0984e3, #6c5ce7); }
       }
       @keyframes loginCircleExpand {
         0% { transform: translate(-50%, -50%) scale(1); }
         100% { transform: translate(-50%, -50%) scale(80); }
+      }
+      @keyframes loginGradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
       }
       .login-donut-overlay {
         position: fixed;
@@ -1379,7 +1385,7 @@
         top: 50%; left: 50%;
         transform: translate(-50%, -50%);
         width: 44px; height: 44px;
-        border: 6px solid var(--primary);
+        border: 6px solid #0984e3;
         border-top-color: transparent;
         border-radius: 50%;
         animation: loginDonutSpin 0.8s linear infinite;
@@ -1387,24 +1393,27 @@
       }
       .login-donut.fill {
         animation: loginDonutFill 0.3s ease forwards;
-        border-color: var(--primary);
+        border-color: #0984e3;
         border-radius: 50%;
       }
       .login-donut.expand {
-        animation: loginCircleExpand 0.5s ease-out forwards !important;
+        animation: loginCircleExpand 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
         border: none !important;
         width: 44px; height: 44px;
-        background: var(--primary);
+        background: linear-gradient(135deg, #74b9ff, #0984e3, #a29bfe, #6c5ce7);
+        background-size: 300% 300%;
         border-radius: 50%;
       }
-      /* iris-out 공개 효과 */
+      /* iris-out 공개 효과 — 청량한 그라데이션 */
       .login-iris-overlay {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
         z-index: 10001;
-        background: var(--primary);
-        -webkit-mask-image: radial-gradient(circle at center, transparent 0%, transparent calc(var(--iris-r, 0px) - 6px), black calc(var(--iris-r, 0px) + 6px), black 100%);
-        mask-image: radial-gradient(circle at center, transparent 0%, transparent calc(var(--iris-r, 0px) - 6px), black calc(var(--iris-r, 0px) + 6px), black 100%);
+        background: linear-gradient(135deg, #74b9ff, #0984e3, #a29bfe, #6c5ce7);
+        background-size: 400% 400%;
+        animation: loginGradientShift 2s ease infinite;
+        -webkit-mask-image: radial-gradient(circle at center, transparent 0%, transparent calc(var(--iris-r, 0px) - 8px), black calc(var(--iris-r, 0px) + 8px), black 100%);
+        mask-image: radial-gradient(circle at center, transparent 0%, transparent calc(var(--iris-r, 0px) - 8px), black calc(var(--iris-r, 0px) + 8px), black 100%);
       }
 
       /* ── 로그인 실패 필드 진동 ── */
@@ -3420,7 +3429,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.1.7";
+      window.APP_VERSION = "4.1.8";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -6496,7 +6505,7 @@
         donut.className = 'login-donut fill';
 
         setTimeout(function() {
-          // 2단계: 원이 화면 전체를 불투명하게 덮음 (0.5s)
+          // 2단계: 원이 화면 전체를 불투명하게 덮음 (bouncy cubic-bezier)
           donut.className = 'login-donut expand';
           void donut.offsetWidth;
 
@@ -6504,7 +6513,7 @@
             // 3단계: donut overlay 제거, iris overlay로 교체
             overlay.remove();
 
-            // primary 색으로 화면 완전히 덮는 iris 오버레이 생성
+            // 그라데이션 iris 오버레이 생성
             var iris = document.createElement('div');
             iris.className = 'login-iris-overlay';
             iris.id = 'loginIrisOverlay';
@@ -6514,20 +6523,24 @@
             // callback 먼저 실행 — 뒤에서 UI 준비
             if (callback) callback();
 
-            // 4단계: 중앙에서 투명 원(구멍)이 커지며 화면 공개 (iris-out)
+            // 4단계: 중앙에서 투명 원(구멍)이 탄성 있게 커지며 화면 공개
             var vw = window.innerWidth;
             var vh = window.innerHeight;
             var maxR = Math.ceil(Math.sqrt(vw * vw + vh * vh) / 2) + 20;
             var startTime = null;
-            var duration = 600; // ms
+            var duration = 700; // ms
 
-            function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+            // 물방울 튀는 듯한 탄성 이징 (overshoot 후 settle)
+            function easeOutElastic(t) {
+              if (t === 0 || t === 1) return t;
+              return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
+            }
 
             function animateIris(ts) {
               if (!startTime) startTime = ts;
               var elapsed = ts - startTime;
               var progress = Math.min(elapsed / duration, 1);
-              var easedProgress = easeOutCubic(progress);
+              var easedProgress = easeOutElastic(progress);
               var r = Math.round(easedProgress * maxR);
               iris.style.setProperty('--iris-r', r + 'px');
 
@@ -6538,10 +6551,10 @@
               }
             }
 
-            // 살짝 딜레이 후 iris 시작 (화면 전환 인지)
+            // 살짝 딜레이 후 iris 시작
             setTimeout(function() {
               requestAnimationFrame(animateIris);
-            }, 80);
+            }, 60);
 
           }, 520);
         }, 320);
