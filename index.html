@@ -1637,8 +1637,10 @@
       .landing-buttons {
         display: flex;
         margin-top: 32px;
-        justify-content: space-evenly;
-        padding: 0;
+        margin-bottom: 0;
+        justify-content: center;
+        gap: 32px;
+        padding: 0 32px;
       }
       .landing-btn {
         display: flex;
@@ -1646,7 +1648,8 @@
         align-items: center;
         justify-content: center;
         gap: 12px;
-        width: 200px;
+        flex: 1;
+        max-width: 240px;
         height: 160px;
         border-radius: var(--radius-lg);
         border: 1px solid rgba(255, 255, 255, 0.38);
@@ -3785,11 +3788,13 @@
         }
         .landing-buttons {
           flex-direction: row;
-          justify-content: space-evenly;
-          padding: 0;
+          justify-content: center;
+          gap: 16px;
+          padding: 0 16px;
         }
         .landing-btn {
-          width: 140px;
+          flex: 1;
+          max-width: 160px;
           height: 140px;
           padding: 12px 8px;
           gap: 8px;
@@ -7338,8 +7343,10 @@
               if (emailBar) {
                 emailBar.style.display = 'flex';
                 emailBar.classList.add('animate-in');
-                // v4.2.2: DB 사용량을 이메일 바 바로 아래에 표시
-                renderDbUsageIndicator(emailBar);
+              }
+              // v4.2.2: DB 사용량을 이메일 바 바로 아래에 표시
+              if (adminToken) {
+                renderDbUsageIndicator(document.getElementById('emailLinkBar'));
               }
             });
           }
@@ -7380,6 +7387,9 @@
             '<div style="height:6px;background:rgba(0,0,0,0.08);border-radius:3px;overflow:hidden;">' +
             '<div style="height:100%;width:' + Math.min(pct,100) + '%;background:' + barColor + ';border-radius:3px;transition:width 0.5s;"></div>' +
             '</div></div>';
+        }).catch(function(err) {
+          console.error('DB indicator 렌더 실패:', err);
+          indicator.innerHTML = '<span style="font-size:14px;">⚠️</span> 저장 공간 정보를 가져올 수 없습니다.';
         });
       }
 
@@ -7612,17 +7622,33 @@
 
       function toggleFolderSort() {
         var dd = document.getElementById('folderSortDropdown');
-        if (!dd) return;
-        if (dd.classList.contains('open')) { dd.classList.remove('open'); return; }
-        // backdrop-filter가 fixed positioning을 방해하므로 body로 이동
-        if (dd.parentNode !== document.body) {
-          document.body.appendChild(dd);
-        }
+        // 이미 열려있으면 닫기
+        if (dd && dd.classList.contains('open')) { dd.classList.remove('open'); return; }
+        // 기존 드롭다운 제거 후 새로 생성 (항상 최신 상태 반영, 중복 방지)
+        if (dd) dd.remove();
+        var sortOptions = [
+          {key:'name', label:'이름순'},
+          {key:'created', label:'생성일순'},
+          {key:'size', label:'크기순'}
+        ];
+        dd = document.createElement('div');
+        dd.className = 'folder-sort-dropdown';
+        dd.id = 'folderSortDropdown';
+        dd.onmouseleave = function() { dd.classList.remove('open'); };
+        var html = '';
+        sortOptions.forEach(function(opt) {
+          var isActive = folderSortKey === opt.key;
+          var arrow = isActive ? (folderSortDir === 'asc' ? '↑' : '↓') : '';
+          html += '<div class="folder-sort-option ' + (isActive ? 'active' : '') + '" onclick="setFolderSort(\'' + opt.key + '\')">' +
+            opt.label + '<span class="sort-arrow">' + arrow + '</span></div>';
+        });
+        dd.innerHTML = html;
+        document.body.appendChild(dd);
         var btn = event.currentTarget || event.target;
         var rect = btn.getBoundingClientRect();
         dd.style.left = rect.left + 'px';
         dd.style.top = (rect.bottom + 4) + 'px';
-        dd.style.width = rect.width + 'px';
+        dd.style.width = Math.max(rect.width, 140) + 'px';
         dd.classList.add('open');
       }
 
@@ -7633,14 +7659,11 @@
           folderSortKey = key;
           folderSortDir = 'asc';
         }
-        // v4.2.1: 드롭다운 닫지 않고 정렬 실행 + 내용 갱신
         sortCustomFolders();
         updateAdminPanel();
-        // 드롭다운 다시 열기 (updateAdminPanel이 DOM을 재생성하므로)
-        setTimeout(function() {
-          var dd = document.getElementById('folderSortDropdown');
-          if (dd) dd.classList.add('open');
-        }, 10);
+        // 드롭다운 닫기 (정렬 적용 후)
+        var dd = document.getElementById('folderSortDropdown');
+        if (dd) dd.remove();
       }
 
       // v4.2.2: 정렬 드롭다운 외부 클릭 시 닫기
@@ -7879,20 +7902,7 @@
           }
           folderHtml += '<div style="position:relative;flex:1;display:flex;">';
           folderHtml += '<button class="folder-mgmt-btn" style="width:100%;" onclick="toggleFolderSort()">⇅ 정렬</button>';
-          // Sort dropdown
-          var sortOptions = [
-            {key:'name', label:'이름순'},
-            {key:'created', label:'생성일순'},
-            {key:'size', label:'크기순'}
-          ];
-          folderHtml += '<div class="folder-sort-dropdown" id="folderSortDropdown" onmouseleave="this.classList.remove(\'open\')">'; 
-          sortOptions.forEach(function(opt) {
-            var isActive = folderSortKey === opt.key;
-            var arrow = isActive ? (folderSortDir === 'asc' ? '↑' : '↓') : '';
-            folderHtml += '<div class="folder-sort-option ' + (isActive ? 'active' : '') + '" onclick="setFolderSort(\'' + opt.key + '\')">' +
-              opt.label + '<span class="sort-arrow">' + arrow + '</span></div>';
-          });
-          folderHtml += '</div></div>';
+          folderHtml += '</div>';
           folderHtml += '</div>';
 
           list.innerHTML = folderHtml;
@@ -8822,6 +8832,10 @@
           btnIcon.textContent = '+';
           btn.classList.remove('linked');
           btn.title = '이메일 추가';
+        }
+        // DB 사용량 표시: 이메일 바가 보이고 토큰이 있으면 indicator 렌더
+        if (adminToken && bar.style.display !== 'none') {
+          renderDbUsageIndicator(bar);
         }
       }
 
