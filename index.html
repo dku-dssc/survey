@@ -1636,9 +1636,9 @@
       /* ===== Landing Page Buttons ===== */
       .landing-buttons {
         display: flex;
-        gap: 16px;
+        gap: 0;
         margin-top: 32px;
-        justify-content: center;
+        justify-content: space-evenly;
         flex-wrap: wrap;
       }
       .landing-btn {
@@ -2029,6 +2029,7 @@
         right: -500px;
         width: 480px;
         height: 100vh;
+        height: 100dvh;
         background: rgba(240, 244, 248, 0.92);
         backdrop-filter: blur(36px) saturate(200%);
         -webkit-backdrop-filter: blur(36px) saturate(200%);
@@ -2037,7 +2038,9 @@
         z-index: 300;
         transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         padding: 24px;
+        padding-bottom: 100px;
       }
       .admin-panel.open {
         right: 0;
@@ -2662,12 +2665,22 @@
 
       /* ===== Enrollment File Upload (Admin Settings) ===== */
       .enrollment-section {
-        margin-bottom: 20px;
+        margin-top: 20px;
+        margin-bottom: 24px;
+        padding: 16px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 14px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
       }
       .enrollment-section h4 {
         font-size: 14px;
         font-weight: 600;
         margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
         color: var(--text-primary);
       }
       .enrollment-file-card {
@@ -2848,10 +2861,8 @@
       .dl-calendar-wrap { position: relative; }
       .deadline-input-group.dl-calendar-wrap { display: flex !important; }
       .dl-calendar {
-        position: absolute;
-        top: calc(100% + 6px);
-        left: 0;
-        z-index: 1200;
+        position: fixed;
+        z-index: 100000;
         background: var(--card-bg, #fff);
         border: 1px solid rgba(255,255,255,0.25);
         border-radius: 12px;
@@ -2930,8 +2941,8 @@
         overflow-wrap: break-word;
       }
       .mapping-display-table th {
-        background: rgba(17,100,177,0.18);
-        color: var(--primary);
+        background: rgba(33,115,70,0.13);
+        color: #217346;
         font-weight: 600;
         font-size: 11px;
         padding: 4px 6px;
@@ -2999,9 +3010,8 @@
 
       /* Sort dropdown */
       .folder-sort-dropdown {
-        position: absolute;
-        bottom: calc(100% + 6px);
-        left: 0;
+        position: fixed;
+        z-index: 100000;
         background: rgba(255, 255, 255, 0.92);
         backdrop-filter: blur(24px) saturate(200%);
         -webkit-backdrop-filter: blur(24px) saturate(200%);
@@ -3009,13 +3019,12 @@
         border-radius: 12px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.12);
         padding: 6px;
-        z-index: 310;
-        min-width: 150px;
+        min-width: 160px;
         display: none;
         animation: sortDropIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
       @keyframes sortDropIn {
-        from { opacity: 0; transform: translateY(6px) scale(0.95); }
+        from { opacity: 0; transform: translateY(-6px) scale(0.95); }
         to { opacity: 1; transform: translateY(0) scale(1); }
       }
       body.dark-mode .folder-sort-dropdown {
@@ -3367,9 +3376,13 @@
         max-width: 100px;
       }
       .mapping-preview-table th {
-        background: rgba(17,100,177,0.15);
-        color: var(--primary);
+        background: rgba(33,115,70,0.13);
+        color: #217346;
         font-weight: 600;
+      }
+      body.dark-mode .mapping-preview-table th {
+        background: rgba(33,175,90,0.18);
+        color: #4fc978;
       }
       .mapping-preview-table td {
         background: rgba(255,255,255,0.04);
@@ -3758,6 +3771,7 @@
         .admin-panel {
           width: 100%;
           right: -100%;
+          padding-bottom: 120px;
         }
         .main-container {
           padding: 16px;
@@ -3772,11 +3786,11 @@
         }
         .landing-buttons {
           flex-direction: row;
-          justify-content: center;
-          gap: 12px;
+          justify-content: space-evenly;
+          gap: 0;
         }
         .landing-btn {
-          width: calc(50% - 6px);
+          width: calc(45% - 6px);
           max-width: 160px;
           height: 140px;
           padding: 12px 8px;
@@ -3826,7 +3840,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.2.1";
+      window.APP_VERSION = "4.2.2";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -5794,7 +5808,7 @@
                 <span class="dl-date-sep">.</span>
                 <input type="text" class="form-input dl-date-input" id="dlStartMonth" inputmode="numeric" maxlength="2" placeholder="월" style="flex:1;text-align:center;" onfocus="openCalendar('start')" oninput="dlDateAutoMove(this,'dlStartDay')">
                 <span class="dl-date-sep">.</span>
-                <input type="text" class="form-input dl-date-input" id="dlStartDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('start')">
+                <input type="text" class="form-input dl-date-input" id="dlStartDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('start')" oninput="dlDateAutoMove(this,'dlEndYear')">
                 <div class="dl-calendar" id="dlCalStart"></div>
               </div>
               <span class="deadline-tilde">~</span>
@@ -5803,7 +5817,7 @@
                 <span class="dl-date-sep">.</span>
                 <input type="text" class="form-input dl-date-input" id="dlEndMonth" inputmode="numeric" maxlength="2" placeholder="월" style="flex:1;text-align:center;" onfocus="openCalendar('end')" oninput="dlDateAutoMove(this,'dlEndDay')">
                 <span class="dl-date-sep">.</span>
-                <input type="text" class="form-input dl-date-input" id="dlEndDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('end')">
+                <input type="text" class="form-input dl-date-input" id="dlEndDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('end')" oninput="dlDateAutoMove(this,'dlTempStartYear')">
                 <div class="dl-calendar" id="dlCalEnd"></div>
               </div>
             </div>
@@ -5820,7 +5834,7 @@
                   <span class="dl-date-sep">.</span>
                   <input type="text" class="form-input dl-date-input" id="dlTempStartMonth" inputmode="numeric" maxlength="2" placeholder="월" style="flex:1;text-align:center;" onfocus="openCalendar('tempStart')" oninput="dlDateAutoMove(this,'dlTempStartDay')">
                   <span class="dl-date-sep">.</span>
-                  <input type="text" class="form-input dl-date-input" id="dlTempStartDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('tempStart')">
+                  <input type="text" class="form-input dl-date-input" id="dlTempStartDay" inputmode="numeric" maxlength="2" placeholder="일" style="flex:1;text-align:center;" onfocus="openCalendar('tempStart')" oninput="dlDateAutoMove(this,'dlTempEndYear')">
                   <div class="dl-calendar" id="dlCalTempStart"></div>
                 </div>
                 <span class="deadline-tilde">~</span>
@@ -6851,6 +6865,10 @@
 
       function toggleAdmin() {
         if (_loginInProgress) return;  // 로그인 진행 중에는 토글 무시
+        // v4.2.2: 폴더가 아직 로드되지 않았으면 로드
+        if (!foldersLoaded && sessionStorage.getItem('adminToken')) {
+          loadFoldersFromServer().then(function() { updateAdminPanel(); });
+        }
         const panel = document.getElementById('adminPanel');
         const overlay = document.getElementById('overlay');
         panel.classList.toggle('open');
@@ -7313,6 +7331,7 @@
               showAdminTab('responses');
               showToast('관리자 로그인 성공!');
               await loadAdminResponses();
+              await loadFoldersFromServer();
               await loadEnrollmentData();
               await loadLinkedEmail();
               var emailBar = document.getElementById('emailLinkBar');
@@ -7329,7 +7348,39 @@
         }
       }
 
-      async function loadAdminResponses() {
+      async // v4.2.2: DB 사용량 표시 렌더링 함수
+      function renderDbUsageIndicator(container) {
+        // 기존 indicator 있으면 제거
+        var old = document.getElementById('dbUsageIndicator');
+        if (old) old.remove();
+        var indicator = document.createElement('div');
+        indicator.id = 'dbUsageIndicator';
+        indicator.style.cssText = 'margin-top:16px;padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:8px;';
+        indicator.innerHTML = '<span style="font-size:14px;">⏳</span> 저장 공간 조회 중...';
+        container.appendChild(indicator);
+        fetchDbSize().then(function(data) {
+          if (!data || !data.success) {
+            indicator.innerHTML = '<span style="font-size:14px;">⚠️</span> 저장 공간 정보를 가져올 수 없습니다.';
+            return;
+          }
+          var usedBytes = data.used_bytes || 0;
+          var maxBytes = data.max_bytes || (5 * 1024 * 1024 * 1024); // 5GB default
+          var usedGB = (usedBytes / (1024*1024*1024)).toFixed(2);
+          var maxGB = (maxBytes / (1024*1024*1024)).toFixed(0);
+          var pct = maxBytes > 0 ? (usedBytes / maxBytes * 100) : 0;
+          var barColor = pct > 80 ? '#ff3b30' : pct > 60 ? '#ff9500' : '#34c759';
+          var warnIcon = pct > 80 ? '🔴' : pct > 60 ? '🟡' : '🟢';
+          indicator.innerHTML = '<span style="font-size:14px;">' + warnIcon + '</span>' +
+            '<div style="flex:1;">' +
+            '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
+            '<span>저장 공간</span><span style="font-weight:600;color:var(--text-primary);">' + usedGB + 'GB / ' + maxGB + 'GB</span></div>' +
+            '<div style="height:6px;background:rgba(0,0,0,0.08);border-radius:3px;overflow:hidden;">' +
+            '<div style="height:100%;width:' + Math.min(pct,100) + '%;background:' + barColor + ';border-radius:3px;transition:width 0.5s;"></div>' +
+            '</div></div>';
+        });
+      }
+
+      function loadAdminResponses() {
         if (!adminToken) return;
 
         try {
@@ -7380,8 +7431,89 @@
       }
 
 
-      // ===== 폴더 관리 (v4.2.0) =====
+      // ===== 폴더 관리 (v4.2.0 → v4.2.2 서버 연동) =====
       var customFolders = []; // [{id, name, createdAt, items: []}]
+      var foldersLoaded = false;
+
+      // v4.2.2: 서버에서 폴더 목록 불러오기
+      async function loadFoldersFromServer() {
+        try {
+          var token = sessionStorage.getItem('adminToken');
+          if (!token) return;
+          var resp = await fetch(API_BASE + '/api/admin/folders', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          if (!resp.ok) return;
+          var data = await resp.json();
+          if (data.success && data.folders) {
+            customFolders = data.folders.map(function(f) {
+              return {
+                id: 'cf_' + f.id,
+                serverId: f.id,
+                name: f.name,
+                createdAt: f.created_at,
+                sortOrder: f.sort_order,
+                items: f.items ? (typeof f.items === 'string' ? JSON.parse(f.items) : f.items) : []
+              };
+            });
+            foldersLoaded = true;
+          }
+        } catch(e) { console.error('폴더 로드 실패:', e); }
+      }
+
+      // v4.2.2: 서버에 폴더 생성
+      async function createFolderOnServer(name) {
+        try {
+          var token = sessionStorage.getItem('adminToken');
+          var resp = await fetch(API_BASE + '/api/admin/folders', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name })
+          });
+          if (!resp.ok) return null;
+          var data = await resp.json();
+          return data.folder || null;
+        } catch(e) { console.error('폴더 생성 실패:', e); return null; }
+      }
+
+      // v4.2.2: 서버 폴더 업데이트
+      async function updateFolderOnServer(serverId, updates) {
+        try {
+          var token = sessionStorage.getItem('adminToken');
+          var resp = await fetch(API_BASE + '/api/admin/folders/' + serverId, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+          });
+          return resp.ok;
+        } catch(e) { console.error('폴더 수정 실패:', e); return false; }
+      }
+
+      // v4.2.2: 서버 폴더 삭제
+      async function deleteFolderOnServer(serverId) {
+        try {
+          var token = sessionStorage.getItem('adminToken');
+          var resp = await fetch(API_BASE + '/api/admin/folders/' + serverId, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          return resp.ok;
+        } catch(e) { console.error('폴더 삭제 실패:', e); return false; }
+      }
+
+      // v4.2.2: D1 DB 사용량 조회
+      async function fetchDbSize() {
+        try {
+          var token = sessionStorage.getItem('adminToken');
+          if (!token) return null;
+          var resp = await fetch(API_BASE + '/api/admin/db-size', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          if (!resp.ok) return null;
+          var data = await resp.json();
+          return data;
+        } catch(e) { return null; }
+      }
       var folderDeleteMode = false;
       var folderSortKey = 'name'; // 'name', 'created', 'size'
       var folderSortDir = 'asc'; // 'asc', 'desc'
@@ -7392,18 +7524,21 @@
         return 'f_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
       }
 
-      function addNewFolder() {
+      async function addNewFolder() {
         folderDeleteMode = false;
         checkedFolderIds.clear();
+        var serverFolder = await createFolderOnServer('새 폴더');
+        if (!serverFolder) { showToast('폴더 생성에 실패했습니다.'); return; }
         var newFolder = {
-          id: generateFolderId(),
-          name: '새 폴더',
-          createdAt: new Date().toISOString(),
+          id: 'cf_' + serverFolder.id,
+          serverId: serverFolder.id,
+          name: serverFolder.name,
+          createdAt: serverFolder.created_at,
+          sortOrder: serverFolder.sort_order,
           items: []
         };
         customFolders.push(newFolder);
         updateAdminPanel();
-        // Start editing the new folder name
         setTimeout(function() {
           var nameEl = document.querySelector('[data-folder-id="' + newFolder.id + '"] .semester-folder-name');
           if (nameEl) startFolderNameEdit(nameEl, newFolder.id);
@@ -7446,7 +7581,12 @@
         if (m) m.remove();
       }
 
-      function executeDeleteFolders() {
+      async function executeDeleteFolders() {
+        // v4.2.2: 서버에서도 삭제
+        for (var cid of checkedFolderIds) {
+          var folder = customFolders.find(function(f) { return f.id === cid; });
+          if (folder && folder.serverId) await deleteFolderOnServer(folder.serverId);
+        }
         customFolders = customFolders.filter(function(f) {
           return !checkedFolderIds.has(f.id);
         });
@@ -7458,10 +7598,16 @@
       }
 
       function toggleFolderSort() {
-        var dropdown = document.getElementById('folderSortDropdown');
-        if (dropdown) {
-          dropdown.classList.toggle('open');
-        }
+        var dd = document.getElementById('folderSortDropdown');
+        if (!dd) return;
+        if (dd.classList.contains('open')) { dd.classList.remove('open'); return; }
+        // v4.2.2: position:fixed 기준으로 버튼 아래에 드롭다운 배치
+        var btn = event.currentTarget || event.target;
+        var rect = btn.getBoundingClientRect();
+        dd.style.left = rect.left + 'px';
+        dd.style.top = (rect.bottom + 4) + 'px';
+        dd.style.width = rect.width + 'px';
+        dd.classList.add('open');
       }
 
       function setFolderSort(key) {
@@ -7522,6 +7668,7 @@
           var trimmed = lines.map(function(l) { return l.trim(); }).filter(function(l) { return l; });
           var newName = trimmed.join('<br>') || '새 폴더';
           folder.name = newName;
+          if (folder.serverId) updateFolderOnServer(folder.serverId, { name: newName });
           updateAdminPanel();
         }
 
@@ -7704,8 +7851,8 @@
             folderHtml += '<button class="folder-mgmt-btn' + (folderDeleteMode ? ' delete-mode' : '') + '" onclick="toggleFolderDeleteMode()">' +
               (folderDeleteMode ? '✕ 취소' : '🗑️ 폴더 삭제') + '</button>';
           }
-          folderHtml += '<div style="position:relative;display:inline-block;">';
-          folderHtml += '<button class="folder-mgmt-btn" onclick="toggleFolderSort()">⇅ 정렬</button>';
+          folderHtml += '<div style="position:relative;flex:1;display:flex;">';
+          folderHtml += '<button class="folder-mgmt-btn" style="width:100%;" onclick="toggleFolderSort()">⇅ 정렬</button>';
           // Sort dropdown
           var sortOptions = [
             {key:'name', label:'이름순'},
@@ -7723,6 +7870,8 @@
           folderHtml += '</div>';
 
           list.innerHTML = folderHtml;
+          // v4.2.2: DB 사용량 표시
+          renderDbUsageIndicator(list);
           updateLetterSelect();
           return;
         }
@@ -8319,7 +8468,16 @@
         });
 
         // Close dropdown when clicking outside
-        document.addEventListener('click', function (e) {
+        // v4.2.2: 정렬 드롭다운 외부 클릭 시 닫기
+      document.addEventListener('click', function(e) {
+        var dd = document.getElementById('folderSortDropdown');
+        if (dd && dd.classList.contains('open')) {
+          if (!dd.contains(e.target) && !e.target.textContent.includes('정렬')) {
+            dd.classList.remove('open');
+          }
+        }
+      });
+      document.addEventListener('click', function (e) {
           if (!input.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.classList.remove('show');
           }
@@ -9185,6 +9343,20 @@
         else updateDeadlineInfo('main');
       }
 
+      // v4.2.2: 관리자 날짜 한 자리 → 두 자리 보정 (blur 시)
+      (function() {
+        var dlDateIds = [
+          'dlStartMonth','dlStartDay','dlEndMonth','dlEndDay',
+          'dlTempStartMonth','dlTempStartDay','dlTempEndMonth','dlTempEndDay'
+        ];
+        document.addEventListener('focusout', function(e) {
+          if (dlDateIds.indexOf(e.target.id) !== -1) {
+            var v = e.target.value.replace(/[^0-9]/g, '');
+            if (v.length === 1) e.target.value = '0' + v;
+          }
+        });
+      })();
+
       function setDateFields(type, dateStr) {
         // dateStr = "YYYY-MM-DD", type = "start"/"end"/"tempStart"/"tempEnd"
         var fields = dlDateFieldMap[type]; if (!fields) return;
@@ -9353,7 +9525,31 @@
         calendarMonth = now.getMonth();
         renderCalendar();
         cal.classList.add('show');
+        // v4.2.2: position:fixed 좌표 계산
+        var wrapId = { start: 'dlStartWrap', end: 'dlEndWrap', tempStart: 'dlTempStartWrap', tempEnd: 'dlTempEndWrap' }[type];
+        var wrapEl = document.getElementById(wrapId);
+        if (wrapEl) {
+          var wr = wrapEl.getBoundingClientRect();
+          cal.style.left = wr.left + 'px';
+          cal.style.top = (wr.bottom + 4) + 'px';
+          var calH = cal.offsetHeight || 300;
+          if (wr.bottom + 4 + calH > window.innerHeight) {
+            cal.style.top = Math.max(8, wr.top - calH - 4) + 'px';
+          }
+          var calW = cal.offsetWidth || 260;
+          if (parseFloat(cal.style.left) + calW > window.innerWidth) {
+            cal.style.left = Math.max(4, window.innerWidth - calW - 8) + 'px';
+          }
+        }
       }
+
+      // v4.2.2: 스크롤/리사이즈 시 달력 닫기
+      window.addEventListener('scroll', function() {
+        document.querySelectorAll('.dl-calendar.show').forEach(function(c) { c.classList.remove('show'); });
+      }, true);
+      window.addEventListener('resize', function() {
+        document.querySelectorAll('.dl-calendar.show').forEach(function(c) { c.classList.remove('show'); });
+      });
 
       function renderCalendar() {
         if (!activeCalendar) return;
@@ -9925,6 +10121,18 @@
               this.blur();
             }
           }
+          updateBirthdate();
+        });
+
+        // v4.2.2: 생년월일 한 자리 → 두 자리 보정 (blur 시)
+        newBM.addEventListener('blur', function() {
+          var v = this.value.replace(/[^0-9]/g, '');
+          if (v.length === 1) this.value = '0' + v;
+          updateBirthdate();
+        });
+        newBD.addEventListener('blur', function() {
+          var v = this.value.replace(/[^0-9]/g, '');
+          if (v.length === 1) this.value = '0' + v;
           updateBirthdate();
         });
       }
