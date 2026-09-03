@@ -1640,7 +1640,7 @@
         margin-bottom: 0;
         justify-content: center;
         gap: 32px;
-        padding: 0 32px;
+        padding: 0;
       }
       .landing-btn {
         display: flex;
@@ -3010,33 +3010,40 @@
         background: rgba(255, 59, 48, 0.22) !important;
       }
 
-      /* Sort dropdown */
-      .folder-sort-dropdown {
-        position: fixed;
-        z-index: 100000;
+      /* Sort expand-up button */
+      .folder-sort-wrap {
+        position: relative;
+        flex: 1;
+        display: flex;
+      }
+      .folder-sort-wrap .folder-mgmt-btn {
+        width: 100%;
+      }
+      .folder-sort-options {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 10px 10px 0 0;
         background: rgba(255, 255, 255, 0.92);
         backdrop-filter: blur(24px) saturate(200%);
         -webkit-backdrop-filter: blur(24px) saturate(200%);
         border: 1px solid rgba(200, 210, 230, 0.4);
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-        padding: 6px;
-        min-width: 160px;
-        display: none;
-        animation: sortDropIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border-bottom: none;
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
       }
-      @keyframes sortDropIn {
-        from { opacity: 0; transform: translateY(-6px) scale(0.95); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
+      .folder-sort-options.open {
+        max-height: 200px;
       }
-      body.dark-mode .folder-sort-dropdown {
+      body.dark-mode .folder-sort-options {
         background: rgba(40, 40, 50, 0.92);
         border-color: rgba(100, 110, 130, 0.3);
       }
-      .folder-sort-dropdown.open { display: block; }
       .folder-sort-option {
         padding: 8px 12px;
-        border-radius: 8px;
         font-size: 12px;
         color: var(--text-primary);
         cursor: pointer;
@@ -3045,6 +3052,9 @@
         justify-content: space-between;
         transition: background 0.15s ease;
         white-space: nowrap;
+      }
+      .folder-sort-option:first-child {
+        border-radius: 10px 10px 0 0;
       }
       .folder-sort-option:hover {
         background: rgba(0, 113, 227, 0.08);
@@ -3790,7 +3800,7 @@
           flex-direction: row;
           justify-content: center;
           gap: 16px;
-          padding: 0 16px;
+          padding: 0;
         }
         .landing-btn {
           flex: 1;
@@ -7621,35 +7631,9 @@
       }
 
       function toggleFolderSort() {
-        var dd = document.getElementById('folderSortDropdown');
-        // 이미 열려있으면 닫기
-        if (dd && dd.classList.contains('open')) { dd.classList.remove('open'); return; }
-        // 기존 드롭다운 제거 후 새로 생성 (항상 최신 상태 반영, 중복 방지)
-        if (dd) dd.remove();
-        var sortOptions = [
-          {key:'name', label:'이름순'},
-          {key:'created', label:'생성일순'},
-          {key:'size', label:'크기순'}
-        ];
-        dd = document.createElement('div');
-        dd.className = 'folder-sort-dropdown';
-        dd.id = 'folderSortDropdown';
-        dd.onmouseleave = function() { dd.classList.remove('open'); };
-        var html = '';
-        sortOptions.forEach(function(opt) {
-          var isActive = folderSortKey === opt.key;
-          var arrow = isActive ? (folderSortDir === 'asc' ? '↑' : '↓') : '';
-          html += '<div class="folder-sort-option ' + (isActive ? 'active' : '') + '" onclick="setFolderSort(\'' + opt.key + '\')">' +
-            opt.label + '<span class="sort-arrow">' + arrow + '</span></div>';
-        });
-        dd.innerHTML = html;
-        document.body.appendChild(dd);
-        var btn = event.currentTarget || event.target;
-        var rect = btn.getBoundingClientRect();
-        dd.style.left = rect.left + 'px';
-        dd.style.top = (rect.bottom + 4) + 'px';
-        dd.style.width = Math.max(rect.width, 140) + 'px';
-        dd.classList.add('open');
+        var opts = document.getElementById('folderSortOptions');
+        if (!opts) return;
+        opts.classList.toggle('open');
       }
 
       function setFolderSort(key) {
@@ -7661,17 +7645,15 @@
         }
         sortCustomFolders();
         updateAdminPanel();
-        // 드롭다운 닫기 (정렬 적용 후)
-        var dd = document.getElementById('folderSortDropdown');
-        if (dd) dd.remove();
       }
 
-      // v4.2.2: 정렬 드롭다운 외부 클릭 시 닫기
+      // v4.2.2: 정렬 옵션 외부 클릭 시 닫기
       document.addEventListener('click', function(e) {
-        var dd = document.getElementById('folderSortDropdown');
-        if (dd && dd.classList.contains('open')) {
-          if (!dd.contains(e.target) && !e.target.textContent.includes('정렬')) {
-            dd.classList.remove('open');
+        var opts = document.getElementById('folderSortOptions');
+        if (opts && opts.classList.contains('open')) {
+          var wrap = document.getElementById('folderSortWrap');
+          if (wrap && !wrap.contains(e.target)) {
+            opts.classList.remove('open');
           }
         }
       });
@@ -7900,8 +7882,16 @@
             folderHtml += '<button class="folder-mgmt-btn' + (folderDeleteMode ? ' delete-mode' : '') + '" onclick="toggleFolderDeleteMode()">' +
               (folderDeleteMode ? '✕ 취소' : '🗑️ 폴더 삭제') + '</button>';
           }
-          folderHtml += '<div style="position:relative;flex:1;display:flex;">';
-          folderHtml += '<button class="folder-mgmt-btn" style="width:100%;" onclick="toggleFolderSort()">⇅ 정렬</button>';
+          folderHtml += '<div class="folder-sort-wrap" id="folderSortWrap">';
+          var sortOpts = [{key:'name',label:'이름순'},{key:'created',label:'생성일순'},{key:'size',label:'크기순'}];
+          folderHtml += '<div class="folder-sort-options" id="folderSortOptions">';
+          sortOpts.forEach(function(opt) {
+            var isActive = folderSortKey === opt.key;
+            var arrow = isActive ? (folderSortDir === 'asc' ? '↑' : '↓') : '';
+            folderHtml += '<div class="folder-sort-option' + (isActive ? ' active' : '') + '" onclick="setFolderSort(\'' + opt.key + '\')">' + opt.label + '<span class="sort-arrow">' + arrow + '</span></div>';
+          });
+          folderHtml += '</div>';
+          folderHtml += '<button class="folder-mgmt-btn" style="width:100%;border-radius:0 0 10px 10px;position:relative;z-index:1;" onclick="toggleFolderSort()">⇅ 정렬</button>';
           folderHtml += '</div>';
           folderHtml += '</div>';
 
