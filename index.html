@@ -1689,8 +1689,8 @@
 
       /* v4.2.6: 이어서 작성하기 — 테두리만 3배 두껍게 + 회전 그라데이션 */
       @keyframes borderRotate {
-        0%   { --border-angle: 0deg; }
-        100% { --border-angle: 360deg; }
+        0%   { --border-angle: 360deg; }
+        100% { --border-angle: 0deg; }
       }
       @property --border-angle {
         syntax: '<angle>';
@@ -2079,6 +2079,35 @@
       }
       .admin-panel.open {
         right: 0;
+      }
+
+      /* v4.2.7: 관리자 창 스크롤바 — 리퀴드 글라스 */
+      .admin-panel::-webkit-scrollbar {
+        width: 6px;
+      }
+      .admin-panel::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .admin-panel::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, rgba(120,180,255,0.35), rgba(80,140,220,0.25));
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.18);
+        box-shadow: 0 0 4px rgba(100,160,240,0.15) inset;
+      }
+      .admin-panel::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, rgba(120,180,255,0.5), rgba(80,140,220,0.4));
+      }
+      body.dark-mode .admin-panel::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, rgba(100,160,240,0.3), rgba(60,120,200,0.2));
+        border-color: rgba(255,255,255,0.08);
+      }
+      body.dark-mode .admin-panel::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, rgba(100,160,240,0.45), rgba(60,120,200,0.35));
+      }
+      /* Firefox scrollbar */
+      .admin-panel {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(120,180,255,0.35) transparent;
       }
 
       .admin-panel h3 {
@@ -2999,7 +3028,7 @@
         gap: 8px;
         margin-top: 16px;
         padding-top: 12px;
-        margin-bottom: 140px; /* v4.2.3: 정렬 세부창 확장 시 잘림 방지 고정 여백 */
+        margin-bottom: 24px;
         align-items: flex-start;
       }
       .folder-mgmt-btn {
@@ -3052,7 +3081,7 @@
         display: flex;
         flex-direction: column;
         border-radius: 12px;
-        overflow: hidden;
+        overflow: visible;
         border: 1px solid rgba(200, 210, 230, 0.4);
         background: rgba(255, 255, 255, 0.18);
         backdrop-filter: blur(16px) saturate(180%);
@@ -3060,6 +3089,7 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0.5px 0 rgba(255,255,255,0.5) inset, 0 -0.5px 0 rgba(0,0,0,0.04) inset;
         transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         cursor: pointer;
+        position: relative;
       }
       .folder-sort-wrap:not(.sort-open):hover {
         background: rgba(255, 255, 255, 0.32);
@@ -3078,6 +3108,7 @@
         transform: none;
         box-shadow: 0 2px 12px rgba(0,113,227,0.08);
         cursor: default;
+        border-radius: 12px 12px 0 0;
       }
       body.dark-mode .folder-sort-wrap.sort-open {
         background: rgba(74, 158, 255, 0.10);
@@ -3109,6 +3140,27 @@
         transition:
           max-height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4),
           opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        right: -1px;
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        border: 1px solid rgba(200, 210, 230, 0.4);
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+      }
+      body.dark-mode .folder-sort-options {
+        background: rgba(30, 38, 48, 0.9);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      .sort-open .folder-sort-options {
+        border-color: rgba(0, 113, 227, 0.25);
+      }
+      body.dark-mode .sort-open .folder-sort-options {
+        border-color: rgba(74, 158, 255, 0.25);
       }
       .folder-sort-options.open {
         max-height: 200px;
@@ -3145,7 +3197,7 @@
       .folder-delete-check {
         position: absolute;
         top: 4px;
-        right: 2px;
+        right: 0px;
         width: 22px;
         height: 22px;
         border-radius: 50%;
@@ -3174,7 +3226,7 @@
       .folder-lock-icon {
         position: absolute;
         top: 4px;
-        right: 2px;
+        right: 0px;
         width: 24px;
         height: 29.5px;
         display: none;
@@ -3452,6 +3504,20 @@
       }
       .semester-folder:active {
         transform: scale(0.96);
+      }
+      /* v4.2.7: 삭제 모드에서 호버/active 비활성화 */
+      .semester-folders.delete-mode .semester-folder:hover {
+        background: transparent;
+      }
+      .semester-folders.delete-mode .semester-folder.folder-empty:hover .semester-folder-icon svg,
+      .semester-folders.delete-mode .semester-folder.folder-has:hover .folder-docs {
+        transform: none;
+      }
+      .semester-folders.delete-mode .semester-folder:active {
+        transform: none;
+      }
+      .semester-folders.delete-mode .semester-folder {
+        cursor: default;
       }
       /* macOS Finder folder icon — SVG 인라인 방식 */
       .semester-folder-icon {
@@ -4066,7 +4132,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.2.6";
+      window.APP_VERSION = "4.2.7";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -7793,10 +7859,16 @@
 
       // v4.2.6: 자물쇠 클릭 시 좌우 진동
       function shakeLockIcon(el) {
+        if (!el) return;
         el.classList.remove('shake');
         void el.offsetWidth;
         el.classList.add('shake');
         el.addEventListener('animationend', function() { el.classList.remove('shake'); }, { once: true });
+      }
+      // v4.2.7: 폴더 아이콘 클릭 → 부모의 자물쇠 진동
+      function shakeParentLock(iconEl) {
+        var folder = iconEl.closest('.semester-folder');
+        if (folder) shakeLockIcon(folder.querySelector('.folder-lock-icon'));
       }
 
       function toggleFolderCheck(folderId, e) {
@@ -8272,6 +8344,7 @@
       }
 
       function selectSemesterFolder(year, semester) {
+        if (folderDeleteMode) return;
         if (year === null) {
           currentSemesterFolder = null;
         } else {
@@ -8303,7 +8376,7 @@
 
         // STATE 1: No folder selected → show only folders (v4.2.0: + custom folders + mgmt buttons)
         if (!currentSemesterFolder && !selectedCustomFolder) {
-          var folderHtml = '<div class="semester-folders">';
+          var folderHtml = '<div class="semester-folders' + (folderDeleteMode ? ' delete-mode' : '') + '">';
           // Semester folders
           groups.forEach(function(g) {
             var hasDocs = g.responses.length > 0;
@@ -8335,7 +8408,7 @@
               return '<path d="' + d + '" fill="rgba(20,70,120,0.55)"/>' +
                 '<circle cx="' + cx + '" cy="' + cy + '" r="' + holeR + '" fill="#7DCBEA"/>';
             })();
-            folderHtml += '<div class="semester-folder-icon" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">' +
+            folderHtml += '<div class="semester-folder-icon" onclick="' + (folderDeleteMode ? 'shakeParentLock(this)' : 'selectSemesterFolder(' + g.year + ',' + g.semester + ')') + '">' +
               '<svg viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg">' +
               '<path class="folder-tab-shape" d="M1 14 L1 8 C1 6 2.5 5 4.5 5 L20 5 C22 5 23 6 24 7.5 L27.5 14 Z" fill="#5EB2DE"/>' +
               '<rect class="folder-back-shape" x="1" y="10" width="62" height="20" rx="4" ry="4" fill="#5EB2DE"/>' +
