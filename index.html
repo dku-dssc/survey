@@ -1636,10 +1636,10 @@
       /* ===== Landing Page Buttons ===== */
       .landing-buttons {
         display: flex;
-        gap: 0;
         margin-top: 32px;
-        justify-content: space-evenly;
-        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+        padding: 0 32px;
       }
       .landing-btn {
         display: flex;
@@ -1647,7 +1647,8 @@
         align-items: center;
         justify-content: center;
         gap: 12px;
-        width: 220px;
+        flex: 1;
+        max-width: 240px;
         height: 160px;
         border-radius: var(--radius-lg);
         border: 1px solid rgba(255, 255, 255, 0.38);
@@ -3786,11 +3787,12 @@
         }
         .landing-buttons {
           flex-direction: row;
-          justify-content: space-evenly;
-          gap: 0;
+          justify-content: center;
+          gap: 16px;
+          padding: 0 16px;
         }
         .landing-btn {
-          width: calc(45% - 6px);
+          flex: 1;
           max-width: 160px;
           height: 140px;
           padding: 12px 8px;
@@ -7348,7 +7350,7 @@
         }
       }
 
-      async // v4.2.2: DB 사용량 표시 렌더링 함수
+      // v4.2.2: DB 사용량 표시 렌더링 함수
       function renderDbUsageIndicator(container) {
         // 기존 indicator 있으면 제거
         var old = document.getElementById('dbUsageIndicator');
@@ -7626,6 +7628,16 @@
           if (dd) dd.classList.add('open');
         }, 10);
       }
+
+      // v4.2.2: 정렬 드롭다운 외부 클릭 시 닫기
+      document.addEventListener('click', function(e) {
+        var dd = document.getElementById('folderSortDropdown');
+        if (dd && dd.classList.contains('open')) {
+          if (!dd.contains(e.target) && !e.target.textContent.includes('정렬')) {
+            dd.classList.remove('open');
+          }
+        }
+      });
 
       function sortCustomFolders() {
         var dir = folderSortDir === 'asc' ? 1 : -1;
@@ -8468,16 +8480,7 @@
         });
 
         // Close dropdown when clicking outside
-        // v4.2.2: 정렬 드롭다운 외부 클릭 시 닫기
-      document.addEventListener('click', function(e) {
-        var dd = document.getElementById('folderSortDropdown');
-        if (dd && dd.classList.contains('open')) {
-          if (!dd.contains(e.target) && !e.target.textContent.includes('정렬')) {
-            dd.classList.remove('open');
-          }
-        }
-      });
-      document.addEventListener('click', function (e) {
+        document.addEventListener('click', function (e) {
           if (!input.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.classList.remove('show');
           }
