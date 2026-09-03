@@ -7467,13 +7467,19 @@
       async function createFolderOnServer(name) {
         try {
           var token = sessionStorage.getItem('adminToken');
+          if (!token) { console.error('폴더 생성: 토큰 없음'); return null; }
           var resp = await fetch(API_BASE + '/api/admin/folders', {
             method: 'POST',
             headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: name })
           });
-          if (!resp.ok) return null;
+          if (!resp.ok) {
+            var errText = await resp.text();
+            console.error('폴더 생성 API 에러:', resp.status, errText);
+            return null;
+          }
           var data = await resp.json();
+          console.log('폴더 생성 응답:', JSON.stringify(data));
           return data.folder || null;
         } catch(e) { console.error('폴더 생성 실패:', e); return null; }
       }
@@ -7507,14 +7513,18 @@
       async function fetchDbSize() {
         try {
           var token = sessionStorage.getItem('adminToken');
-          if (!token) return null;
+          if (!token) { console.error('DB사용량: 토큰 없음'); return null; }
           var resp = await fetch(API_BASE + '/api/admin/db-size', {
             headers: { 'Authorization': 'Bearer ' + token }
           });
-          if (!resp.ok) return null;
+          if (!resp.ok) {
+            var errText = await resp.text();
+            console.error('DB사용량 API 에러:', resp.status, errText);
+            return null;
+          }
           var data = await resp.json();
           return data;
-        } catch(e) { return null; }
+        } catch(e) { console.error('DB사용량 조회 실패:', e); return null; }
       }
       var folderDeleteMode = false;
       var folderSortKey = 'name'; // 'name', 'created', 'size'
