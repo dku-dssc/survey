@@ -2928,14 +2928,15 @@
         width: 100%;
         border-collapse: separate;
         border-spacing: 3px;
-        font-size: 12px;
+        font-size: 11.5px;
         margin-top: 10px;
         border-radius: 10px;
         overflow: hidden;
+        table-layout: fixed;
       }
       .mapping-display-table th,
       .mapping-display-table td {
-        padding: 6px 6px;
+        padding: 6px 7px;
         text-align: center;
         border: none;
         white-space: normal;
@@ -2946,14 +2947,14 @@
         background: rgba(33,115,70,0.13);
         color: #217346;
         font-weight: 600;
-        font-size: 11px;
-        padding: 4px 6px;
+        font-size: 10.5px;
+        padding: 4px 5px;
         border-radius: 6px;
       }
       .mapping-display-table td {
         background: rgba(255,255,255,0.12);
         color: var(--text-primary);
-        font-size: 11px;
+        font-size: 10.5px;
         font-weight: 500;
         border-radius: 6px;
       }
@@ -3011,25 +3012,61 @@
         background: rgba(255, 59, 48, 0.22) !important;
       }
 
-      /* Sort expand-down button (v4.2.3: 버튼 자체가 확장되는 인라인 방식) */
+      /* Sort expand-down button (v4.2.4: 버튼+옵션 하나로 통합, 2단계 닫기) */
       .folder-sort-wrap {
         flex: 1;
         display: flex;
         flex-direction: column;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(200, 210, 230, 0.4);
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0.5px 0 rgba(255,255,255,0.5) inset, 0 -0.5px 0 rgba(0,0,0,0.04) inset;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: pointer;
+      }
+      .folder-sort-wrap:not(.sort-open):hover {
+        background: rgba(255, 255, 255, 0.32);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.08), 0 0.5px 0 rgba(255,255,255,0.6) inset, 0 -0.5px 0 rgba(0,0,0,0.04) inset;
+      }
+      .folder-sort-wrap:not(.sort-open):active { transform: scale(0.97) translateY(0); transition-duration: 0.1s; }
+      body.dark-mode .folder-sort-wrap {
+        background: rgba(255,255,255,0.06);
+        border-color: rgba(255,255,255,0.1);
+      }
+      body.dark-mode .folder-sort-wrap:not(.sort-open):hover { background: rgba(255,255,255,0.12); }
+      .folder-sort-wrap.sort-open {
+        background: rgba(0, 113, 227, 0.06);
+        border-color: rgba(0, 113, 227, 0.25);
+        transform: none;
+        box-shadow: 0 2px 12px rgba(0,113,227,0.08);
+        cursor: default;
+      }
+      body.dark-mode .folder-sort-wrap.sort-open {
+        background: rgba(74, 158, 255, 0.10);
+        border-color: rgba(74, 158, 255, 0.25);
       }
       .folder-sort-trigger {
-        border-radius: 12px !important;
-        transition: border-radius 0.2s ease;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 9px 0;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-primary);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        transition: none;
+        width: 100%;
       }
-      .folder-sort-wrap.sort-open .folder-sort-trigger {
-        border-radius: 12px 12px 0 0 !important;
-        background: rgba(0, 113, 227, 0.10);
-        border-color: rgba(0, 113, 227, 0.3);
-      }
-      body.dark-mode .folder-sort-wrap.sort-open .folder-sort-trigger {
-        background: rgba(74, 158, 255, 0.15);
-        border-color: rgba(74, 158, 255, 0.3);
-      }
+      .folder-sort-trigger:hover { transform: none !important; background: transparent !important; }
       .folder-sort-options {
         overflow: hidden;
         max-height: 0;
@@ -3038,21 +3075,10 @@
         transition:
           max-height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4),
           opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-        border-radius: 0 0 12px 12px;
-        background: rgba(255, 255, 255, 0.92);
-        backdrop-filter: blur(24px) saturate(200%);
-        -webkit-backdrop-filter: blur(24px) saturate(200%);
-        border: 1px solid rgba(200, 210, 230, 0.4);
-        border-top: none;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       }
       .folder-sort-options.open {
         max-height: 200px;
         opacity: 1;
-      }
-      body.dark-mode .folder-sort-options {
-        background: rgba(40, 40, 50, 0.92);
-        border-color: rgba(100, 110, 130, 0.3);
       }
       .folder-sort-option {
         padding: 9px 14px;
@@ -3231,6 +3257,7 @@
         flex-wrap: wrap;
       }
       .folder-file-btn {
+        flex: 1;
         padding: 8px 14px;
         border-radius: 10px;
         border: 1px solid rgba(200, 210, 230, 0.4);
@@ -3244,6 +3271,7 @@
         transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 5px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       }
@@ -3979,7 +4007,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.2.3";
+      window.APP_VERSION = "4.2.4";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -4161,7 +4189,7 @@
             </div>
           </div>
           <div class="landing-buttons">
-            <button class="landing-btn" onclick="startNewSurvey()">
+            <button class="landing-btn" id="landingNewSurveyBtn" onclick="startNewSurvey()">
               <span class="landing-btn-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1164b1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
               <span class="landing-btn-label">신규 응답 작성</span>
               <span class="landing-btn-desc">새로운 설문을 작성합니다</span>
@@ -6994,7 +7022,7 @@
       }
 
       // ===== Admin Panel =====
-      // v4.2.3: 폴더 정렬은 mouseleave로 닫힘 (toggleFolderSort 부근 참조)
+      // v4.2.4: 폴더 정렬 2단계 닫기 로직 (toggleFolderSort 부근 참조)
 
       function toggleAdmin() {
         if (_loginInProgress) return;  // 로그인 진행 중에는 토글 무시
@@ -7750,6 +7778,9 @@
         showToast('폴더가 삭제되었습니다.');
       }
 
+      // v4.2.4: 2단계 정렬 닫기 로직
+      var sortOptionClicked = false; // Phase 2 전환 플래그
+
       function toggleFolderSort() {
         var opts = document.getElementById('folderSortOptions');
         var wrap = document.getElementById('folderSortWrap');
@@ -7757,7 +7788,7 @@
         var isOpen = opts.classList.toggle('open');
         wrap.classList.toggle('sort-open', isOpen);
         if (isOpen) {
-          // v4.2.3: 열릴 때 스크롤하여 옵션이 보이도록
+          sortOptionClicked = false; // Phase 1 시작
           setTimeout(function() {
             var panel = document.querySelector('.admin-panel');
             if (panel) {
@@ -7768,18 +7799,49 @@
               }
             }
           }, 50);
+        } else {
+          sortOptionClicked = false;
         }
       }
 
-      // v4.2.3: 마우스가 정렬 영역 밖으로 나가면 자동 닫힘
-      document.addEventListener('mouseover', function(e) {
+      function closeFolderSortPanel() {
+        var opts = document.getElementById('folderSortOptions');
+        var wrap = document.getElementById('folderSortWrap');
+        if (!opts || !wrap) return;
+        opts.classList.remove('open');
+        wrap.classList.remove('sort-open');
+        sortOptionClicked = false;
+      }
+
+      // Phase 1: ESC 또는 바깥 클릭으로 닫힘
+      // Phase 2: ESC/바깥클릭 시 닫히지만, 마우스가 영역 안이면 유지
+      document.addEventListener('click', function(e) {
         var wrap = document.getElementById('folderSortWrap');
         if (!wrap) return;
         var opts = document.getElementById('folderSortOptions');
         if (!opts || !opts.classList.contains('open')) return;
         if (!wrap.contains(e.target)) {
-          opts.classList.remove('open');
-          wrap.classList.remove('sort-open');
+          // 바깥 클릭 — Phase 1이든 2든 닫힘
+          closeFolderSortPanel();
+        }
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          var opts = document.getElementById('folderSortOptions');
+          if (opts && opts.classList.contains('open')) {
+            closeFolderSortPanel();
+          }
+        }
+      });
+      // Phase 2: 옵션 클릭 후 마우스가 영역 밖으로 나가면 닫힘
+      document.addEventListener('mouseover', function(e) {
+        if (!sortOptionClicked) return; // Phase 1에서는 mouseleave 무시
+        var wrap = document.getElementById('folderSortWrap');
+        if (!wrap) return;
+        var opts = document.getElementById('folderSortOptions');
+        if (!opts || !opts.classList.contains('open')) return;
+        if (!wrap.contains(e.target)) {
+          closeFolderSortPanel();
         }
       });
 
@@ -7791,7 +7853,8 @@
           folderSortDir = 'asc';
         }
         sortCustomFolders();
-        // v4.2.3: 옵션 클릭해도 닫지 않음 — 마우스가 밖으로 나가면 닫힘
+        // v4.2.4: Phase 2 전환 — 이후 마우스가 밖으로 나가면 닫힘
+        sortOptionClicked = true;
         // 정렬 옵션 UI만 갱신 (전체 패널 리렌더 방지)
         var optsContainer = document.getElementById('folderSortOptions');
         if (optsContainer) {
@@ -7812,7 +7875,7 @@
         }
       }
 
-      // v4.2.3: 정렬 옵션은 mouseleave로 닫힘 (toggleFolderSort 부근에 구현)
+      // v4.2.4: 정렬 2단계 닫기 — toggleFolderSort 부근에 구현
 
       function sortCustomFolders() {
         var dir = folderSortDir === 'asc' ? 1 : -1;
@@ -8191,24 +8254,41 @@
             var folderClass = 'semester-folder ' + (hasDocs ? 'folder-has' : 'folder-empty');
             folderHtml += '<div class="' + folderClass + '">';
             var docsSvg = hasDocs ? '<rect class="folder-docs" x="6" y="12" width="52" height="7" rx="1.5" fill="white"/>' : '';
-            // v4.2.3: 시스템 폴더에 톱니바퀴 아이콘 추가
+            // v4.2.4: 세련된 시스템 폴더 톱니바퀴 아이콘
             var gearSvg = (function() {
-              // 6개 톱니 기어 아이콘을 폴더 전면(#7DCBEA) 중앙에 배치
-              var cx = 32, cy = 34, teeth = 6, outerR = 8, innerR = 6, holeR = 3;
+              // 8개 톱니 — iOS 스타일 둥근 기어, 폴더 전면(#7DCBEA) 중앙
+              var cx = 32, cy = 34, teeth = 8, outerR = 9.5, bodyR = 7, holeR = 3, toothW = 2.8;
               var d = '';
               for (var t = 0; t < teeth; t++) {
-                var a1 = (Math.PI * 2 / teeth) * t - Math.PI / 2;
-                var a2 = a1 + Math.PI * 2 / teeth * 0.35;
-                var a3 = a1 + Math.PI * 2 / teeth * 0.5;
-                var a4 = a1 + Math.PI * 2 / teeth * 0.65;
-                d += (t===0?'M':'L') + (cx+outerR*Math.cos(a1)).toFixed(1) + ',' + (cy+outerR*Math.sin(a1)).toFixed(1);
-                d += 'L' + (cx+outerR*Math.cos(a2)).toFixed(1) + ',' + (cy+outerR*Math.sin(a2)).toFixed(1);
-                d += 'L' + (cx+innerR*Math.cos(a3)).toFixed(1) + ',' + (cy+innerR*Math.sin(a3)).toFixed(1);
-                d += 'L' + (cx+outerR*Math.cos(a4)).toFixed(1) + ',' + (cy+outerR*Math.sin(a4)).toFixed(1);
+                var aCenter = (Math.PI * 2 / teeth) * t - Math.PI / 2;
+                var halfTooth = toothW / (2 * outerR);
+                // Outer tooth corners (rounded via arcs)
+                var a_o1 = aCenter - halfTooth;
+                var a_o2 = aCenter + halfTooth;
+                // Inner body between teeth
+                var aNext = aCenter + Math.PI * 2 / teeth;
+                var a_b1 = aCenter + halfTooth + 0.06;
+                var a_b2 = aNext - halfTooth - 0.06;
+                if (t === 0) {
+                  d += 'M' + (cx + outerR * Math.cos(a_o1)).toFixed(2) + ',' + (cy + outerR * Math.sin(a_o1)).toFixed(2);
+                }
+                // Tooth outer edge
+                d += 'A' + outerR + ',' + outerR + ' 0 0,1 ' + (cx + outerR * Math.cos(a_o2)).toFixed(2) + ',' + (cy + outerR * Math.sin(a_o2)).toFixed(2);
+                // Down to body radius
+                d += 'L' + (cx + bodyR * Math.cos(a_b1)).toFixed(2) + ',' + (cy + bodyR * Math.sin(a_b1)).toFixed(2);
+                // Body arc between teeth
+                d += 'A' + bodyR + ',' + bodyR + ' 0 0,1 ' + (cx + bodyR * Math.cos(a_b2)).toFixed(2) + ',' + (cy + bodyR * Math.sin(a_b2)).toFixed(2);
+                // Up to next tooth
+                var nextA_o1 = aNext - halfTooth;
+                d += 'L' + (cx + outerR * Math.cos(nextA_o1)).toFixed(2) + ',' + (cy + outerR * Math.sin(nextA_o1)).toFixed(2);
               }
               d += 'Z';
-              return '<path d="' + d + '" fill="white" opacity="0.5"/>' +
-                '<circle cx="' + cx + '" cy="' + cy + '" r="' + holeR + '" fill="#7DCBEA" opacity="0.7"/>';
+              return '<g>' +
+                '<path d="' + d + '" fill="rgba(255,255,255,0.85)" stroke="rgba(30,80,120,0.25)" stroke-width="0.5"/>' +
+                '<circle cx="' + cx + '" cy="' + cy + '" r="' + (holeR + 0.8) + '" fill="rgba(30,80,140,0.15)"/>' +
+                '<circle cx="' + cx + '" cy="' + cy + '" r="' + holeR + '" fill="#5EB2DE" stroke="rgba(255,255,255,0.6)" stroke-width="0.6"/>' +
+                '<circle cx="' + (cx - 0.5) + '" cy="' + (cy - 0.5) + '" r="1.2" fill="rgba(255,255,255,0.5)"/>' +
+                '</g>';
             })();
             folderHtml += '<div class="semester-folder-icon" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">' +
               '<svg viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg">' +
@@ -8259,7 +8339,7 @@
               (folderDeleteMode ? '✕ 취소' : '🗑️ 폴더 삭제') + '</button>';
           }
           folderHtml += '<div class="folder-sort-wrap" id="folderSortWrap">';
-          folderHtml += '<button class="folder-mgmt-btn folder-sort-trigger" style="width:100%;" onclick="toggleFolderSort()">⇅ 정렬</button>';
+          folderHtml += '<button class="folder-sort-trigger" onclick="toggleFolderSort()">⇅ 정렬</button>';
           var sortOpts = [{key:'name',label:'이름순'},{key:'created',label:'생성일순'},{key:'size',label:'크기순'}];
           folderHtml += '<div class="folder-sort-options" id="folderSortOptions">';
           sortOpts.forEach(function(opt) {
@@ -8290,7 +8370,7 @@
             // v4.2.3: 파일 관리 액션 버튼
             var cfActions = '<div class="folder-file-actions">';
             cfActions += '<button class="folder-file-btn" onclick="uploadFileToFolder(\'' + cf.id + '\')">📤 파일 업로드</button>';
-            cfActions += '<button class="folder-file-btn" onclick="importSurveyDataToFolder(\'' + cf.id + '\')">📋 설문 데이터 넣기</button>';
+            cfActions += '<button class="folder-file-btn" onclick="importSurveyDataToFolder(\'' + cf.id + '\')">📋 응답 데이터 가져오기</button>';
             cfActions += '</div>';
 
             // 파일 목록 (서버에서 로드)
@@ -9700,7 +9780,7 @@
           el.innerHTML = '<p style="font-size:12px;color:var(--text-tertiary);">매핑이 설정되지 않았습니다.</p>';
           return;
         }
-        var t = '<table class="mapping-display-table" style="table-layout:fixed;"><tr>';
+        var t = '<table class="mapping-display-table"><tr>';
         cols.forEach(function(c) { t += '<th>' + c + '열</th>'; });
         t += '</tr><tr>';
         cols.forEach(function(c) { t += '<td>' + (mappingLabels[columnMapping[c]] || columnMapping[c]) + '</td>'; });
@@ -10687,26 +10767,46 @@
           var draft = JSON.parse(saved);
           if (!draft || !draft.data || typeof draft.page !== 'number') return;
 
-          // 랜딩 페이지에서 '새로 작성하기' 클릭 시 복원 여부 물어봄
+          // v4.2.4: 랜딩 버튼 UI를 '이어서 작성하기'로 변경
+          var btn = document.getElementById('landingNewSurveyBtn');
+          if (btn) {
+            var savedDate = '';
+            if (draft.savedAt) {
+              try {
+                var d = new Date(draft.savedAt);
+                savedDate = d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0') + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+              } catch(e) {}
+            }
+            btn.innerHTML =
+              '<span class="landing-btn-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1164b1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#e8850c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-14px;margin-top:6px;width:22px;height:22px;"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>' +
+              '<span class="landing-btn-label">이어서 작성하기</span>' +
+              '<span class="landing-btn-desc">' + (savedDate ? savedDate + ' 저장됨' : '임시저장된 응답이 있습니다') + '</span>';
+            btn.style.borderColor = 'rgba(232, 133, 12, 0.35)';
+            btn.style.background = 'rgba(255, 240, 210, 0.15)';
+          }
+
+          // 클릭 시 바로 복원
           var _origStartNew = startNewSurvey;
           startNewSurvey = function() {
-            if (confirm('이전에 작성하던 설문이 있습니다. 이어서 작성하시겠습니까?\n\n취소를 누르면 새로 작성합니다.')) {
-              // Restore draft
-              _origStartNew();
-              Object.assign(formData, draft.data);
-              populateFormFromData(draft.data);
-              // Navigate to saved page
-              if (draft.page > 1) {
-                currentPage = draft.page;
-                showPage(draft.page);
-              }
-              showToast('이전에 저장한 설문을 불러왔습니다.');
-              // 복원 후 원래 함수로 복귀
-              startNewSurvey = _origStartNew;
-            } else {
-              localStorage.removeItem(DRAFT_KEY);
-              startNewSurvey = _origStartNew;
-              _origStartNew();
+            // Restore draft directly
+            _origStartNew();
+            Object.assign(formData, draft.data);
+            populateFormFromData(draft.data);
+            if (draft.page > 1) {
+              currentPage = draft.page;
+              showPage(draft.page);
+            }
+            showToast('이전에 저장한 설문을 불러왔습니다.');
+            startNewSurvey = _origStartNew;
+            // 버튼 원래대로 복원
+            var btn2 = document.getElementById('landingNewSurveyBtn');
+            if (btn2) {
+              btn2.innerHTML =
+                '<span class="landing-btn-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1164b1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>' +
+                '<span class="landing-btn-label">신규 응답 작성</span>' +
+                '<span class="landing-btn-desc">새로운 설문을 작성합니다</span>';
+              btn2.style.borderColor = '';
+              btn2.style.background = '';
             }
           };
         } catch(e) {
