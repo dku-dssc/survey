@@ -2965,6 +2965,7 @@
         gap: 8px;
         margin-top: 16px;
         padding-top: 12px;
+        margin-bottom: 140px; /* v4.2.3: 정렬 세부창 확장 시 잘림 방지 고정 여백 */
       }
       .folder-mgmt-btn {
         flex: 1;
@@ -3010,32 +3011,34 @@
         background: rgba(255, 59, 48, 0.22) !important;
       }
 
-      /* Sort expand-down button */
+      /* Sort expand-down button (v4.2.3: 버튼 자체가 확장되는 인라인 방식) */
       .folder-sort-wrap {
-        position: relative;
         flex: 1;
         display: flex;
+        flex-direction: column;
       }
       .folder-sort-trigger {
-        border-radius: 10px !important;
-        transition: border-radius 0.15s ease;
+        border-radius: 12px !important;
+        transition: border-radius 0.2s ease;
+      }
+      .folder-sort-wrap.sort-open .folder-sort-trigger {
+        border-radius: 12px 12px 0 0 !important;
+        background: rgba(0, 113, 227, 0.10);
+        border-color: rgba(0, 113, 227, 0.3);
+      }
+      body.dark-mode .folder-sort-wrap.sort-open .folder-sort-trigger {
+        background: rgba(74, 158, 255, 0.15);
+        border-color: rgba(74, 158, 255, 0.3);
       }
       .folder-sort-options {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        z-index: 100;
         overflow: hidden;
         max-height: 0;
         opacity: 0;
-        transform: scaleY(0.3) translateY(-4px);
         transform-origin: top center;
         transition:
           max-height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4),
-          opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-          transform 0.55s cubic-bezier(0.12, 0.8, 0.24, 1.6);
-        border-radius: 0 0 10px 10px;
+          opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        border-radius: 0 0 12px 12px;
         background: rgba(255, 255, 255, 0.92);
         backdrop-filter: blur(24px) saturate(200%);
         -webkit-backdrop-filter: blur(24px) saturate(200%);
@@ -3046,14 +3049,13 @@
       .folder-sort-options.open {
         max-height: 200px;
         opacity: 1;
-        transform: scaleY(1) translateY(0);
       }
       body.dark-mode .folder-sort-options {
         background: rgba(40, 40, 50, 0.92);
         border-color: rgba(100, 110, 130, 0.3);
       }
       .folder-sort-option {
-        padding: 8px 12px;
+        padding: 9px 14px;
         font-size: 12px;
         color: var(--text-primary);
         cursor: pointer;
@@ -3219,6 +3221,116 @@
       }
       .folder-delete-modal-actions button:active {
         transform: scale(0.96);
+      }
+
+      /* ===== Folder File Management (v4.2.3) ===== */
+      .folder-file-actions {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      .folder-file-btn {
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(200, 210, 230, 0.4);
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        color: var(--text-primary);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      }
+      .folder-file-btn:hover {
+        background: rgba(255, 255, 255, 0.32);
+        transform: translateY(-1px);
+      }
+      .folder-file-btn:active {
+        transform: scale(0.97);
+      }
+      body.dark-mode .folder-file-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      .folder-file-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(200, 210, 230, 0.3);
+        margin-bottom: 6px;
+        transition: all 0.2s ease;
+      }
+      .folder-file-item:hover {
+        background: rgba(255, 255, 255, 0.4);
+      }
+      body.dark-mode .folder-file-item {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+      body.dark-mode .folder-file-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .folder-file-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+        min-width: 0;
+      }
+      .folder-file-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .folder-file-meta {
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+      .folder-file-delete-btn {
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: none;
+        background: rgba(255, 59, 48, 0.1);
+        color: #ff3b30;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        margin-left: 8px;
+      }
+      .folder-file-delete-btn:hover {
+        background: rgba(255, 59, 48, 0.2);
+      }
+      .folder-file-badge {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        margin-left: 6px;
+      }
+      .folder-file-badge.survey {
+        background: rgba(0, 113, 227, 0.1);
+        color: var(--primary);
+      }
+      .folder-file-badge.upload {
+        background: rgba(52, 199, 89, 0.1);
+        color: var(--success);
       }
 
       /* ===== Semester Folder (학기별 폴더) ===== */
@@ -3867,7 +3979,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.2.2";
+      window.APP_VERSION = "4.2.3";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -6882,13 +6994,7 @@
       }
 
       // ===== Admin Panel =====
-      // Close folder sort dropdown on outside click (v4.2.0)
-      document.addEventListener('click', function(e) {
-        var dd = document.getElementById('folderSortDropdown');
-        if (dd && dd.classList.contains('open') && !e.target.closest('.folder-mgmt-btn') && !e.target.closest('.folder-sort-dropdown')) {
-          dd.classList.remove('open');
-        }
-      });
+      // v4.2.3: 폴더 정렬은 mouseleave로 닫힘 (toggleFolderSort 부근 참조)
 
       function toggleAdmin() {
         if (_loginInProgress) return;  // 로그인 진행 중에는 토글 무시
@@ -7650,17 +7756,8 @@
         if (!opts || !wrap) return;
         var isOpen = opts.classList.toggle('open');
         wrap.classList.toggle('sort-open', isOpen);
-        var trigger = wrap.querySelector('.folder-sort-trigger');
-        if (trigger) {
-          trigger.style.borderRadius = isOpen ? '10px 10px 0 0' : '10px';
-        }
-        // 정렬 옵션이 잘리지 않도록 부모 mgmt-bar에 하단 여백 추가 + 스크롤
-        var bar = wrap.closest('.folder-mgmt-bar');
-        if (bar) {
-          bar.style.paddingBottom = isOpen ? '120px' : '0';
-          bar.style.transition = 'padding-bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-        }
         if (isOpen) {
+          // v4.2.3: 열릴 때 스크롤하여 옵션이 보이도록
           setTimeout(function() {
             var panel = document.querySelector('.admin-panel');
             if (panel) {
@@ -7674,6 +7771,18 @@
         }
       }
 
+      // v4.2.3: 마우스가 정렬 영역 밖으로 나가면 자동 닫힘
+      document.addEventListener('mouseover', function(e) {
+        var wrap = document.getElementById('folderSortWrap');
+        if (!wrap) return;
+        var opts = document.getElementById('folderSortOptions');
+        if (!opts || !opts.classList.contains('open')) return;
+        if (!wrap.contains(e.target)) {
+          opts.classList.remove('open');
+          wrap.classList.remove('sort-open');
+        }
+      });
+
       function setFolderSort(key) {
         if (folderSortKey === key) {
           folderSortDir = folderSortDir === 'asc' ? 'desc' : 'asc';
@@ -7682,19 +7791,28 @@
           folderSortDir = 'asc';
         }
         sortCustomFolders();
-        updateAdminPanel();
+        // v4.2.3: 옵션 클릭해도 닫지 않음 — 마우스가 밖으로 나가면 닫힘
+        // 정렬 옵션 UI만 갱신 (전체 패널 리렌더 방지)
+        var optsContainer = document.getElementById('folderSortOptions');
+        if (optsContainer) {
+          var sortOpts = [{key:'name',label:'이름순'},{key:'created',label:'생성일순'},{key:'size',label:'크기순'}];
+          optsContainer.innerHTML = sortOpts.map(function(opt) {
+            var isActive = folderSortKey === opt.key;
+            var arrow = isActive ? (folderSortDir === 'asc' ? '↑' : '↓') : '';
+            return '<div class="folder-sort-option' + (isActive ? ' active' : '') + '" onclick="event.stopPropagation();setFolderSort(\'' + opt.key + '\')">' + opt.label + '<span class="sort-arrow">' + arrow + '</span></div>';
+          }).join('');
+        }
+        // 폴더 순서 반영
+        var semFolders = document.querySelector('.semester-folders');
+        if (semFolders) {
+          // 전체 리렌더 대신 폴더 순서만 업데이트
+          updateAdminPanel();
+        } else {
+          updateAdminPanel();
+        }
       }
 
-      // v4.2.2: 정렬 옵션 외부 클릭 시 닫기
-      document.addEventListener('click', function(e) {
-        var opts = document.getElementById('folderSortOptions');
-        if (opts && opts.classList.contains('open')) {
-          var wrap = document.getElementById('folderSortWrap');
-          if (wrap && !wrap.contains(e.target)) {
-            opts.classList.remove('open');
-          }
-        }
-      });
+      // v4.2.3: 정렬 옵션은 mouseleave로 닫힘 (toggleFolderSort 부근에 구현)
 
       function sortCustomFolders() {
         var dir = folderSortDir === 'asc' ? 1 : -1;
@@ -7713,6 +7831,206 @@
           }
           return result * dir;
         });
+      }
+
+      // ===== v4.2.3: 폴더 내 파일 관리 =====
+
+      async function loadFolderFiles(cf) {
+        if (!cf.serverId || !adminToken) return;
+        var listEl = document.getElementById('folderFiles_' + cf.id);
+        if (!listEl) return;
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/folders/' + cf.serverId + '/files', {
+            headers: { 'Authorization': 'Bearer ' + adminToken }
+          });
+          if (!resp.ok) { listEl.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">파일 목록을 불러올 수 없습니다.</p>'; return; }
+          var data = await resp.json();
+          if (!data.success || !data.files || data.files.length === 0) {
+            listEl.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">이 폴더는 비어 있습니다.</p>';
+            return;
+          }
+          listEl.innerHTML = data.files.map(function(f) {
+            var meta = f.metadata ? (typeof f.metadata === 'string' ? JSON.parse(f.metadata) : f.metadata) : {};
+            var typeIcon = f.file_type === 'survey-response' ? '📋' : '📄';
+            var badge = f.file_type === 'survey-response'
+              ? '<span class="folder-file-badge survey">설문</span>'
+              : '<span class="folder-file-badge upload">업로드</span>';
+            var metaText = '';
+            if (meta.disabilityType) metaText += meta.disabilityType + ' · ';
+            if (meta.studentId) metaText += meta.studentId + ' · ';
+            metaText += formatFileSize(f.file_size) + ' · ' + new Date(f.created_at).toLocaleDateString('ko-KR');
+            return '<div class="folder-file-item">' +
+              '<div class="folder-file-info">' +
+              '<div class="folder-file-name">' + typeIcon + ' ' + f.file_name + badge + '</div>' +
+              '<div class="folder-file-meta">' + metaText + '</div>' +
+              '</div>' +
+              '<button class="folder-file-delete-btn" onclick="deleteFolderFile(' + cf.serverId + ',' + f.id + ',\'' + cf.id + '\')">삭제</button>' +
+              '</div>';
+          }).join('');
+        } catch(e) {
+          console.error('폴더 파일 로드 실패:', e);
+          listEl.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">파일 목록 로드 오류</p>';
+        }
+      }
+
+      function formatFileSize(bytes) {
+        if (!bytes || bytes === 0) return '0 B';
+        var units = ['B', 'KB', 'MB'];
+        var i = 0;
+        var size = bytes;
+        while (size >= 1024 && i < units.length - 1) { size /= 1024; i++; }
+        return size.toFixed(i > 0 ? 1 : 0) + ' ' + units[i];
+      }
+
+      function uploadFileToFolder(cfId) {
+        var cf = customFolders.find(function(f) { return f.id === cfId; });
+        if (!cf || !cf.serverId) return;
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.multiple = true;
+        input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg,.hwp';
+        input.addEventListener('change', async function() {
+          if (!input.files || input.files.length === 0) return;
+          var uploadCount = 0;
+          for (var i = 0; i < input.files.length; i++) {
+            var file = input.files[i];
+            if (file.size > 2 * 1024 * 1024) {
+              showToast(file.name + ': 2MB 초과 (건너뜀)');
+              continue;
+            }
+            try {
+              var base64 = await fileToBase64(file);
+              var resp = await fetch(API_BASE + '/api/admin/folders/' + cf.serverId + '/files', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  file_name: file.name,
+                  file_type: 'upload',
+                  file_size: file.size,
+                  file_data: base64,
+                  metadata: { originalType: file.type }
+                })
+              });
+              if (resp.ok) uploadCount++;
+              else showToast(file.name + ' 업로드 실패');
+            } catch(e) {
+              console.error('파일 업로드 실패:', e);
+              showToast(file.name + ' 업로드 오류');
+            }
+          }
+          if (uploadCount > 0) {
+            showToast(uploadCount + '개 파일 업로드 완료');
+            loadFolderFiles(cf);
+          }
+        });
+        input.click();
+      }
+
+      function fileToBase64(file) {
+        return new Promise(function(resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function() { resolve(reader.result.split(',')[1]); };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function importSurveyDataToFolder(cfId) {
+        var cf = customFolders.find(function(f) { return f.id === cfId; });
+        if (!cf || !cf.serverId) return;
+        if (responses.length === 0) { showToast('설문 응답 데이터가 없습니다.'); return; }
+
+        // 장애 유형별 그룹핑 모달
+        var disabilityGroups = {};
+        responses.forEach(function(r, idx) {
+          var dtype = r.disability || '미분류';
+          if (!disabilityGroups[dtype]) disabilityGroups[dtype] = [];
+          disabilityGroups[dtype].push({ index: idx, name: r.name || '이름없음', studentId: r.studentId || '' });
+        });
+
+        var typeList = Object.keys(disabilityGroups).sort();
+        var modalHtml = '<div class="folder-delete-modal-overlay" id="surveyImportModal">' +
+          '<div class="folder-delete-modal" style="max-width:420px;text-align:left;">' +
+          '<h4 style="color:var(--primary);">📋 설문 데이터 가져오기</h4>' +
+          '<p style="font-size:12px;margin-bottom:12px;">가져올 장애 유형을 선택하세요. 선택한 유형의 학생 데이터가 이 폴더에 추가됩니다.</p>' +
+          '<div style="max-height:250px;overflow-y:auto;margin-bottom:16px;">';
+        typeList.forEach(function(dt) {
+          var count = disabilityGroups[dt].length;
+          modalHtml += '<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:13px;transition:background 0.15s;" onmouseover="this.style.background=\'rgba(0,113,227,0.06)\'" onmouseout="this.style.background=\'transparent\'">' +
+            '<input type="checkbox" class="survey-import-check" value="' + dt + '" checked style="accent-color:var(--primary);width:16px;height:16px;">' +
+            '<span style="font-weight:600;">' + dt + '</span>' +
+            '<span style="color:var(--text-tertiary);font-size:11px;margin-left:auto;">' + count + '명</span>' +
+            '</label>';
+        });
+        modalHtml += '</div>' +
+          '<div class="folder-delete-modal-actions">' +
+          '<button class="cancel-btn" onclick="document.getElementById(\'surveyImportModal\').remove()">취소</button>' +
+          '<button class="confirm-delete-btn" style="background:var(--primary);" onclick="executeSurveyImport(\'' + cfId + '\')">가져오기</button>' +
+          '</div></div></div>';
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+      }
+
+      async function executeSurveyImport(cfId) {
+        var cf = customFolders.find(function(f) { return f.id === cfId; });
+        if (!cf || !cf.serverId) return;
+
+        var checks = document.querySelectorAll('.survey-import-check:checked');
+        var selectedTypes = [];
+        checks.forEach(function(c) { selectedTypes.push(c.value); });
+
+        if (selectedTypes.length === 0) { showToast('하나 이상의 유형을 선택하세요.'); return; }
+
+        // 선택된 장애 유형에 해당하는 응답 ID 수집
+        var responseIds = [];
+        responses.forEach(function(r, idx) {
+          var dtype = r.disability || '미분류';
+          if (selectedTypes.includes(dtype)) {
+            responseIds.push(r.id || idx);
+          }
+        });
+
+        if (responseIds.length === 0) { showToast('해당하는 응답이 없습니다.'); return; }
+
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/folders/' + cf.serverId + '/files/survey-data', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ response_ids: responseIds })
+          });
+          var data = await resp.json();
+          if (data.success) {
+            showToast(data.imported + '개 학생 데이터가 추가되었습니다.');
+            loadFolderFiles(cf);
+          } else {
+            showToast('데이터 가져오기 실패: ' + (data.error || ''));
+          }
+        } catch(e) {
+          console.error('설문 데이터 가져오기 실패:', e);
+          showToast('데이터 가져오기 오류');
+        }
+
+        var modal = document.getElementById('surveyImportModal');
+        if (modal) modal.remove();
+      }
+
+      async function deleteFolderFile(serverId, fileId, cfId) {
+        if (!confirm('이 파일을 삭제하시겠습니까?')) return;
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/folders/' + serverId + '/files/' + fileId, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + adminToken }
+          });
+          if (resp.ok) {
+            showToast('파일이 삭제되었습니다.');
+            var cf = customFolders.find(function(f) { return f.id === cfId; });
+            if (cf) loadFolderFiles(cf);
+          } else {
+            showToast('파일 삭제 실패');
+          }
+        } catch(e) {
+          console.error('파일 삭제 오류:', e);
+          showToast('파일 삭제 오류');
+        }
       }
 
       function startFolderNameEdit(nameEl, folderId) {
@@ -7873,12 +8191,32 @@
             var folderClass = 'semester-folder ' + (hasDocs ? 'folder-has' : 'folder-empty');
             folderHtml += '<div class="' + folderClass + '">';
             var docsSvg = hasDocs ? '<rect class="folder-docs" x="6" y="12" width="52" height="7" rx="1.5" fill="white"/>' : '';
+            // v4.2.3: 시스템 폴더에 톱니바퀴 아이콘 추가
+            var gearSvg = (function() {
+              // 6개 톱니 기어 아이콘을 폴더 전면(#7DCBEA) 중앙에 배치
+              var cx = 32, cy = 34, teeth = 6, outerR = 8, innerR = 6, holeR = 3;
+              var d = '';
+              for (var t = 0; t < teeth; t++) {
+                var a1 = (Math.PI * 2 / teeth) * t - Math.PI / 2;
+                var a2 = a1 + Math.PI * 2 / teeth * 0.35;
+                var a3 = a1 + Math.PI * 2 / teeth * 0.5;
+                var a4 = a1 + Math.PI * 2 / teeth * 0.65;
+                d += (t===0?'M':'L') + (cx+outerR*Math.cos(a1)).toFixed(1) + ',' + (cy+outerR*Math.sin(a1)).toFixed(1);
+                d += 'L' + (cx+outerR*Math.cos(a2)).toFixed(1) + ',' + (cy+outerR*Math.sin(a2)).toFixed(1);
+                d += 'L' + (cx+innerR*Math.cos(a3)).toFixed(1) + ',' + (cy+innerR*Math.sin(a3)).toFixed(1);
+                d += 'L' + (cx+outerR*Math.cos(a4)).toFixed(1) + ',' + (cy+outerR*Math.sin(a4)).toFixed(1);
+              }
+              d += 'Z';
+              return '<path d="' + d + '" fill="white" opacity="0.5"/>' +
+                '<circle cx="' + cx + '" cy="' + cy + '" r="' + holeR + '" fill="#7DCBEA" opacity="0.7"/>';
+            })();
             folderHtml += '<div class="semester-folder-icon" onclick="selectSemesterFolder(' + g.year + ',' + g.semester + ')">' +
               '<svg viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg">' +
               '<path class="folder-tab-shape" d="M1 14 L1 8 C1 6 2.5 5 4.5 5 L20 5 C22 5 23 6 24 7.5 L27.5 14 Z" fill="#5EB2DE"/>' +
               '<rect class="folder-back-shape" x="1" y="10" width="62" height="20" rx="4" ry="4" fill="#5EB2DE"/>' +
               docsSvg +
               '<rect class="folder-front-shape" x="0.5" y="15" width="63" height="36.5" rx="4.5" ry="4.5" fill="#7DCBEA"/>' +
+              gearSvg +
               '</svg>' +
               '</div>';
             folderHtml += '<div class="semester-folder-name">' + g.year + '년<br>' + g.semester + '학기</div>';
@@ -7921,13 +8259,13 @@
               (folderDeleteMode ? '✕ 취소' : '🗑️ 폴더 삭제') + '</button>';
           }
           folderHtml += '<div class="folder-sort-wrap" id="folderSortWrap">';
-          folderHtml += '<button class="folder-mgmt-btn folder-sort-trigger" style="width:100%;position:relative;z-index:1;" onclick="toggleFolderSort()">⇅ 정렬</button>';
+          folderHtml += '<button class="folder-mgmt-btn folder-sort-trigger" style="width:100%;" onclick="toggleFolderSort()">⇅ 정렬</button>';
           var sortOpts = [{key:'name',label:'이름순'},{key:'created',label:'생성일순'},{key:'size',label:'크기순'}];
           folderHtml += '<div class="folder-sort-options" id="folderSortOptions">';
           sortOpts.forEach(function(opt) {
             var isActive = folderSortKey === opt.key;
             var arrow = isActive ? (folderSortDir === 'asc' ? '↑' : '↓') : '';
-            folderHtml += '<div class="folder-sort-option' + (isActive ? ' active' : '') + '" onclick="setFolderSort(\'' + opt.key + '\')">' + opt.label + '<span class="sort-arrow">' + arrow + '</span></div>';
+            folderHtml += '<div class="folder-sort-option' + (isActive ? ' active' : '') + '" onclick="event.stopPropagation();setFolderSort(\'' + opt.key + '\')">' + opt.label + '<span class="sort-arrow">' + arrow + '</span></div>';
           });
           folderHtml += '</div>';
           folderHtml += '</div>';
@@ -7938,7 +8276,7 @@
           return;
         }
 
-        // STATE 1.5: Custom folder selected (v4.2.0)
+        // STATE 1.5: Custom folder selected (v4.2.0 → v4.2.3: 파일 관리 UI)
         if (selectedCustomFolder) {
           var cf = customFolders.find(function(f) { return f.id === selectedCustomFolder; });
           if (!cf) { selectedCustomFolder = null; /* fall through */ }
@@ -7946,17 +8284,24 @@
             var cfBcHtml = '<div class="folder-breadcrumb">';
             cfBcHtml += '<span class="bc-link" onclick="backToFolders()">📂 응답 목록</span>';
             cfBcHtml += '<span class="bc-sep"> › </span>';
-            cfBcHtml += '<span>' + cf.name + '</span>';
+            cfBcHtml += '<span>' + cf.name.replace(/<br\s*\/?>/gi, ' ') + '</span>';
             cfBcHtml += '</div>';
-            var cfContent = cf.items && cf.items.length > 0
-              ? cf.items.map(function(item, idx) {
-                  return '<div class="response-card" style="position:relative;">' +
-                    '<div class="name">' + (item.name || '항목 ' + (idx+1)) + '</div>' +
-                    '<div class="meta">' + (item.description || '') + '</div>' +
-                    '</div>';
-                }).join('')
-              : '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">이 폴더는 비어 있습니다.</p>';
-            list.innerHTML = cfBcHtml + cfContent;
+
+            // v4.2.3: 파일 관리 액션 버튼
+            var cfActions = '<div class="folder-file-actions">';
+            cfActions += '<button class="folder-file-btn" onclick="uploadFileToFolder(\'' + cf.id + '\')">📤 파일 업로드</button>';
+            cfActions += '<button class="folder-file-btn" onclick="importSurveyDataToFolder(\'' + cf.id + '\')">📋 설문 데이터 넣기</button>';
+            cfActions += '</div>';
+
+            // 파일 목록 (서버에서 로드)
+            var cfFileListId = 'folderFiles_' + cf.id;
+            var cfContent = '<div id="' + cfFileListId + '"><p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">파일 목록 로딩 중...</p></div>';
+
+            list.innerHTML = cfBcHtml + cfActions + cfContent;
+
+            // 서버에서 파일 목록 로드
+            loadFolderFiles(cf);
+
             updateLetterSelect();
             return;
           }
