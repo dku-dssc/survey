@@ -1646,8 +1646,7 @@
         align-items: center;
         justify-content: center;
         gap: 12px;
-        flex: 1;
-        max-width: 240px;
+        width: 200px;
         height: 160px;
         border-radius: var(--radius-lg);
         border: 1px solid rgba(255, 255, 255, 0.38);
@@ -3790,8 +3789,7 @@
           padding: 0;
         }
         .landing-btn {
-          flex: 1;
-          max-width: 160px;
+          width: 140px;
           height: 140px;
           padding: 12px 8px;
           gap: 8px;
@@ -7334,12 +7332,14 @@
               await loadFoldersFromServer();
               await loadEnrollmentData();
               await loadLinkedEmail();
+              // 폴더 로드 완료 후 패널 갱신 (로드 전 첫 렌더에서 빈 목록이었으므로)
+              updateAdminPanel();
               var emailBar = document.getElementById('emailLinkBar');
               if (emailBar) {
                 emailBar.style.display = 'flex';
                 emailBar.classList.add('animate-in');
                 // v4.2.2: DB 사용량을 이메일 바 바로 아래에 표시
-                renderDbUsageIndicator(emailBar.parentNode);
+                renderDbUsageIndicator(emailBar);
               }
             });
           }
@@ -7351,15 +7351,16 @@
       }
 
       // v4.2.2: DB 사용량 표시 렌더링 함수
-      function renderDbUsageIndicator(container) {
+      // afterElement: 이 요소 바로 다음에 indicator를 삽입
+      function renderDbUsageIndicator(afterElement) {
         // 기존 indicator 있으면 제거
         var old = document.getElementById('dbUsageIndicator');
         if (old) old.remove();
         var indicator = document.createElement('div');
         indicator.id = 'dbUsageIndicator';
-        indicator.style.cssText = 'margin-top:16px;padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:8px;';
+        indicator.style.cssText = 'margin-top:8px;padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:8px;';
         indicator.innerHTML = '<span style="font-size:14px;">⏳</span> 저장 공간 조회 중...';
-        container.appendChild(indicator);
+        afterElement.insertAdjacentElement('afterend', indicator);
         fetchDbSize().then(function(data) {
           if (!data || !data.success) {
             indicator.innerHTML = '<span style="font-size:14px;">⚠️</span> 저장 공간 정보를 가져올 수 없습니다.';
@@ -7510,16 +7511,19 @@
       // v4.2.2: D1 DB 사용량 조회
       async function fetchDbSize() {
         try {
-          if (!adminToken) return null;
+          if (!adminToken) { console.warn('DB사용량: 토큰 없음'); return null; }
+          console.log('DB사용량 조회 시작, 토큰:', adminToken ? adminToken.substring(0,8) + '...' : 'null');
           var resp = await fetch(API_BASE + '/api/admin/db-size', {
             headers: { 'Authorization': 'Bearer ' + adminToken }
           });
+          console.log('DB사용량 응답 상태:', resp.status);
           if (!resp.ok) {
             var errText = await resp.text();
             console.error('DB사용량 API 에러:', resp.status, errText);
             return null;
           }
           var data = await resp.json();
+          console.log('DB사용량 데이터:', JSON.stringify(data));
           return data;
         } catch(e) { console.error('DB사용량 조회 실패:', e); return null; }
       }
@@ -7610,7 +7614,10 @@
         var dd = document.getElementById('folderSortDropdown');
         if (!dd) return;
         if (dd.classList.contains('open')) { dd.classList.remove('open'); return; }
-        // v4.2.2: position:fixed 기준으로 버튼 아래에 드롭다운 배치
+        // backdrop-filter가 fixed positioning을 방해하므로 body로 이동
+        if (dd.parentNode !== document.body) {
+          document.body.appendChild(dd);
+        }
         var btn = event.currentTarget || event.target;
         var rect = btn.getBoundingClientRect();
         dd.style.left = rect.left + 'px';
