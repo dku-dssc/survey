@@ -1637,9 +1637,8 @@
       .landing-buttons {
         display: flex;
         margin-top: 32px;
-        justify-content: center;
-        gap: 32px;
-        padding: 0 32px;
+        justify-content: space-evenly;
+        padding: 0;
       }
       .landing-btn {
         display: flex;
@@ -3787,9 +3786,8 @@
         }
         .landing-buttons {
           flex-direction: row;
-          justify-content: center;
-          gap: 16px;
-          padding: 0 16px;
+          justify-content: space-evenly;
+          padding: 0;
         }
         .landing-btn {
           flex: 1;
@@ -7340,6 +7338,8 @@
               if (emailBar) {
                 emailBar.style.display = 'flex';
                 emailBar.classList.add('animate-in');
+                // v4.2.2: DB 사용량을 이메일 바 바로 아래에 표시
+                renderDbUsageIndicator(emailBar.parentNode);
               }
             });
           }
@@ -7889,8 +7889,6 @@
           folderHtml += '</div>';
 
           list.innerHTML = folderHtml;
-          // v4.2.2: DB 사용량 표시
-          renderDbUsageIndicator(list);
           updateLetterSelect();
           return;
         }
