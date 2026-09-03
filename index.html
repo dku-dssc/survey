@@ -1638,8 +1638,7 @@
         display: flex;
         margin-top: 32px;
         margin-bottom: 0;
-        justify-content: center;
-        gap: 32px;
+        justify-content: space-evenly;
         padding: 0;
       }
       .landing-btn {
@@ -1648,8 +1647,7 @@
         align-items: center;
         justify-content: center;
         gap: 12px;
-        flex: 1;
-        max-width: 240px;
+        flex: 0 1 240px;
         height: 160px;
         border-radius: var(--radius-lg);
         border: 1px solid rgba(255, 255, 255, 0.38);
@@ -3015,15 +3013,17 @@
         position: relative;
         flex: 1;
         display: flex;
+        flex-direction: column;
       }
-      .folder-sort-wrap .folder-mgmt-btn {
-        width: 100%;
+      .folder-sort-trigger {
+        border-radius: 10px !important;
+        transition: border-radius 0.15s ease;
+      }
+      .folder-sort-options.open ~ .folder-sort-trigger {
+        border-radius: 0 0 10px 10px !important;
       }
       .folder-sort-options {
-        position: absolute;
-        bottom: 100%;
-        left: 0;
-        right: 0;
+        order: -1;
         overflow: hidden;
         max-height: 0;
         transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -3033,7 +3033,6 @@
         -webkit-backdrop-filter: blur(24px) saturate(200%);
         border: 1px solid rgba(200, 210, 230, 0.4);
         border-bottom: none;
-        box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
       }
       .folder-sort-options.open {
         max-height: 200px;
@@ -3052,9 +3051,6 @@
         justify-content: space-between;
         transition: background 0.15s ease;
         white-space: nowrap;
-      }
-      .folder-sort-option:first-child {
-        border-radius: 10px 10px 0 0;
       }
       .folder-sort-option:hover {
         background: rgba(0, 113, 227, 0.08);
@@ -3798,13 +3794,11 @@
         }
         .landing-buttons {
           flex-direction: row;
-          justify-content: center;
-          gap: 16px;
+          justify-content: space-evenly;
           padding: 0;
         }
         .landing-btn {
-          flex: 1;
-          max-width: 160px;
+          flex: 0 1 160px;
           height: 140px;
           padding: 12px 8px;
           gap: 8px;
@@ -7633,7 +7627,11 @@
       function toggleFolderSort() {
         var opts = document.getElementById('folderSortOptions');
         if (!opts) return;
-        opts.classList.toggle('open');
+        var isOpen = opts.classList.toggle('open');
+        var trigger = opts.parentElement.querySelector('.folder-sort-trigger');
+        if (trigger) {
+          trigger.style.borderRadius = isOpen ? '0 0 10px 10px' : '10px';
+        }
       }
 
       function setFolderSort(key) {
@@ -7891,7 +7889,7 @@
             folderHtml += '<div class="folder-sort-option' + (isActive ? ' active' : '') + '" onclick="setFolderSort(\'' + opt.key + '\')">' + opt.label + '<span class="sort-arrow">' + arrow + '</span></div>';
           });
           folderHtml += '</div>';
-          folderHtml += '<button class="folder-mgmt-btn" style="width:100%;border-radius:0 0 10px 10px;position:relative;z-index:1;" onclick="toggleFolderSort()">⇅ 정렬</button>';
+          folderHtml += '<button class="folder-mgmt-btn folder-sort-trigger" style="width:100%;position:relative;z-index:1;" onclick="toggleFolderSort()">⇅ 정렬</button>';
           folderHtml += '</div>';
           folderHtml += '</div>';
 
