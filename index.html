@@ -6868,7 +6868,7 @@
       function toggleAdmin() {
         if (_loginInProgress) return;  // 로그인 진행 중에는 토글 무시
         // v4.2.2: 폴더가 아직 로드되지 않았으면 로드
-        if (!foldersLoaded && sessionStorage.getItem('adminToken')) {
+        if (!foldersLoaded && adminToken) {
           loadFoldersFromServer().then(function() { updateAdminPanel(); });
         }
         const panel = document.getElementById('adminPanel');
@@ -7440,10 +7440,9 @@
       // v4.2.2: 서버에서 폴더 목록 불러오기
       async function loadFoldersFromServer() {
         try {
-          var token = sessionStorage.getItem('adminToken');
-          if (!token) return;
+          if (!adminToken) return;
           var resp = await fetch(API_BASE + '/api/admin/folders', {
-            headers: { 'Authorization': 'Bearer ' + token }
+            headers: { 'Authorization': 'Bearer ' + adminToken }
           });
           if (!resp.ok) return;
           var data = await resp.json();
@@ -7466,11 +7465,10 @@
       // v4.2.2: 서버에 폴더 생성
       async function createFolderOnServer(name) {
         try {
-          var token = sessionStorage.getItem('adminToken');
-          if (!token) { console.error('폴더 생성: 토큰 없음'); return null; }
+          if (!adminToken) { console.error('폴더 생성: 토큰 없음'); return null; }
           var resp = await fetch(API_BASE + '/api/admin/folders', {
             method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: name })
           });
           if (!resp.ok) {
@@ -7487,10 +7485,10 @@
       // v4.2.2: 서버 폴더 업데이트
       async function updateFolderOnServer(serverId, updates) {
         try {
-          var token = sessionStorage.getItem('adminToken');
+          if (!adminToken) return false;
           var resp = await fetch(API_BASE + '/api/admin/folders/' + serverId, {
             method: 'PUT',
-            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json' },
             body: JSON.stringify(updates)
           });
           return resp.ok;
@@ -7500,10 +7498,10 @@
       // v4.2.2: 서버 폴더 삭제
       async function deleteFolderOnServer(serverId) {
         try {
-          var token = sessionStorage.getItem('adminToken');
+          if (!adminToken) return false;
           var resp = await fetch(API_BASE + '/api/admin/folders/' + serverId, {
             method: 'DELETE',
-            headers: { 'Authorization': 'Bearer ' + token }
+            headers: { 'Authorization': 'Bearer ' + adminToken }
           });
           return resp.ok;
         } catch(e) { console.error('폴더 삭제 실패:', e); return false; }
@@ -7512,10 +7510,9 @@
       // v4.2.2: D1 DB 사용량 조회
       async function fetchDbSize() {
         try {
-          var token = sessionStorage.getItem('adminToken');
-          if (!token) { console.error('DB사용량: 토큰 없음'); return null; }
+          if (!adminToken) return null;
           var resp = await fetch(API_BASE + '/api/admin/db-size', {
-            headers: { 'Authorization': 'Bearer ' + token }
+            headers: { 'Authorization': 'Bearer ' + adminToken }
           });
           if (!resp.ok) {
             var errText = await resp.text();
