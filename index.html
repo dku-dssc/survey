@@ -2133,6 +2133,30 @@
         align-items: center;
         justify-content: space-between;
       }
+      /* ===== 통합 닫기(X) 버튼 스타일 ===== */
+      .panel-close-btn {
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(120,120,128,0.12);
+        color: var(--text-secondary);
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        flex-shrink: 0;
+      }
+      .panel-close-btn:hover {
+        background: rgba(120,120,128,0.22);
+      }
+      body.dark-mode .panel-close-btn {
+        background: rgba(180,180,190,0.15);
+      }
+      body.dark-mode .panel-close-btn:hover {
+        background: rgba(180,180,190,0.28);
+      }
       .admin-close {
         background: none;
         border: none;
@@ -2382,47 +2406,73 @@
       }
 
 
-      /* ===== iPad Multitasking Panel Divider (v4.2.0) ===== */
+      /* ===== iPad Multitasking Panel Divider (v5.0.1) ===== */
       .panel-divider {
         position: fixed;
         top: 0;
-        width: 12px;
+        width: 20px;
         height: 100vh;
         z-index: 302;
         cursor: col-resize;
         display: none;
         align-items: center;
         justify-content: center;
-        transition: opacity 0.2s ease;
+        /* 경계선 — iPad 스타일 두꺼운 세로선 */
+        background: linear-gradient(
+          to right,
+          transparent 0%,
+          rgba(120, 120, 128, 0.08) 30%,
+          rgba(120, 120, 128, 0.18) 50%,
+          rgba(120, 120, 128, 0.08) 70%,
+          transparent 100%
+        );
       }
       .panel-divider.active {
         display: flex;
       }
       .panel-divider-handle {
         width: 5px;
-        height: 38px;
-        border-radius: 3px;
-        background: rgba(120, 120, 128, 0.35);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        height: 36px;
+        border-radius: 2.5px;
+        background: rgba(120, 120, 128, 0.45);
         transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.10);
       }
       .panel-divider:hover .panel-divider-handle {
-        width: 6px;
-        height: 44px;
-        background: rgba(100, 100, 108, 0.5);
+        width: 5px;
+        height: 42px;
+        background: rgba(100, 100, 108, 0.6);
       }
       .panel-divider.dragging .panel-divider-handle {
-        width: 6px;
-        height: 50px;
-        background: rgba(80, 80, 90, 0.6);
+        width: 5px;
+        height: 48px;
+        background: rgba(80, 80, 90, 0.7);
+      }
+      .panel-divider:hover {
+        background: linear-gradient(
+          to right,
+          transparent 0%,
+          rgba(120, 120, 128, 0.12) 30%,
+          rgba(120, 120, 128, 0.25) 50%,
+          rgba(120, 120, 128, 0.12) 70%,
+          transparent 100%
+        );
+      }
+      body.dark-mode .panel-divider {
+        background: linear-gradient(
+          to right,
+          transparent 0%,
+          rgba(180, 180, 190, 0.06) 30%,
+          rgba(180, 180, 190, 0.15) 50%,
+          rgba(180, 180, 190, 0.06) 70%,
+          transparent 100%
+        );
       }
       body.dark-mode .panel-divider-handle {
-        background: rgba(180, 180, 190, 0.35);
+        background: rgba(180, 180, 190, 0.45);
       }
       body.dark-mode .panel-divider:hover .panel-divider-handle {
-        background: rgba(200, 200, 210, 0.5);
+        background: rgba(200, 200, 210, 0.6);
       }
 
       /* Admin panel blur when being pushed away */
@@ -3977,13 +4027,13 @@
         font-weight: 800;
         background: linear-gradient(
           var(--rate-wave),
-          #4facfe 0%, #1164b1 30%, #4facfe 50%, #00f2fe 70%, #4facfe 100%
+          #6db8e8 0%, #3a8fd4 35%, #6db8e8 50%, #5ec3e8 70%, #6db8e8 100%
         );
         background-size: 200% 200%;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: rateWave 4s linear infinite, rateShimmer 3s ease-in-out infinite;
+        animation: rateWave 8s linear infinite, rateShimmer 6s ease-in-out infinite;
         line-height: 1.1;
       }
       @keyframes rateShimmer {
@@ -3993,17 +4043,25 @@
       body.dark-mode .stat-rate-value {
         background: linear-gradient(
           var(--rate-wave),
-          #7dcbea 0%, #4facfe 30%, #7dcbea 50%, #00f2fe 70%, #7dcbea 100%
+          #8ecfe8 0%, #6db8e8 35%, #8ecfe8 50%, #5ec3e8 70%, #8ecfe8 100%
         );
         background-size: 200% 200%;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
       }
-      /* 통계 분석 아이콘 */
+      /* 통계 분석 아이콘 (v5.0.1: SVG 인라인) */
       .stat-analytics-icon {
-        font-size: 28px;
+        width: 36px;
+        height: 36px;
         margin-bottom: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .stat-analytics-icon svg {
+        width: 36px;
+        height: 36px;
       }
 
       /* ===== Diff Tracking Styles (Admin) ===== */
@@ -4405,7 +4463,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "5.0.0";
+      window.APP_VERSION = "5.0.1";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -6212,7 +6270,7 @@
       <!-- Login Screen (shown by default) -->
       <div id="adminLoginScreen">
         <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:24px;">
-          <button class="admin-close" onclick="toggleAdmin()">✕</button>
+          <button class="admin-close panel-close-btn" onclick="toggleAdmin()">✕</button>
         </div>
         <div style="text-align:center;padding:60px 0 0;">
           <div style="font-size:48px;margin-bottom:16px;">🔒</div>
@@ -6232,7 +6290,7 @@
       <div id="adminContent" style="display:none;">
         <h3>
           📋 관리자 패널
-          <button class="admin-close" onclick="toggleAdmin()">✕</button>
+          <button class="admin-close panel-close-btn" onclick="toggleAdmin()">✕</button>
         </h3>
 
         <!-- 세션 정보 바 -->
@@ -6315,7 +6373,20 @@
             <div class="stat-label">응답률</div>
           </div>
           <div class="stat-card stat-clickable" onclick="openAnalyticsPanel()">
-            <div class="stat-analytics-icon">📊</div>
+            <div class="stat-analytics-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- 막대 차트 (채워진 막대) -->
+              <rect x="4" y="24" width="6" height="12" rx="1.2" fill="#3a8fd4"/>
+              <rect x="13" y="16" width="6" height="20" rx="1.2" fill="#2563eb"/>
+              <rect x="22" y="20" width="6" height="16" rx="1.2" fill="#3a8fd4"/>
+              <rect x="31" y="12" width="6" height="24" rx="1.2" fill="#2563eb"/>
+              <!-- 꺾은선 그래프 -->
+              <polyline points="7,20 16,10 25,14 34,6" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <!-- 데이터 포인트 -->
+              <circle cx="7" cy="20" r="2.8" fill="#fff" stroke="#0ea5e9" stroke-width="1.8"/>
+              <circle cx="16" cy="10" r="2.8" fill="#fff" stroke="#0ea5e9" stroke-width="1.8"/>
+              <circle cx="25" cy="14" r="2.8" fill="#fff" stroke="#0ea5e9" stroke-width="1.8"/>
+              <circle cx="34" cy="6" r="2.8" fill="#fff" stroke="#0ea5e9" stroke-width="1.8"/>
+            </svg></div>
             <div class="stat-label">통계 분석</div>
           </div>
         </div>
@@ -6484,7 +6555,7 @@
           <button class="compose-fullscreen-btn" id="composeFullscreenBtn" onclick="toggleComposeFullscreen()" title="전체 화면">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6V3a1 1 0 011-1h3M14 6V3a1 1 0 00-1-1h-3M2 10v3a1 1 0 001 1h3M14 10v3a1 1 0 01-1 1h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
-          <button class="email-compose-close" onclick="closeEmailCompose()">✕</button>
+          <button class="email-compose-close panel-close-btn" onclick="closeEmailCompose()">✕</button>
         </div>
       </div>
       <div class="email-compose-body">
@@ -6534,7 +6605,7 @@
       <div class="analytics-header">
         <h4>📊 통계 분석</h4>
         <div style="display:flex;align-items:center;gap:8px;">
-          <button class="analytics-close" onclick="closeAnalyticsPanel()">✕</button>
+          <button class="analytics-close panel-close-btn" onclick="closeAnalyticsPanel()">✕</button>
         </div>
       </div>
       <div class="analytics-body" id="analyticsBody">
@@ -10703,14 +10774,27 @@
       }
 
 
-      // ===== iPad 멀티태스킹 패널 경계선 (v4.2.0) =====
+      // ===== iPad 멀티태스킹 패널 경계선 (v5.0.1) =====
       var panelDividerState = {
         isDragging: false,
         startX: 0,
         startLeft: 0,
         leftPanelRatio: 0,  // 0 = default, 1 = full
-        adminPushedAway: false
+        adminPushedAway: false,
+        activeLeftPanel: null  // 'emailComposePanel' | 'analyticsPanel'
       };
+
+      function getActiveLeftPanel() {
+        if (panelDividerState.activeLeftPanel) {
+          return document.getElementById(panelDividerState.activeLeftPanel);
+        }
+        // fallback: 현재 표시중인 왼쪽 패널 찾기
+        var email = document.getElementById('emailComposePanel');
+        if (email && email.style.display === 'flex') return email;
+        var analytics = document.getElementById('analyticsPanel');
+        if (analytics && analytics.style.display === 'flex') return analytics;
+        return null;
+      }
 
       function initPanelDivider() {
         var divider = document.getElementById('panelDivider');
@@ -10727,9 +10811,9 @@
 
         document.addEventListener('mousemove', function(e) {
           if (!panelDividerState.isDragging) return;
-          var compose = document.getElementById('emailComposePanel');
+          var leftPanel = getActiveLeftPanel();
           var admin = document.getElementById('adminPanel');
-          if (!compose || !admin) return;
+          if (!leftPanel || !admin) return;
 
           var vw = window.innerWidth;
           var adminW = 480;
@@ -10740,12 +10824,12 @@
           // Calculate new left panel width based on mouse X
           var newLeftW = Math.min(maxLeftW, Math.max(minLeftW, e.clientX));
 
-          compose.style.width = newLeftW + 'px';
-          compose.style.transition = 'none';
+          leftPanel.style.width = newLeftW + 'px';
+          leftPanel.style.transition = 'none';
 
-          // Position divider
+          // Position divider — 패널 오른쪽 가장자리에 딱 붙임
           var divider = document.getElementById('panelDivider');
-          divider.style.left = (newLeftW - 6) + 'px';
+          divider.style.left = (newLeftW - 10) + 'px';
 
           // Calculate how far admin panel should be pushed
           var adminLeft = newLeftW;
@@ -10780,14 +10864,14 @@
           var divider = document.getElementById('panelDivider');
           divider.classList.remove('dragging');
 
-          var compose = document.getElementById('emailComposePanel');
+          var leftPanel = getActiveLeftPanel();
           var admin = document.getElementById('adminPanel');
-          if (!compose || !admin) return;
+          if (!leftPanel || !admin) return;
 
           var vw = window.innerWidth;
           var adminW = 480;
           var adminCenter = vw - adminW / 2;
-          var currentLeftW = parseInt(compose.style.width) || (vw - adminW);
+          var currentLeftW = parseInt(leftPanel.style.width) || (vw - adminW);
 
           // If dragged past admin center → push admin away completely
           if (currentLeftW >= adminCenter) {
@@ -10800,17 +10884,17 @@
       }
 
       function pushAdminAway() {
-        var compose = document.getElementById('emailComposePanel');
+        var leftPanel = getActiveLeftPanel();
         var admin = document.getElementById('adminPanel');
         var divider = document.getElementById('panelDivider');
         var edgeHandle = document.getElementById('panelEdgeHandle');
-        if (!compose || !admin) return;
+        if (!leftPanel || !admin) return;
 
         panelDividerState.adminPushedAway = true;
 
         // Animate left panel to full width
-        compose.style.transition = 'width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        compose.style.width = '100vw';
+        leftPanel.style.transition = 'width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        leftPanel.style.width = '100vw';
 
         // Animate admin panel out
         admin.style.transition = 'right 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.45s ease, opacity 0.45s ease';
@@ -10832,11 +10916,11 @@
       }
 
       function restorePanelLayout() {
-        var compose = document.getElementById('emailComposePanel');
+        var leftPanel = getActiveLeftPanel();
         var admin = document.getElementById('adminPanel');
         var divider = document.getElementById('panelDivider');
         var edgeHandle = document.getElementById('panelEdgeHandle');
-        if (!compose || !admin) return;
+        if (!leftPanel || !admin) return;
 
         panelDividerState.adminPushedAway = false;
 
@@ -10844,17 +10928,17 @@
         var adminW = 480;
         var defaultLeftW = vw - adminW;
 
-        compose.style.transition = 'width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        compose.style.width = defaultLeftW + 'px';
+        leftPanel.style.transition = 'width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        leftPanel.style.width = defaultLeftW + 'px';
 
         admin.style.transition = 'right 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.45s ease, opacity 0.45s ease';
         admin.style.right = '0';
         admin.style.filter = 'none';
         admin.style.opacity = '1';
 
-        // Reposition divider
+        // Reposition divider — 패널 오른쪽에 딱 붙임
         if (divider) {
-          divider.style.left = (defaultLeftW - 6) + 'px';
+          divider.style.left = (defaultLeftW - 10) + 'px';
           divider.classList.add('active');
         }
 
@@ -10869,15 +10953,15 @@
         }
       }
 
-      // Show divider when email compose panel is opened
-      function showPanelDivider() {
+      // Show divider when a left panel is opened (email compose or analytics)
+      function showPanelDivider(panelId) {
         var divider = document.getElementById('panelDivider');
-        var compose = document.getElementById('emailComposePanel');
-        if (!divider || !compose) return;
+        if (!divider) return;
+        panelDividerState.activeLeftPanel = panelId || 'emailComposePanel';
         var vw = window.innerWidth;
         var adminW = 480;
         var leftW = vw - adminW;
-        divider.style.left = (leftW - 6) + 'px';
+        divider.style.left = (leftW - 10) + 'px';
         divider.classList.add('active');
         panelDividerState.adminPushedAway = false;
       }
@@ -10888,6 +10972,7 @@
         if (divider) divider.classList.remove('active');
         if (edgeHandle) edgeHandle.classList.remove('visible');
         panelDividerState.adminPushedAway = false;
+        panelDividerState.activeLeftPanel = null;
         // Restore admin panel
         var admin = document.getElementById('adminPanel');
         if (admin) {
@@ -10951,8 +11036,8 @@
         // 왼쪽 패널 + 오버레이 표시
         document.getElementById('emailComposeOverlay').style.display = 'block';
         document.getElementById('emailComposePanel').style.display = 'flex';
-        // iPad 멀티태스킹 경계선 표시 (v4.2.0)
-        showPanelDivider();
+        // iPad 멀티태스킹 경계선 표시 (v5.0.1)
+        showPanelDivider('emailComposePanel');
         initPanelDivider();
 
         // PDF 생성 (html2pdf.js 사용)
@@ -11007,15 +11092,25 @@
         }
       }
 
-      // ===== v5.0.0: 통계 분석 패널 =====
+      // ===== v5.0.1: 통계 분석 패널 =====
       function openAnalyticsPanel() {
         document.getElementById('analyticsOverlay').style.display = 'block';
         document.getElementById('analyticsPanel').style.display = 'flex';
+        // iPad 멀티태스킹 경계선 표시
+        showPanelDivider('analyticsPanel');
+        initPanelDivider();
         switchAnalyticsTab('chart');
       }
       function closeAnalyticsPanel() {
         document.getElementById('analyticsOverlay').style.display = 'none';
         document.getElementById('analyticsPanel').style.display = 'none';
+        hidePanelDivider();
+        // 패널 크기 초기화
+        var panel = document.getElementById('analyticsPanel');
+        if (panel) {
+          panel.style.width = '';
+          panel.style.transition = '';
+        }
       }
 
       function switchAnalyticsTab(tab) {
@@ -11031,48 +11126,49 @@
       // 응답 데이터에서 변수 값 추출
       function getFieldValues(resp, varName) {
         if (!resp) return [];
-        var d = typeof resp.data === 'string' ? JSON.parse(resp.data) : (resp.data || {});
+        // 복호화된 응답은 루트 레벨에 영문 키로 저장됨 (resp.data 아님)
+        var d = resp;
         switch(varName) {
-          case 'grade': return [d['학년'] || '미입력'];
-          case 'gender': return [d['성별'] || '미입력'];
+          case 'grade': return [d.grade || '미입력'];
+          case 'gender': return [d.gender || '미입력'];
           case 'college': {
-            var dept = d['학과(부)'] || '';
+            var dept = d.department || '';
             // 학과에서 대학명 추출 (괄호 앞)
             var m = dept.match(/^(.+대학)/);
             return [m ? m[1] : (dept || '미입력')];
           }
           case 'disability_type': {
-            var dt = d['주장애'] || d['장애유형'];
+            var dt = d.disabilityType;
             return dt ? [dt] : ['미입력'];
           }
-          case 'disability_degree': return [d['장애정도'] || '미입력'];
+          case 'disability_degree': return [d.disabilityLevel || '미입력'];
           case 'contact_pref': {
-            var cp = d['연락 선호 방식'] || d['연락선호방식'];
+            var cp = d.contactPref;
             if (Array.isArray(cp)) return cp;
             return cp ? [cp] : ['미입력'];
           }
           case 'support_common': {
-            var sc = d['공통 지원'] || d['공통지원'];
+            var sc = d.commonSupport;
             if (Array.isArray(sc)) return sc;
             return sc ? [sc] : [];
           }
           case 'support_theory': {
-            var st = d['이론수업 지원'] || d['이론수업지원'];
+            var st = d.theorySupport;
             if (Array.isArray(st)) return st;
             return st ? [st] : [];
           }
           case 'support_practice': {
-            var sp = d['실험·실습 지원'] || d['실험실습지원'] || d['실험·실습지원'];
+            var sp = d.labSupport;
             if (Array.isArray(sp)) return sp;
             return sp ? [sp] : [];
           }
           case 'support_field': {
-            var sf = d['현장실습 지원'] || d['현장실습지원'];
+            var sf = d.fieldSupport;
             if (Array.isArray(sf)) return sf;
             return sf ? [sf] : [];
           }
           case 'support_eval': {
-            var se = d['평가 지원'] || d['평가지원'];
+            var se = d.evalSupport;
             if (Array.isArray(se)) return se;
             return se ? [se] : [];
           }
