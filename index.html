@@ -1687,28 +1687,43 @@
         color: var(--text-tertiary);
       }
 
-      /* v4.2.6: 이어서 작성하기 — 테두리만 3배 두껍게 + 회전 그라데이션 */
-      @keyframes borderRotate {
-        0%   { --border-angle: 360deg; }
-        100% { --border-angle: 0deg; }
-      }
+      /* v4.2.8: 이어서 작성하기 — 테두리 물결 유동 그라데이션 (시계방향) */
       @property --border-angle {
         syntax: '<angle>';
-        initial-value: 0deg;
+        initial-value: 360deg;
         inherits: false;
+      }
+      @property --wave-spread {
+        syntax: '<percentage>';
+        initial-value: 25%;
+        inherits: false;
+      }
+      @keyframes borderFlow {
+        0%   { --border-angle: 360deg; --wave-spread: 22%; }
+        25%  { --wave-spread: 38%; }
+        50%  { --border-angle: 180deg; --wave-spread: 22%; }
+        75%  { --wave-spread: 38%; }
+        100% { --border-angle: 0deg; --wave-spread: 22%; }
       }
       .landing-btn.draft-resume {
         position: relative;
         border: 3px solid transparent !important;
         background-clip: padding-box !important;
-        animation: borderRotate 2.5s linear infinite;
+        animation: borderFlow 3.5s ease-in-out infinite;
       }
       .landing-btn.draft-resume::before {
         content: '';
         position: absolute;
         inset: -3px;
         border-radius: var(--radius-lg);
-        background: conic-gradient(from var(--border-angle), rgba(17,100,177,0.8), rgba(79,172,254,0.9), rgba(17,100,177,0.3), rgba(79,172,254,0.9), rgba(17,100,177,0.8));
+        background: conic-gradient(
+          from var(--border-angle),
+          rgba(17,100,177,0.3) 0%,
+          rgba(79,172,254,0.95) var(--wave-spread),
+          rgba(17,100,177,0.8) 50%,
+          rgba(79,172,254,0.95) calc(50% + var(--wave-spread)),
+          rgba(17,100,177,0.3) 100%
+        );
         z-index: -1;
         -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
         mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -2727,6 +2742,203 @@
         }
       }
 
+      /* ===== v5.0.0: Analytics Panel ===== */
+      .analytics-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.3);
+        z-index: 299;
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+      }
+      .analytics-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: calc(100vw - 480px);
+        height: 100vh;
+        background: rgba(240, 244, 248, 0.95);
+        backdrop-filter: blur(36px) saturate(200%);
+        -webkit-backdrop-filter: blur(36px) saturate(200%);
+        z-index: 301;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        border-right: 1px solid rgba(200, 210, 230, 0.4);
+        box-shadow: 8px 0 32px rgba(0,0,0,0.08);
+        animation: composeSlideIn 0.35s ease;
+      }
+      body.dark-mode .analytics-panel {
+        background: rgba(28, 28, 35, 0.95);
+      }
+      .analytics-header {
+        padding: 24px 32px 18px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .analytics-header h4 {
+        font-size: 19px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+      }
+      .analytics-close {
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.05);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        color: var(--text-secondary);
+        transition: var(--transition);
+      }
+      .analytics-close:hover {
+        background: rgba(0,0,0,0.1);
+      }
+      .analytics-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px 32px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(120,180,255,0.35) transparent;
+      }
+      .analytics-body::-webkit-scrollbar { width: 6px; }
+      .analytics-body::-webkit-scrollbar-track { background: transparent; }
+      .analytics-body::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, rgba(120,180,255,0.4), rgba(80,140,220,0.3));
+        border-radius: 3px;
+      }
+      /* 분석 모드 탭 */
+      .analytics-tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .analytics-tab {
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid var(--glass-border);
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(8px);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: var(--transition);
+      }
+      .analytics-tab:hover {
+        background: rgba(0,113,227,0.08);
+      }
+      .analytics-tab.active {
+        background: rgba(0,113,227,0.12);
+        color: var(--primary);
+        border-color: rgba(0,113,227,0.3);
+        font-weight: 600;
+      }
+      /* 차트 컨테이너 */
+      .analytics-chart-wrap {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid var(--glass-border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(12px);
+      }
+      .analytics-chart-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+      }
+      /* 교차 분석 셀렉터 */
+      .cross-tab-selectors {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+      .cross-tab-selectors select {
+        flex: 1;
+        min-width: 140px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(8px);
+        font-size: 13px;
+        color: var(--text-primary);
+        cursor: pointer;
+      }
+      body.dark-mode .cross-tab-selectors select {
+        background: rgba(255,255,255,0.08);
+      }
+      /* 통계 테이블 */
+      .analytics-table-wrap {
+        overflow-x: auto;
+        margin-bottom: 16px;
+      }
+      .analytics-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      .analytics-table th, .analytics-table td {
+        padding: 8px 10px;
+        border: 1px solid var(--glass-border);
+        text-align: center;
+        white-space: nowrap;
+      }
+      .analytics-table th {
+        background: rgba(0,113,227,0.08);
+        font-weight: 600;
+        color: var(--text-primary);
+        position: sticky;
+        top: 0;
+      }
+      .analytics-table td {
+        color: var(--text-secondary);
+      }
+      .analytics-table tr:hover td {
+        background: rgba(0,113,227,0.04);
+      }
+      /* 내보내기 버튼 */
+      .analytics-export-bar {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      .analytics-export-btn {
+        padding: 8px 16px;
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(8px);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: var(--transition);
+      }
+      .analytics-export-btn:hover {
+        background: rgba(0,113,227,0.1);
+        color: var(--primary);
+      }
+      @media (max-width: 768px) {
+        .analytics-panel {
+          width: 100vw;
+          border-right: none;
+        }
+      }
+
       /* ===== Enrollment File Upload (Admin Settings) ===== */
       .enrollment-section {
         margin-top: 20px;
@@ -3136,25 +3348,27 @@
         overflow: hidden;
         max-height: 0;
         opacity: 0;
+        transform: scaleY(0);
         transform-origin: top center;
         transition:
-          max-height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4),
-          opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+          max-height 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+          opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
         position: absolute;
         top: 100%;
         left: -1px;
         right: -1px;
         z-index: 10;
-        background: rgba(255, 255, 255, 0.85);
+        background: rgba(0, 113, 227, 0.06);
         backdrop-filter: blur(16px) saturate(180%);
         -webkit-backdrop-filter: blur(16px) saturate(180%);
-        border: 1px solid rgba(200, 210, 230, 0.4);
+        border: 1px solid rgba(0, 113, 227, 0.25);
         border-top: none;
         border-radius: 0 0 12px 12px;
       }
       body.dark-mode .folder-sort-options {
-        background: rgba(30, 38, 48, 0.9);
-        border-color: rgba(255, 255, 255, 0.1);
+        background: rgba(74, 158, 255, 0.10);
+        border-color: rgba(74, 158, 255, 0.25);
       }
       .sort-open .folder-sort-options {
         border-color: rgba(0, 113, 227, 0.25);
@@ -3165,6 +3379,7 @@
       .folder-sort-options.open {
         max-height: 200px;
         opacity: 1;
+        transform: scaleY(1);
       }
       .folder-sort-option {
         padding: 9px 14px;
@@ -3732,6 +3947,64 @@
         color: var(--text-tertiary);
         margin-top: 4px;
       }
+      /* v4.2.8: 2×2 밭전자 그리드 */
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .stat-card.stat-clickable {
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .stat-card.stat-clickable:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,113,227,0.12);
+      }
+      .stat-card.stat-clickable:active {
+        transform: scale(0.97);
+      }
+      /* 응답률 물결 그라데이션 숫자 */
+      @property --rate-wave {
+        syntax: '<angle>';
+        initial-value: 0deg;
+        inherits: false;
+      }
+      @keyframes rateWave {
+        0%   { --rate-wave: 0deg; }
+        100% { --rate-wave: 360deg; }
+      }
+      .stat-rate-value {
+        font-size: 36px;
+        font-weight: 800;
+        background: linear-gradient(
+          var(--rate-wave),
+          #4facfe 0%, #1164b1 30%, #4facfe 50%, #00f2fe 70%, #4facfe 100%
+        );
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: rateWave 4s linear infinite, rateShimmer 3s ease-in-out infinite;
+        line-height: 1.1;
+      }
+      @keyframes rateShimmer {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+      body.dark-mode .stat-rate-value {
+        background: linear-gradient(
+          var(--rate-wave),
+          #7dcbea 0%, #4facfe 30%, #7dcbea 50%, #00f2fe 70%, #7dcbea 100%
+        );
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      /* 통계 분석 아이콘 */
+      .stat-analytics-icon {
+        font-size: 28px;
+        margin-bottom: 2px;
+      }
 
       /* ===== Diff Tracking Styles (Admin) ===== */
       /* diff-changed: no background highlight on whole field — only changed words are marked */
@@ -4132,7 +4405,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "4.2.7";
+      window.APP_VERSION = "5.0.0";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -6027,7 +6300,7 @@
           </div>
         </div>
 
-        <!-- Stats -->
+        <!-- Stats (v5.0.0: 2×2 밭전자 그리드) -->
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-value" id="totalResponses">0</div>
@@ -6036,6 +6309,14 @@
           <div class="stat-card">
             <div class="stat-value" id="todayResponses">0</div>
             <div class="stat-label">오늘 응답</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-rate-value" id="responseRate">0%</div>
+            <div class="stat-label">응답률</div>
+          </div>
+          <div class="stat-card stat-clickable" onclick="openAnalyticsPanel()">
+            <div class="stat-analytics-icon">📊</div>
+            <div class="stat-label">통계 분석</div>
           </div>
         </div>
 
@@ -6089,6 +6370,19 @@
 
         <!-- Admin Settings -->
         <div id="adminSettings" style="display: none">
+          <!-- v5.0.0: 전체 장애학생 수 설정 (응답률 계산용) -->
+          <div class="deadline-section" id="totalStudentsSection">
+            <div class="deadline-section-label">
+              <span>👥</span> 전체 장애학생 수 설정
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+              <input type="number" class="form-input" id="totalStudentsInput" min="1" max="9999" placeholder="전체 장애학생 수 입력" style="flex:1;text-align:center;font-size:15px;font-weight:600;">
+              <span style="font-size:13px;color:var(--text-secondary);">명</span>
+              <button class="deadline-save-btn" style="margin:0;padding:8px 16px;" onclick="saveTotalStudents()">💾 저장</button>
+            </div>
+            <div class="deadline-info" id="totalStudentsInfo" style="font-size:10px;margin-top:6px;">응답률(%) 계산에 사용됩니다. 매 학기 갱신해 주세요.</div>
+          </div>
+
           <!-- 설문조사 응답 기한 설정 -->
           <div class="deadline-section" id="deadlineSection">
             <div class="deadline-section-label">
@@ -6231,6 +6525,100 @@
         <span class="compose-footer-info">편집한 내용이 이메일 본문에 그대로 반영됩니다.</span>
         <button class="compose-cancel-btn" onclick="closeEmailCompose()">취소</button>
         <button class="compose-send-btn" id="composeSendBtn" onclick="submitOfficialLetter()" disabled>📨 발송하기</button>
+      </div>
+    </div>
+
+    <!-- v5.0.0: 통계 분석 패널 -->
+    <div id="analyticsOverlay" class="analytics-overlay" onclick="closeAnalyticsPanel()"></div>
+    <div id="analyticsPanel" class="analytics-panel">
+      <div class="analytics-header">
+        <h4>📊 통계 분석</h4>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="analytics-close" onclick="closeAnalyticsPanel()">✕</button>
+        </div>
+      </div>
+      <div class="analytics-body" id="analyticsBody">
+        <!-- 분석 모드 탭 -->
+        <div class="analytics-tabs">
+          <button class="analytics-tab active" onclick="switchAnalyticsTab('chart')" id="anaTabChart">📈 차트</button>
+          <button class="analytics-tab" onclick="switchAnalyticsTab('stats')" id="anaTabStats">📋 기본 통계</button>
+          <button class="analytics-tab" onclick="switchAnalyticsTab('cross')" id="anaTabCross">🔀 항목별 교차 분석</button>
+        </div>
+
+        <!-- 차트 섹션 -->
+        <div id="analyticsChartSection">
+          <div class="cross-tab-selectors">
+            <select id="chartVariable" onchange="renderAnalyticsChart()">
+              <option value="">분석할 항목 선택</option>
+              <option value="grade">학년</option>
+              <option value="gender">성별</option>
+              <option value="college">대학</option>
+              <option value="disability_type">장애 유형</option>
+              <option value="disability_degree">장애 정도</option>
+              <option value="contact_pref">연락 선호 방식</option>
+            </select>
+            <select id="chartType" onchange="renderAnalyticsChart()">
+              <option value="bar">막대형</option>
+              <option value="pie">파이형</option>
+              <option value="line">꺾은선형</option>
+            </select>
+          </div>
+          <div class="analytics-chart-wrap">
+            <canvas id="analyticsCanvas" width="600" height="350"></canvas>
+          </div>
+          <div class="analytics-export-bar">
+            <button class="analytics-export-btn" onclick="exportChartAsImage()">🖼️ 이미지 저장</button>
+          </div>
+        </div>
+
+        <!-- 기본 통계 섹션 -->
+        <div id="analyticsStatsSection" style="display:none;">
+          <div class="analytics-chart-wrap">
+            <div class="analytics-chart-title">기본 통계 요약</div>
+            <div id="analyticsStatsContent"></div>
+          </div>
+          <div class="analytics-export-bar">
+            <button class="analytics-export-btn" onclick="copyStatsTable()">📋 표 복사</button>
+            <button class="analytics-export-btn" onclick="exportStatsCSV()">📄 CSV 저장</button>
+            <button class="analytics-export-btn" onclick="exportStatsHTML()">📝 HTML 문서 저장</button>
+          </div>
+        </div>
+
+        <!-- 교차 분석 섹션 -->
+        <div id="analyticsCrossSection" style="display:none;">
+          <div class="cross-tab-selectors">
+            <select id="crossRow" onchange="renderCrossTab()">
+              <option value="">행(Row) 변수 선택</option>
+              <option value="grade">학년</option>
+              <option value="gender">성별</option>
+              <option value="college">대학</option>
+              <option value="disability_type">장애 유형</option>
+              <option value="disability_degree">장애 정도</option>
+            </select>
+            <select id="crossCol" onchange="renderCrossTab()">
+              <option value="">열(Column) 변수 선택</option>
+              <option value="grade">학년</option>
+              <option value="gender">성별</option>
+              <option value="college">대학</option>
+              <option value="disability_type">장애 유형</option>
+              <option value="disability_degree">장애 정도</option>
+              <option value="support_common">공통 지원</option>
+              <option value="support_theory">이론수업 지원</option>
+              <option value="support_practice">실험·실습 지원</option>
+              <option value="support_field">현장실습 지원</option>
+              <option value="support_eval">평가 지원</option>
+            </select>
+          </div>
+          <div class="analytics-chart-wrap">
+            <div class="analytics-chart-title">교차 분석 결과</div>
+            <div class="analytics-table-wrap" id="crossTabResult"></div>
+          </div>
+          <div class="analytics-export-bar">
+            <button class="analytics-export-btn" onclick="copyCrossTable()">📋 표 복사</button>
+            <button class="analytics-export-btn" onclick="exportCrossCSV()">📄 CSV 저장</button>
+            <button class="analytics-export-btn" onclick="exportCrossHTML()">📝 HTML 문서 저장</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -7620,6 +8008,7 @@
               await loadFoldersFromServer();
               await loadEnrollmentData();
               await loadLinkedEmail();
+              await loadTotalStudents();
               // 폴더 로드 완료 후 패널 갱신 (로드 전 첫 렌더에서 빈 목록이었으므로)
               updateAdminPanel();
               var emailBar = document.getElementById('emailLinkBar');
@@ -8353,6 +8742,8 @@
         updateAdminPanel();
       }
 
+      var totalRegisteredStudents = 0; // v5.0.0: 전체 장애학생 수
+
       function updateAdminPanel() {
         document.getElementById('totalResponses').textContent =
           responses.length;
@@ -8362,6 +8753,16 @@
             (r) =>
               r.submittedAt && new Date(r.submittedAt).toDateString() === today,
           ).length;
+        // v5.0.0: 응답률 업데이트
+        var rateEl = document.getElementById('responseRate');
+        if (rateEl) {
+          if (totalRegisteredStudents > 0) {
+            var pct = Math.min(100, Math.round((responses.length / totalRegisteredStudents) * 100));
+            rateEl.textContent = pct + '%';
+          } else {
+            rateEl.textContent = '—';
+          }
+        }
 
         const list = document.getElementById('responseList');
 
@@ -10052,6 +10453,47 @@
         return d.getFullYear() + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getDate()).padStart(2,'0');
       }
 
+      // v5.0.0: 전체 장애학생 수 저장/로드
+      async function saveTotalStudents() {
+        if (!adminToken) { showToast('관리자 로그인이 필요합니다.'); return; }
+        var val = parseInt(document.getElementById('totalStudentsInput').value);
+        if (!val || val < 1) { showToast('유효한 학생 수를 입력하세요.'); return; }
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/settings', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+            body: JSON.stringify({ settings: { total_students: val } })
+          });
+          if (resp.ok) {
+            totalRegisteredStudents = val;
+            updateAdminPanel();
+            showToast('전체 장애학생 수가 저장되었습니다: ' + val + '명');
+            var info = document.getElementById('totalStudentsInfo');
+            if (info) info.textContent = '현재 설정: ' + val + '명 (응답률 계산에 반영됨)';
+          } else {
+            showToast('저장 실패');
+          }
+        } catch(e) { showToast('서버 연결 실패'); }
+      }
+
+      async function loadTotalStudents() {
+        try {
+          var resp = await fetch(API_BASE + '/api/admin/settings', {
+            headers: { 'Authorization': 'Bearer ' + adminToken }
+          });
+          if (resp.ok) {
+            var data = await resp.json();
+            if (data.settings && data.settings.total_students) {
+              totalRegisteredStudents = parseInt(data.settings.total_students) || 0;
+              var inp = document.getElementById('totalStudentsInput');
+              if (inp) inp.value = totalRegisteredStudents;
+              var info = document.getElementById('totalStudentsInfo');
+              if (info && totalRegisteredStudents > 0) info.textContent = '현재 설정: ' + totalRegisteredStudents + '명 (응답률 계산에 반영됨)';
+            }
+          }
+        } catch(e) { /* 무시 — 응답률은 '—'으로 표시됨 */ }
+      }
+
       async function saveDeadlineSettings() {
         if (!adminToken) { showToast('관리자 로그인이 필요합니다.'); return; }
         var btn = document.getElementById('dlSaveBtn');
@@ -10563,6 +11005,463 @@
           document.getElementById('composeAttachStatus').textContent = '';
           document.getElementById('composeSendBtn').disabled = false;
         }
+      }
+
+      // ===== v5.0.0: 통계 분석 패널 =====
+      function openAnalyticsPanel() {
+        document.getElementById('analyticsOverlay').style.display = 'block';
+        document.getElementById('analyticsPanel').style.display = 'flex';
+        switchAnalyticsTab('chart');
+      }
+      function closeAnalyticsPanel() {
+        document.getElementById('analyticsOverlay').style.display = 'none';
+        document.getElementById('analyticsPanel').style.display = 'none';
+      }
+
+      function switchAnalyticsTab(tab) {
+        ['chart','stats','cross'].forEach(function(t) {
+          var sec = document.getElementById('analytics' + t.charAt(0).toUpperCase() + t.slice(1) + 'Section');
+          var btn = document.getElementById('anaTab' + t.charAt(0).toUpperCase() + t.slice(1));
+          if (sec) sec.style.display = (t === tab) ? 'block' : 'none';
+          if (btn) btn.classList.toggle('active', t === tab);
+        });
+        if (tab === 'stats') renderBasicStats();
+      }
+
+      // 응답 데이터에서 변수 값 추출
+      function getFieldValues(resp, varName) {
+        if (!resp) return [];
+        var d = typeof resp.data === 'string' ? JSON.parse(resp.data) : (resp.data || {});
+        switch(varName) {
+          case 'grade': return [d['학년'] || '미입력'];
+          case 'gender': return [d['성별'] || '미입력'];
+          case 'college': {
+            var dept = d['학과(부)'] || '';
+            // 학과에서 대학명 추출 (괄호 앞)
+            var m = dept.match(/^(.+대학)/);
+            return [m ? m[1] : (dept || '미입력')];
+          }
+          case 'disability_type': {
+            var dt = d['주장애'] || d['장애유형'];
+            return dt ? [dt] : ['미입력'];
+          }
+          case 'disability_degree': return [d['장애정도'] || '미입력'];
+          case 'contact_pref': {
+            var cp = d['연락 선호 방식'] || d['연락선호방식'];
+            if (Array.isArray(cp)) return cp;
+            return cp ? [cp] : ['미입력'];
+          }
+          case 'support_common': {
+            var sc = d['공통 지원'] || d['공통지원'];
+            if (Array.isArray(sc)) return sc;
+            return sc ? [sc] : [];
+          }
+          case 'support_theory': {
+            var st = d['이론수업 지원'] || d['이론수업지원'];
+            if (Array.isArray(st)) return st;
+            return st ? [st] : [];
+          }
+          case 'support_practice': {
+            var sp = d['실험·실습 지원'] || d['실험실습지원'] || d['실험·실습지원'];
+            if (Array.isArray(sp)) return sp;
+            return sp ? [sp] : [];
+          }
+          case 'support_field': {
+            var sf = d['현장실습 지원'] || d['현장실습지원'];
+            if (Array.isArray(sf)) return sf;
+            return sf ? [sf] : [];
+          }
+          case 'support_eval': {
+            var se = d['평가 지원'] || d['평가지원'];
+            if (Array.isArray(se)) return se;
+            return se ? [se] : [];
+          }
+          default: return ['미입력'];
+        }
+      }
+
+      // 빈도 집계
+      function tally(varName) {
+        var counts = {};
+        responses.forEach(function(r) {
+          var vals = getFieldValues(r, varName);
+          vals.forEach(function(v) {
+            counts[v] = (counts[v] || 0) + 1;
+          });
+        });
+        return counts;
+      }
+
+      // ---- 차트 렌더링 (순수 Canvas) ----
+      var chartColors = ['#4facfe','#1164b1','#00f2fe','#43e97b','#fa709a','#fee140','#a18cd1','#fbc2eb','#f6d365','#fda085','#84fab0','#8fd3f4','#d4fc79','#96e6a1','#fccb90'];
+
+      function renderAnalyticsChart() {
+        var varName = document.getElementById('chartVariable').value;
+        var chartType = document.getElementById('chartType').value;
+        var canvas = document.getElementById('analyticsCanvas');
+        if (!varName || !canvas) return;
+        var ctx = canvas.getContext('2d');
+        var counts = tally(varName);
+        var labels = Object.keys(counts);
+        var values = labels.map(function(l) { return counts[l]; });
+        var max = Math.max.apply(null, values) || 1;
+        var total = values.reduce(function(a,b) { return a+b; }, 0) || 1;
+
+        // HiDPI
+        var dpr = window.devicePixelRatio || 1;
+        var w = canvas.parentElement.clientWidth - 40;
+        var h = 350;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.scale(dpr, dpr);
+        ctx.clearRect(0,0,w,h);
+
+        var isDark = document.body.classList.contains('dark-mode');
+        var textColor = isDark ? '#ccc' : '#333';
+        ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+
+        if (chartType === 'bar') {
+          var barPad = 40, chartLeft = 60, chartBottom = h - 40, chartTop = 20;
+          var barW = Math.min(50, (w - chartLeft - 20) / labels.length - 8);
+          // Y축
+          ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+          ctx.fillStyle = textColor;
+          ctx.textAlign = 'right';
+          for (var i = 0; i <= 5; i++) {
+            var yVal = Math.round(max * i / 5);
+            var yPos = chartBottom - (chartBottom - chartTop) * (i / 5);
+            ctx.beginPath(); ctx.moveTo(chartLeft, yPos); ctx.lineTo(w - 10, yPos); ctx.stroke();
+            ctx.fillText(yVal, chartLeft - 8, yPos + 4);
+          }
+          // 막대
+          labels.forEach(function(label, idx) {
+            var x = chartLeft + idx * ((w - chartLeft - 20) / labels.length) + ((w - chartLeft - 20) / labels.length - barW) / 2;
+            var barH = (values[idx] / max) * (chartBottom - chartTop);
+            var color = chartColors[idx % chartColors.length];
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            var r = Math.min(4, barW / 4);
+            ctx.moveTo(x, chartBottom);
+            ctx.lineTo(x, chartBottom - barH + r);
+            ctx.quadraticCurveTo(x, chartBottom - barH, x + r, chartBottom - barH);
+            ctx.lineTo(x + barW - r, chartBottom - barH);
+            ctx.quadraticCurveTo(x + barW, chartBottom - barH, x + barW, chartBottom - barH + r);
+            ctx.lineTo(x + barW, chartBottom);
+            ctx.fill();
+            // 값 라벨
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.fillText(values[idx], x + barW / 2, chartBottom - barH - 6);
+            // X축 라벨 (회전)
+            ctx.save();
+            ctx.translate(x + barW / 2, chartBottom + 8);
+            ctx.rotate(labels.length > 6 ? -Math.PI/6 : 0);
+            ctx.textAlign = labels.length > 6 ? 'right' : 'center';
+            ctx.fillText(label.length > 8 ? label.slice(0,7) + '…' : label, 0, 10);
+            ctx.restore();
+          });
+        } else if (chartType === 'pie') {
+          var cx = w / 2, cy = h / 2 - 10, radius = Math.min(cx, cy) - 40;
+          var startAngle = -Math.PI / 2;
+          labels.forEach(function(label, idx) {
+            var sliceAngle = (values[idx] / total) * 2 * Math.PI;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle);
+            ctx.closePath();
+            ctx.fillStyle = chartColors[idx % chartColors.length];
+            ctx.fill();
+            // 라벨
+            var midAngle = startAngle + sliceAngle / 2;
+            var lx = cx + Math.cos(midAngle) * (radius * 0.65);
+            var ly = cy + Math.sin(midAngle) * (radius * 0.65);
+            ctx.fillStyle = '#fff';
+            ctx.textAlign = 'center';
+            ctx.font = 'bold 11px -apple-system, sans-serif';
+            var pct = Math.round(values[idx] / total * 100);
+            if (pct >= 5) ctx.fillText(pct + '%', lx, ly + 4);
+            ctx.font = '12px -apple-system, sans-serif';
+            startAngle += sliceAngle;
+          });
+          // 범례
+          ctx.textAlign = 'left';
+          var legendY = 10;
+          labels.forEach(function(label, idx) {
+            ctx.fillStyle = chartColors[idx % chartColors.length];
+            ctx.fillRect(10, legendY, 10, 10);
+            ctx.fillStyle = textColor;
+            ctx.fillText(label + ' (' + values[idx] + ')', 24, legendY + 9);
+            legendY += 16;
+          });
+        } else if (chartType === 'line') {
+          var chartLeft2 = 60, chartBottom2 = h - 40, chartTop2 = 20;
+          var stepX = labels.length > 1 ? (w - chartLeft2 - 20) / (labels.length - 1) : 0;
+          // 그리드
+          ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+          ctx.fillStyle = textColor;
+          ctx.textAlign = 'right';
+          for (var i2 = 0; i2 <= 5; i2++) {
+            var yVal2 = Math.round(max * i2 / 5);
+            var yPos2 = chartBottom2 - (chartBottom2 - chartTop2) * (i2 / 5);
+            ctx.beginPath(); ctx.moveTo(chartLeft2, yPos2); ctx.lineTo(w - 10, yPos2); ctx.stroke();
+            ctx.fillText(yVal2, chartLeft2 - 8, yPos2 + 4);
+          }
+          // 선
+          ctx.strokeStyle = '#4facfe';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          labels.forEach(function(label, idx) {
+            var x = chartLeft2 + idx * stepX;
+            var y = chartBottom2 - (values[idx] / max) * (chartBottom2 - chartTop2);
+            if (idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          });
+          ctx.stroke();
+          // 점 + 라벨
+          labels.forEach(function(label, idx) {
+            var x = chartLeft2 + idx * stepX;
+            var y = chartBottom2 - (values[idx] / max) * (chartBottom2 - chartTop2);
+            ctx.fillStyle = '#4facfe';
+            ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.fillText(values[idx], x, y - 10);
+            ctx.save();
+            ctx.translate(x, chartBottom2 + 8);
+            ctx.rotate(labels.length > 6 ? -Math.PI/6 : 0);
+            ctx.textAlign = labels.length > 6 ? 'right' : 'center';
+            ctx.fillText(label.length > 8 ? label.slice(0,7) + '…' : label, 0, 10);
+            ctx.restore();
+          });
+          ctx.lineWidth = 1;
+        }
+      }
+
+      function exportChartAsImage() {
+        var canvas = document.getElementById('analyticsCanvas');
+        if (!canvas) return;
+        var link = document.createElement('a');
+        link.download = 'chart_' + new Date().toISOString().slice(0,10) + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+
+      // ---- 기본 통계 ----
+      function renderBasicStats() {
+        var container = document.getElementById('analyticsStatsContent');
+        if (!container) return;
+        var variables = [
+          {key:'grade', label:'학년'},
+          {key:'gender', label:'성별'},
+          {key:'disability_type', label:'장애 유형'},
+          {key:'disability_degree', label:'장애 정도'},
+          {key:'college', label:'대학'}
+        ];
+        var html = '';
+        variables.forEach(function(v) {
+          var counts = tally(v.key);
+          var labels = Object.keys(counts);
+          var values = labels.map(function(l) { return counts[l]; });
+          var total = values.reduce(function(a,b) { return a+b; }, 0) || 1;
+          var maxVal = Math.max.apply(null, values);
+          var maxLabels = labels.filter(function(l,i) { return values[i] === maxVal; });
+          // 최빈값
+          html += '<div style="margin-bottom:16px;">';
+          html += '<div style="font-weight:600;font-size:13px;color:var(--text-primary);margin-bottom:8px;">' + v.label + '</div>';
+          html += '<div class="analytics-table-wrap"><table class="analytics-table" data-stat-var="' + v.key + '">';
+          html += '<thead><tr><th>' + v.label + '</th><th>응답 수</th><th>비율(%)</th></tr></thead><tbody>';
+          labels.forEach(function(l, i) {
+            html += '<tr><td>' + l + '</td><td>' + values[i] + '</td><td>' + Math.round(values[i]/total*100) + '%</td></tr>';
+          });
+          html += '</tbody></table></div>';
+          html += '<div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">최다: <strong>' + maxLabels.join(', ') + '</strong> (' + maxVal + '건)</div>';
+          html += '</div>';
+        });
+        container.innerHTML = html;
+      }
+
+      // ---- 교차 분석 ----
+      function renderCrossTab() {
+        var rowVar = document.getElementById('crossRow').value;
+        var colVar = document.getElementById('crossCol').value;
+        var container = document.getElementById('crossTabResult');
+        if (!rowVar || !colVar || !container) { if (container) container.innerHTML = '<p style="color:var(--text-tertiary);font-size:13px;">행과 열 변수를 모두 선택하세요.</p>'; return; }
+
+        // 고유 값 수집
+        var rowSet = {}, colSet = {};
+        responses.forEach(function(r) {
+          getFieldValues(r, rowVar).forEach(function(rv) { rowSet[rv] = true; });
+          getFieldValues(r, colVar).forEach(function(cv) { colSet[cv] = true; });
+        });
+        var rowLabels = Object.keys(rowSet).sort();
+        var colLabels = Object.keys(colSet).sort();
+
+        // 교차표 생성
+        var matrix = {};
+        rowLabels.forEach(function(rl) {
+          matrix[rl] = {};
+          colLabels.forEach(function(cl) { matrix[rl][cl] = 0; });
+        });
+        responses.forEach(function(r) {
+          var rvs = getFieldValues(r, rowVar);
+          var cvs = getFieldValues(r, colVar);
+          rvs.forEach(function(rv) {
+            cvs.forEach(function(cv) {
+              if (matrix[rv] && matrix[rv][cv] !== undefined) matrix[rv][cv]++;
+            });
+          });
+        });
+
+        var html = '<table class="analytics-table" id="crossTabTable">';
+        html += '<thead><tr><th></th>';
+        colLabels.forEach(function(cl) { html += '<th>' + cl + '</th>'; });
+        html += '<th>합계</th></tr></thead><tbody>';
+        rowLabels.forEach(function(rl) {
+          html += '<tr><td style="font-weight:600;">' + rl + '</td>';
+          var rowSum = 0;
+          colLabels.forEach(function(cl) {
+            var val = matrix[rl][cl];
+            rowSum += val;
+            html += '<td>' + val + '</td>';
+          });
+          html += '<td style="font-weight:600;">' + rowSum + '</td></tr>';
+        });
+        // 열 합계
+        html += '<tr><td style="font-weight:600;">합계</td>';
+        var grandTotal = 0;
+        colLabels.forEach(function(cl) {
+          var colSum = 0;
+          rowLabels.forEach(function(rl) { colSum += matrix[rl][cl]; });
+          grandTotal += colSum;
+          html += '<td style="font-weight:600;">' + colSum + '</td>';
+        });
+        html += '<td style="font-weight:700;color:var(--primary);">' + grandTotal + '</td></tr>';
+        html += '</tbody></table>';
+        container.innerHTML = html;
+      }
+
+      // ---- 내보내기 함수들 ----
+      function tableToText(tableEl) {
+        if (!tableEl) return '';
+        var rows = tableEl.querySelectorAll('tr');
+        var lines = [];
+        rows.forEach(function(row) {
+          var cells = [];
+          row.querySelectorAll('th,td').forEach(function(cell) { cells.push(cell.textContent.trim()); });
+          lines.push(cells.join('\t'));
+        });
+        return lines.join('\n');
+      }
+
+      function copyStatsTable() {
+        var tables = document.querySelectorAll('#analyticsStatsContent .analytics-table');
+        var text = '';
+        tables.forEach(function(t) {
+          text += tableToText(t) + '\n\n';
+        });
+        navigator.clipboard.writeText(text).then(function() { showToast('표가 클립보드에 복사되었습니다.'); });
+      }
+
+      function copyCrossTable() {
+        var t = document.getElementById('crossTabTable');
+        if (!t) return;
+        navigator.clipboard.writeText(tableToText(t)).then(function() { showToast('교차표가 클립보드에 복사되었습니다.'); });
+      }
+
+      function tableToCsv(tableEl) {
+        if (!tableEl) return '';
+        var rows = tableEl.querySelectorAll('tr');
+        var lines = [];
+        rows.forEach(function(row) {
+          var cells = [];
+          row.querySelectorAll('th,td').forEach(function(cell) {
+            var val = cell.textContent.trim().replace(/"/g, '""');
+            cells.push('"' + val + '"');
+          });
+          lines.push(cells.join(','));
+        });
+        return '﻿' + lines.join('\n'); // BOM for Korean
+      }
+
+      function downloadFile(content, filename, mimeType) {
+        var blob = new Blob([content], { type: mimeType });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function exportStatsCSV() {
+        var tables = document.querySelectorAll('#analyticsStatsContent .analytics-table');
+        var csv = '';
+        tables.forEach(function(t, i) {
+          if (i > 0) csv += '\n\n';
+          var varName = t.getAttribute('data-stat-var') || ('통계' + (i+1));
+          csv += varName + '\n';
+          csv += tableToCsv(t);
+        });
+        downloadFile(csv, '통계분석_' + new Date().toISOString().slice(0,10) + '.csv', 'text/csv;charset=utf-8');
+        showToast('CSV 파일이 저장되었습니다.');
+      }
+
+      function exportCrossCSV() {
+        var t = document.getElementById('crossTabTable');
+        if (!t) return;
+        downloadFile(tableToCsv(t), '교차분석_' + new Date().toISOString().slice(0,10) + '.csv', 'text/csv;charset=utf-8');
+        showToast('CSV 파일이 저장되었습니다.');
+      }
+
+      function generateExportHTML(title, tablesHtml) {
+        return '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>' + title + '</title>' +
+          '<style>body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:40px;max-width:900px;margin:0 auto;}' +
+          'h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px;}' +
+          'h2{font-size:16px;margin-top:24px;color:#1164b1;}' +
+          'table{width:100%;border-collapse:collapse;margin:12px 0 24px;}' +
+          'th,td{border:1px solid #ddd;padding:8px 12px;text-align:center;font-size:13px;}' +
+          'th{background:#f0f4f8;font-weight:600;}' +
+          '.info{font-size:12px;color:#888;margin-top:4px;}' +
+          '@media print{body{padding:20px;}}</style></head><body>' +
+          '<h1>' + title + '</h1>' +
+          '<p class="info">생성일: ' + new Date().toLocaleString('ko-KR') + ' | 총 응답: ' + responses.length + '건</p>' +
+          tablesHtml + '</body></html>';
+      }
+
+      function exportStatsHTML() {
+        var variables = [
+          {key:'grade', label:'학년'},
+          {key:'gender', label:'성별'},
+          {key:'disability_type', label:'장애 유형'},
+          {key:'disability_degree', label:'장애 정도'},
+          {key:'college', label:'대학'}
+        ];
+        var tablesHtml = '';
+        variables.forEach(function(v) {
+          var counts = tally(v.key);
+          var labels = Object.keys(counts);
+          var values = labels.map(function(l) { return counts[l]; });
+          var total = values.reduce(function(a,b) { return a+b; }, 0) || 1;
+          tablesHtml += '<h2>' + v.label + '</h2>';
+          tablesHtml += '<table><thead><tr><th>' + v.label + '</th><th>응답 수</th><th>비율</th></tr></thead><tbody>';
+          labels.forEach(function(l, i) {
+            tablesHtml += '<tr><td>' + l + '</td><td>' + values[i] + '</td><td>' + Math.round(values[i]/total*100) + '%</td></tr>';
+          });
+          tablesHtml += '</tbody></table>';
+        });
+        downloadFile(generateExportHTML('설문조사 통계 분석 결과', tablesHtml), '통계분석_' + new Date().toISOString().slice(0,10) + '.html', 'text/html;charset=utf-8');
+        showToast('HTML 문서가 저장되었습니다. 한글2022에서 열어 편집할 수 있습니다.');
+      }
+
+      function exportCrossHTML() {
+        var t = document.getElementById('crossTabTable');
+        if (!t) return;
+        var rowLabel = document.getElementById('crossRow').selectedOptions[0].text;
+        var colLabel = document.getElementById('crossCol').selectedOptions[0].text;
+        var tableHtml = '<h2>' + rowLabel + ' × ' + colLabel + ' 교차 분석</h2>' + t.outerHTML;
+        downloadFile(generateExportHTML('교차 분석 결과', tableHtml), '교차분석_' + new Date().toISOString().slice(0,10) + '.html', 'text/html;charset=utf-8');
+        showToast('HTML 문서가 저장되었습니다. 한글2022에서 열어 편집할 수 있습니다.');
       }
 
       function closeEmailCompose() {
