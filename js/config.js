@@ -214,6 +214,8 @@ function applyTestMode() {
   if (typeof updateAdminPanel === 'function') updateAdminPanel();
   // 랜딩 페이지 버튼 갱신 (수요조사/만족도 조사 전환)
   if (typeof updateLandingButtons === 'function') updateLandingButtons();
+  // v6.0.0: 학기 라벨 전체 갱신
+  if (typeof refreshSemesterDisplay === 'function') refreshSemesterDisplay();
 }
 
 function clearTestMode() {
@@ -233,6 +235,8 @@ function clearTestMode() {
   if (typeof updateDeadlineSectionLabel === 'function') updateDeadlineSectionLabel();
   if (typeof updateAdminPanel === 'function') updateAdminPanel();
   if (typeof updateLandingButtons === 'function') updateLandingButtons();
+  // v6.0.0: 학기 라벨 전체 갱신
+  if (typeof refreshSemesterDisplay === 'function') refreshSemesterDisplay();
 }
 
 // 테스트 모드 UI 복원 (관리자 패널 열렸을 때 호출)

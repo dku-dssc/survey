@@ -3,6 +3,31 @@
 
 // v4.2.4: 폴더 정렬 2단계 닫기 로직 (toggleFolderSort 부근 참조)
 
+// v6.0.0: 관리자 패널 열려있을 때 배경 스크롤 완전 차단
+var _adminScrollGuardActive = false;
+var _adminSavedScrollY = 0;
+function _adminScrollGuard() {
+  if (_adminScrollGuardActive) {
+    window.scrollTo(0, 0);
+  }
+}
+
+// v6.0.0: 모든 사이드 패널(이메일, 통계 분석 등)과 오버레이를 완전히 닫는 헬퍼
+function closeAllSidePanels() {
+  // 이메일 작성 패널
+  var emailOverlay = document.getElementById('emailComposeOverlay');
+  var emailPanel = document.getElementById('emailComposePanel');
+  if (emailOverlay) emailOverlay.style.display = 'none';
+  if (emailPanel) { emailPanel.style.display = 'none'; emailPanel.style.width = ''; emailPanel.style.transition = ''; }
+  // 통계 분석 패널
+  var analyticsOverlay = document.getElementById('analyticsOverlay');
+  var analyticsPanel = document.getElementById('analyticsPanel');
+  if (analyticsOverlay) analyticsOverlay.style.display = 'none';
+  if (analyticsPanel) { analyticsPanel.style.display = 'none'; analyticsPanel.style.width = ''; analyticsPanel.style.transition = ''; }
+  // 패널 디바이더 정리
+  if (typeof hidePanelDivider === 'function') hidePanelDivider();
+}
+
 function toggleAdmin() {
   if (_loginInProgress) return;  // 로그인 진행 중에는 토글 무시
   // v4.2.2: 폴더가 아직 로드되지 않았으면 로드
@@ -16,15 +41,21 @@ function toggleAdmin() {
 
   // 패널 열림/닫힘 시 body 스크롤 잠금/해제
   if (panel.classList.contains('open')) {
-    document.body.dataset.scrollY = window.scrollY;
+    _adminSavedScrollY = window.scrollY;
+    document.body.dataset.scrollY = _adminSavedScrollY;
     document.documentElement.style.overflow = 'hidden';  // v6.0.0: html도 잠금
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
-    document.body.style.top = '-' + window.scrollY + 'px';
+    document.body.style.top = '-' + _adminSavedScrollY + 'px';
     document.body.style.left = '0';
     document.body.style.right = '0';
     document.body.style.width = '100%';  // v6.0.0: 너비 고정
+    _adminScrollGuardActive = true;
+    window.addEventListener('scroll', _adminScrollGuard, { passive: false });
   } else {
+    _adminScrollGuardActive = false;
+    window.removeEventListener('scroll', _adminScrollGuard);
+    closeAllSidePanels();  // v6.0.0: 사이드 패널 모두 닫기
     var scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
     document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
@@ -65,6 +96,13 @@ function resetAdminInputElement(id, type, placeholder, autocompleteVal) {
   fresh.setAttribute('data-lpignore', 'true');
   fresh.setAttribute('data-form-type', 'other');
   fresh.style.cssText = old.style.cssText;
+  // v6.0.0: input focus 시 배경 스크롤 방지
+  fresh.addEventListener('focus', function(e) {
+    if (_adminScrollGuardActive) {
+      // 브라우저의 scrollIntoView 방지 — 즉시 scroll 복원
+      setTimeout(function() { window.scrollTo(0, 0); }, 0);
+    }
+  });
   // password 필드의 Enter 키 핸들러 복원
   if (type === 'password') {
     fresh.onkeypress = function(event) {
@@ -557,6 +595,7 @@ async function loadAdminResponses() {
         adminToken = null;
         linkedEmail = null;
         clearAdminSessionTimer();
+        closeAllSidePanels();  // v6.0.0: 사이드 패널 정리
         showAdminLogin();
         showToast('세션이 만료되었습니다. 다시 로그인하세요.');
         return;

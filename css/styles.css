@@ -4079,23 +4079,25 @@ body.dark-mode .support-bar-track {
   line-height: 1.1;
   background: linear-gradient(
     135deg,
-    #2a6fa8 0%, #3a8fd4 20%, #5ec3e8 40%, #8edcf5 60%,
-    #5ec3e8 70%, #3a8fd4 85%, #2a6fa8 100%
+    #2a6fa8 0%, #3080be 10%, #3a8fd4 20%, #4aa8de 30%, #5ec3e8 40%,
+    #76d0f0 50%, #8edcf5 60%, #76d0f0 68%, #5ec3e8 76%,
+    #4aa8de 84%, #3a8fd4 92%, #2a6fa8 100%
   );
-  background-size: 200% 200%;
+  background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: rateDiagonal 4s linear infinite;
+  animation: rateDiagonal 5s ease-in-out infinite;
 }
 body.dark-mode .stat-satisfaction-value {
   font-weight: 800;
   background: linear-gradient(
     135deg,
-    #3a7fb8 0%, #5ec3e8 20%, #8ecfe8 40%, #b0e4f5 60%,
-    #8ecfe8 70%, #5ec3e8 85%, #3a7fb8 100%
+    #3a7fb8 0%, #4a9fd0 10%, #5ec3e8 20%, #76cce8 30%, #8ecfe8 40%,
+    #9ed9f0 50%, #b0e4f5 60%, #9ed9f0 68%, #8ecfe8 76%,
+    #76cce8 84%, #5ec3e8 92%, #3a7fb8 100%
   );
-  background-size: 200% 200%;
+  background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

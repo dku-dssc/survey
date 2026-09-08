@@ -31,7 +31,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "5.0.1";
+      window.APP_VERSION = "6.0.0";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -39,7 +39,7 @@
 
       // ===== 학기 자동 계산 =====
       window.getSemesterInfo = function(date) {
-        var d = date || new Date();
+        var d = date || (typeof getEffectiveDate === 'function' ? getEffectiveDate() : new Date());
         var y = d.getFullYear();
         var m = d.getMonth() + 1;
         var semester = (m >= 7) ? 2 : 1;
@@ -51,12 +51,18 @@
           label: y + '년 ' + semester + '학기'
         };
       };
-      (function() {
+      // v6.0.0: 학기 정보 전체 갱신 함수 (테스트 모드 변경 시 호출)
+      window.refreshSemesterDisplay = function() {
         var si = window.getSemesterInfo();
         document.title = si.full + ' 개인별 교육지원계획 수요조사';
         var badge = document.getElementById('semesterBadge');
         if (badge) badge.textContent = si.short;
-      })();
+        var subtitle = document.getElementById('semesterSubtitle');
+        if (subtitle) subtitle.textContent = si.full;
+        var intro = document.getElementById('semesterIntroText');
+        if (intro) intro.textContent = si.full;
+      };
+      window.refreshSemesterDisplay();
     </script>
 
     <!-- Accessibility Bar -->
@@ -1832,7 +1838,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">생년월일 <span class="required">*</span></label>
-            <input type="text" class="form-input" id="satVerifyBirth" placeholder="예: 20030115" maxlength="8" />
+            <input type="text" class="form-input" id="satVerifyBirth" placeholder="예: 20030115 또는 2003-01-15" maxlength="10" />
           </div>
           <div class="nav-buttons">
             <button class="nav-btn" onclick="cancelSatisfactionSurvey()">
