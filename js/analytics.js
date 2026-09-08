@@ -199,12 +199,12 @@ function hidePanelDivider() {
   if (edgeHandle) edgeHandle.classList.remove('visible');
   panelDividerState.adminPushedAway = false;
   panelDividerState.activeLeftPanel = null;
-  // Restore admin panel
+  // Restore admin panel — 인라인 스타일 제거하여 CSS 클래스에 위임
   var admin = document.getElementById('adminPanel');
   if (admin) {
-    admin.style.right = '0';
-    admin.style.filter = 'none';
-    admin.style.opacity = '1';
+    admin.style.right = '';
+    admin.style.filter = '';
+    admin.style.opacity = '';
     admin.style.transition = '';
   }
 }

@@ -58,12 +58,18 @@ function openAdmin() {
 function closeAdmin() {
   var panel = document.getElementById('adminPanel');
   var overlay = document.getElementById('overlay');
-  // 항상 명시적으로 remove — 상태 어긋남 방지
+  // 1) 사이드 패널 먼저 정리 (hidePanelDivider 포함)
+  closeAllSidePanels();
+  // 2) analytics.js가 설정한 인라인 style 완전 제거 → CSS 기본값 복원
+  panel.style.right = '';
+  panel.style.filter = '';
+  panel.style.opacity = '';
+  panel.style.transition = '';
+  // 3) 클래스 제거로 CSS right:-500px 적용
   panel.classList.remove('open');
   overlay.classList.remove('show');
   _adminScrollGuardActive = false;
   window.removeEventListener('scroll', _adminScrollGuard);
-  closeAllSidePanels();
   var scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
   document.documentElement.style.overflow = '';
   document.body.style.overflow = '';
@@ -396,7 +402,17 @@ function loginSuccessAnimation(callback) {
 
       function animate5(ts) {
         if (!p5Start) p5Start = ts;
-        var progress = Math.min((ts - p5Start) / P5_DUR, 1);
+        var elapsed = ts - p5Start;
+        var progress = Math.min(elapsed / P5_DUR, 1);
+
+        // 그라데이션 시계 방향 회전 (160° 시작, 초당 120° 회전)
+        var gradAngle = 160 + (elapsed / 1000) * 120;
+        iris.style.background =
+          'radial-gradient(ellipse at 35% 25%, rgba(220,245,255,0.45) 0%, transparent 55%),'
+          + 'radial-gradient(ellipse at 65% 75%, rgba(174,234,255,0.35) 0%, transparent 55%),'
+          + 'linear-gradient(' + (gradAngle % 360).toFixed(1) + 'deg,'
+          + '#e2f8ff 0%, #b8efff 20%, #8ce3ff 40%,'
+          + '#62d4ff 60%, #3dbef5 80%, #1da8e9 100%)';
 
         var r = Math.round(easeOut(progress) * maxR);
         iris.style.setProperty('--iris-r', r + 'px');
