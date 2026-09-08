@@ -17,18 +17,22 @@ function toggleAdmin() {
   // 패널 열림/닫힘 시 body 스크롤 잠금/해제
   if (panel.classList.contains('open')) {
     document.body.dataset.scrollY = window.scrollY;
+    document.documentElement.style.overflow = 'hidden';  // v6.0.0: html도 잠금
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
     document.body.style.top = '-' + window.scrollY + 'px';
     document.body.style.left = '0';
     document.body.style.right = '0';
+    document.body.style.width = '100%';  // v6.0.0: 너비 고정
   } else {
     var scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
+    document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
     document.body.style.position = '';
     document.body.style.top = '';
     document.body.style.left = '';
     document.body.style.right = '';
+    document.body.style.width = '';
     window.scrollTo(0, scrollY);
   }
 
@@ -39,6 +43,7 @@ function toggleAdmin() {
 }
 
 function showAdminLogin() {
+  _loginInProgress = false;  // v6.0.0: 세션 만료 후 X 버튼 작동 보장
   document.getElementById('adminLoginScreen').style.display = 'block';
   document.getElementById('adminContent').style.display = 'none';
   // ★ 근본 해결: input 요소를 완전히 교체하여 브라우저 autofill 상태를 근절

@@ -12,9 +12,10 @@ function startSatisfactionSurvey() {
     showToast('만족도 조사는 1월과 7월에만 참여할 수 있습니다.');
     return;
   }
-  // 모든 설문 페이지 숨기기
+  // 모든 설문 페이지 숨기기 (active 클래스 제거 + inline display 초기화)
   document.querySelectorAll('.survey-page').forEach(function(p) {
-    p.style.display = 'none';
+    p.classList.remove('active');
+    p.style.display = '';
   });
   // 만족도 본인확인 페이지 표시
   var satVerify = document.querySelector('[data-page="sat-verify"]');
@@ -26,11 +27,25 @@ function startSatisfactionSurvey() {
 
 // 만족도 조사 취소 → 랜딩 페이지로
 function cancelSatisfactionSurvey() {
+  // v6.0.0: 만족도 전용 페이지만 숨기고, 나머지는 inline display 초기화
   document.querySelectorAll('.survey-page').forEach(function(p) {
-    p.style.display = 'none';
+    var pg = p.getAttribute('data-page');
+    if (pg === 'sat-verify' || pg === 'sat-rate' || pg === 'sat-complete') {
+      p.style.display = 'none';
+    } else {
+      p.style.display = '';  // inline display 제거 → CSS .active로 제어
+    }
   });
   satSurveyData = null;
   satStudentHash = null;
+  // 입력 필드 초기화
+  var fields = ['satVerifyName', 'satVerifyStudentId', 'satVerifyBirth'];
+  fields.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  var errorEl = document.getElementById('satVerifyError');
+  if (errorEl) errorEl.style.display = 'none';
   // 랜딩 페이지 표시
   if (typeof showPage === 'function') {
     currentPage = 0;
@@ -89,7 +104,8 @@ async function verifySatisfactionStudent() {
 
     // 평가 페이지로 전환
     document.querySelectorAll('.survey-page').forEach(function(p) {
-      p.style.display = 'none';
+      p.classList.remove('active');
+      p.style.display = '';
     });
     var satRate = document.querySelector('[data-page="sat-rate"]');
     if (satRate) {
@@ -240,7 +256,8 @@ async function submitSatisfactionSurvey() {
 
     // 완료 페이지로 전환
     document.querySelectorAll('.survey-page').forEach(function(p) {
-      p.style.display = 'none';
+      p.classList.remove('active');
+      p.style.display = '';
     });
     var satComplete = document.querySelector('[data-page="sat-complete"]');
     if (satComplete) {

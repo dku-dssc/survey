@@ -4072,9 +4072,33 @@ body.dark-mode .support-bar-track {
   color: var(--text-primary);
   font-size: 11px;
 }
-/* 만족도 값 */
+/* 만족도 값 — 부드러운 대각선 그라데이션 애니메이션 */
 .stat-satisfaction-value {
+  font-weight: 800;
   font-size: 28px;
+  line-height: 1.1;
+  background: linear-gradient(
+    135deg,
+    #2a6fa8 0%, #3a8fd4 20%, #5ec3e8 40%, #8edcf5 60%,
+    #5ec3e8 70%, #3a8fd4 85%, #2a6fa8 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rateDiagonal 4s linear infinite;
+}
+body.dark-mode .stat-satisfaction-value {
+  font-weight: 800;
+  background: linear-gradient(
+    135deg,
+    #3a7fb8 0%, #5ec3e8 20%, #8ecfe8 40%, #b0e4f5 60%,
+    #8ecfe8 70%, #5ec3e8 85%, #3a7fb8 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 /* 만족도 조사 항목별 평가 */
 .sat-item-row {
@@ -4112,49 +4136,177 @@ body.dark-mode .support-bar-track {
 .stat-card.stat-clickable:active {
   transform: scale(0.97);
 }
-/* 응답률 물결 그라데이션 숫자 — '\' 대각선 한 방향(어두운→밝은) 반복 */
+/* 응답률 숫자 — 정적 색상 (그라데이션 없음) */
 .stat-rate-value {
   font-size: 36px;
   font-weight: 800;
-  background: linear-gradient(
-    135deg,
-    #2a6fa8 0%, #3a8fd4 20%, #5ec3e8 40%, #8edcf5 60%,
-    #2a6fa8 60.01%, #3a8fd4 80%, #5ec3e8 100%
-  );
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: rateDiagonal 4s linear infinite;
+  color: #5ec3e8;
   line-height: 1.1;
 }
+body.dark-mode .stat-rate-value {
+  color: #8ecfe8;
+}
+/* 만족도 물결 그라데이션 숫자 — 대각선 부드러운 반복 */
 @keyframes rateDiagonal {
   0%   { background-position: 100% 100%; }
   100% { background-position: 0% 0%; }
 }
-body.dark-mode .stat-rate-value {
-  background: linear-gradient(
-    135deg,
-    #3a7fb8 0%, #5ec3e8 20%, #8ecfe8 40%, #b0e4f5 60%,
-    #3a7fb8 60.01%, #5ec3e8 80%, #8ecfe8 100%
-  );
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-/* 통계 분석 아이콘 (v5.0.1: SVG 인라인) */
-.stat-analytics-icon {
-  width: 36px;
-  height: 36px;
-  margin-bottom: 2px;
+/* ===== 통계 분석 카드 호버 애니메이션 (v6.0.0) ===== */
+.stat-analytics-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 100px;
+  position: relative;
+  overflow: hidden;
 }
-.stat-analytics-icon svg {
-  width: 36px;
-  height: 36px;
+
+/* 텍스트 */
+.stat-analytics-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #5ec3e8;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  z-index: 2;
+}
+.stat-analytics-card:hover .stat-analytics-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  transform: translateY(42px);
+}
+
+/* 차트 아이콘 */
+.stat-analytics-chart {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.25s 0.05s, transform 0.3s 0.05s;
+  z-index: 2;
+}
+.stat-analytics-card:hover .stat-analytics-chart {
+  opacity: 1;
+  transform: translateY(-8px);
+}
+
+/* 막대 */
+.sa-bar-1 { fill: #3a8fd4; }
+.sa-bar-2 { fill: #2563eb; }
+.sa-bar-3 { fill: #3a8fd4; }
+.sa-bar-4 { fill: #2563eb; }
+.sa-bar-1, .sa-bar-2, .sa-bar-3, .sa-bar-4 {
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0s;
+}
+.stat-analytics-card:hover .sa-bar-1 {
+  transform: scaleY(1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+}
+.stat-analytics-card:hover .sa-bar-2 {
+  transform: scaleY(1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s;
+}
+.stat-analytics-card:hover .sa-bar-3 {
+  transform: scaleY(1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.45s;
+}
+.stat-analytics-card:hover .sa-bar-4 {
+  transform: scaleY(1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s;
+}
+
+/* 꺾은선 */
+.sa-line {
+  stroke: #0ea5e9;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.sa-line-1, .sa-line-2, .sa-line-3 {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  transition: stroke-dashoffset 0s;
+}
+.stat-analytics-card:hover .sa-line-1 {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.25s linear 0.45s;
+}
+.stat-analytics-card:hover .sa-line-2 {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.25s linear 0.6s;
+}
+.stat-analytics-card:hover .sa-line-3 {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.25s linear 0.75s;
+}
+
+/* 첫 번째 동그라미: 아래→위 */
+.sa-dot {
+  fill: #fff;
+  stroke: #0ea5e9;
+  stroke-width: 1.8;
+}
+.sa-dot-1 {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0s, transform 0s;
+}
+.stat-analytics-card:hover .sa-dot-1 {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.15s ease-out 0.35s, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+}
+
+/* 2~4번: 안쪽 흰 원 (선 가림용) */
+.sa-dot-inner {
+  fill: #fff;
+  stroke: none;
+  opacity: 0;
+  transition: opacity 0s;
+}
+.stat-analytics-card:hover .sa-di-2 { opacity: 1; transition: opacity 0s 0.7s; }
+.stat-analytics-card:hover .sa-di-3 { opacity: 1; transition: opacity 0s 0.85s; }
+.stat-analytics-card:hover .sa-di-4 { opacity: 1; transition: opacity 0s 1.0s; }
+
+/* 2~4번: 바깥 시계방향 스트로크 */
+.sa-dot-cw {
+  fill: none;
+  stroke: #0ea5e9;
+  stroke-width: 1.8;
+  stroke-dasharray: 17.59;
+  stroke-dashoffset: 17.59;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: rotate(-90deg);
+  transition: stroke-dashoffset 0s;
+}
+.stat-analytics-card:hover .sa-dcw-2 {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s linear 0.7s;
+}
+.stat-analytics-card:hover .sa-dcw-3 {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s linear 0.85s;
+}
+.stat-analytics-card:hover .sa-dcw-4 {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s linear 1.0s;
+}
+
+/* hover 해제 시 빠르게 리셋 */
+.stat-analytics-card:not(:hover) .sa-bar,
+.stat-analytics-card:not(:hover) .sa-line,
+.stat-analytics-card:not(:hover) .sa-dot,
+.stat-analytics-card:not(:hover) .sa-dot-inner,
+.stat-analytics-card:not(:hover) .sa-dot-cw {
+  transition-duration: 0.15s !important;
+  transition-delay: 0s !important;
 }
 
 /* ===== Diff Tracking Styles (Admin) ===== */

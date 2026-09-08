@@ -163,6 +163,7 @@ var _skipAutoScroll = false; // 페이지 전환 직후 첫 문항 포커스 시
 let responses = []; // 관리자 패널에서 서버로부터 불러온 데이터 캐시
 
 // v5.1.0: 테스트 모드 — 날짜 시뮬레이션 (localStorage 영속)
+var testModeYear = null;  // null이면 현재 연도 사용
 var testModeMonth = null; // null이면 비활성
 var testModeDay = null;
 
@@ -173,6 +174,7 @@ var testModeDay = null;
     if (saved) {
       var parsed = JSON.parse(saved);
       if (parsed && parsed.month >= 1 && parsed.month <= 12) {
+        testModeYear = parsed.year || null;
         testModeMonth = parsed.month;
         testModeDay = parsed.day || null;
       }
@@ -184,7 +186,7 @@ var testModeDay = null;
 function getEffectiveDate() {
   var now = new Date();
   if (testModeMonth !== null) {
-    var y = now.getFullYear();
+    var y = testModeYear || now.getFullYear();
     var d = testModeDay || now.getDate();
     return new Date(y, testModeMonth - 1, d);
   }
@@ -192,15 +194,18 @@ function getEffectiveDate() {
 }
 
 function applyTestMode() {
+  var yr = parseInt(document.getElementById('testModeYear').value);
   var m = parseInt(document.getElementById('testModeMonth').value);
   var d = parseInt(document.getElementById('testModeDay').value);
   if (!m || m < 1 || m > 12) { showToast('월(1~12)을 올바르게 입력하세요.'); return; }
   if (d && (d < 1 || d > 31)) { showToast('일(1~31)을 올바르게 입력하세요.'); return; }
+  if (yr && (yr < 2020 || yr > 2099)) { showToast('연도(2020~2099)를 올바르게 입력하세요.'); return; }
+  testModeYear = yr || null;
   testModeMonth = m;
   testModeDay = d || null;
   // localStorage에 저장
-  try { localStorage.setItem('dku_test_mode', JSON.stringify({ month: m, day: testModeDay })); } catch(e) {}
-  var label = m + '월' + (d ? ' ' + d + '일' : '');
+  try { localStorage.setItem('dku_test_mode', JSON.stringify({ year: testModeYear, month: m, day: testModeDay })); } catch(e) {}
+  var label = (yr ? yr + '년 ' : '') + m + '월' + (d ? ' ' + d + '일' : '');
   document.getElementById('testModeStatus').innerHTML = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
   showToast('테스트 모드 적용: ' + label);
   // 학기 라벨 갱신
@@ -212,12 +217,15 @@ function applyTestMode() {
 }
 
 function clearTestMode() {
+  testModeYear = null;
   testModeMonth = null;
   testModeDay = null;
   try { localStorage.removeItem('dku_test_mode'); } catch(e) {}
+  var yearEl = document.getElementById('testModeYear');
   var monthEl = document.getElementById('testModeMonth');
   var dayEl = document.getElementById('testModeDay');
   var statusEl = document.getElementById('testModeStatus');
+  if (yearEl) yearEl.value = '';
   if (monthEl) monthEl.value = '';
   if (dayEl) dayEl.value = '';
   if (statusEl) statusEl.innerHTML = '';
@@ -230,12 +238,14 @@ function clearTestMode() {
 // 테스트 모드 UI 복원 (관리자 패널 열렸을 때 호출)
 function restoreTestModeUI() {
   if (testModeMonth !== null) {
+    var yearEl = document.getElementById('testModeYear');
     var monthEl = document.getElementById('testModeMonth');
     var dayEl = document.getElementById('testModeDay');
     var statusEl = document.getElementById('testModeStatus');
+    if (yearEl && testModeYear) yearEl.value = testModeYear;
     if (monthEl) monthEl.value = testModeMonth;
     if (dayEl && testModeDay) dayEl.value = testModeDay;
-    var label = testModeMonth + '월' + (testModeDay ? ' ' + testModeDay + '일' : '');
+    var label = (testModeYear ? testModeYear + '년 ' : '') + testModeMonth + '월' + (testModeDay ? ' ' + testModeDay + '일' : '');
     if (statusEl) statusEl.innerHTML = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
   }
 }
@@ -314,10 +324,12 @@ let verifyGender = '';
 // 테스트 모드 또는 실제 월에 따라 만족도 조사 버튼 표시/숨김
 function updateLandingButtons() {
   var effectiveMonth = getEffectiveDate().getMonth() + 1; // 1-12
+  var isSatPeriod = (effectiveMonth === 1 || effectiveMonth === 7);
+  var newBtn = document.getElementById('landingNewSurveyBtn');
   var satBtn = document.getElementById('landingSatisfactionBtn');
-  if (satBtn) {
-    satBtn.style.display = (effectiveMonth === 1 || effectiveMonth === 7) ? '' : 'none';
-  }
+  // v6.0.0: 1/7월에는 신규 응답 숨기고 만족도 조사로 완전 대체
+  if (newBtn) newBtn.style.display = isSatPeriod ? 'none' : '';
+  if (satBtn) satBtn.style.display = isSatPeriod ? '' : 'none';
 }
 
 // 페이지 로드 시 자동 실행
@@ -328,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var banner = document.createElement('div');
     banner.id = 'testModeBanner';
     banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(255,165,0,0.95);color:#000;text-align:center;padding:6px 12px;font-size:12px;font-weight:600;backdrop-filter:blur(10px);';
-    banner.textContent = '🧪 테스트 모드: ' + testModeMonth + '월' + (testModeDay ? ' ' + testModeDay + '일' : '') + ' 시뮬레이션 중';
+    banner.textContent = '🧪 테스트 모드: ' + (testModeYear ? testModeYear + '년 ' : '') + testModeMonth + '월' + (testModeDay ? ' ' + testModeDay + '일' : '') + ' 시뮬레이션 중';
     document.body.prepend(banner);
   }
 });

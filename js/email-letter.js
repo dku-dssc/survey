@@ -368,7 +368,7 @@ var mappingLabels = {
   instructorId: '교강사 교번',
   instructorName: '교강사명',
   instructorEmail: '교강사 이메일',
-  instructorPhone: '교강사 휴대폰번호',
+  instructorPhone: '교강사 휴대폰 번호',
   skip: '(사용 안 함)'
 };
 
@@ -508,7 +508,7 @@ function autoDetectMapping() {
     '교번': 'instructorId', '교강사교번': 'instructorId', '교강사 교번': 'instructorId', '교원번호': 'instructorId',
     '교강사명': 'instructorName', '교수명': 'instructorName', '교강사': 'instructorName', '담당교수': 'instructorName',
     '이메일': 'instructorEmail', '교강사 이메일': 'instructorEmail', '교수 이메일': 'instructorEmail',
-    '휴대폰': 'instructorPhone', '전화번호': 'instructorPhone', '휴대폰번호': 'instructorPhone', '교강사 휴대폰번호': 'instructorPhone'
+    '휴대폰': 'instructorPhone', '전화번호': 'instructorPhone', '휴대폰번호': 'instructorPhone', '교강사 휴대폰 번호': 'instructorPhone'
   };
   var assigned = {};
   cols.forEach(function(col) {
@@ -665,7 +665,7 @@ function viewEnrollmentFile(fileId) {
   var file = enrollmentData.find(function(f) { return f.id === fileId; });
   if (!file || !file.rows) return;
   var allFields = ['studentName','studentId','courseName','instructorId','instructorName','instructorEmail','instructorPhone'];
-  var fieldLabels = {studentName:'학생 성명',studentId:'학번',courseName:'교과목명',instructorId:'교강사 교번',instructorName:'교강사명',instructorEmail:'교강사 이메일',instructorPhone:'교강사 휴대폰번호'};
+  var fieldLabels = {studentName:'학생 성명',studentId:'학번',courseName:'교과목명',instructorId:'교강사 교번',instructorName:'교강사명',instructorEmail:'교강사 이메일',instructorPhone:'교강사 휴대폰 번호'};
   var usedFields = allFields.filter(function(f) {
     return file.rows.some(function(r) { return r[f] && String(r[f]).trim(); });
   });
