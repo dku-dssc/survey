@@ -28,48 +28,60 @@ function closeAllSidePanels() {
   if (typeof hidePanelDivider === 'function') hidePanelDivider();
 }
 
-function toggleAdmin() {
-  if (_loginInProgress) return;  // 로그인 진행 중에는 토글 무시
-  // v4.2.2: 폴더가 아직 로드되지 않았으면 로드
+// v6.1: 관리자 패널 명시적 열기/닫기 (toggle 대신 add/remove로 상태 동기화 보장)
+function openAdmin() {
+  if (_loginInProgress) return;
   if (!foldersLoaded && adminToken) {
     loadFoldersFromServer().then(function() { updateAdminPanel(); });
   }
-  const panel = document.getElementById('adminPanel');
-  const overlay = document.getElementById('overlay');
-  panel.classList.toggle('open');
-  overlay.classList.toggle('show');
-
-  // 패널 열림/닫힘 시 body 스크롤 잠금/해제
-  if (panel.classList.contains('open')) {
-    _adminSavedScrollY = window.scrollY;
-    document.body.dataset.scrollY = _adminSavedScrollY;
-    document.documentElement.style.overflow = 'hidden';  // v6.0.0: html도 잠금
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = '-' + _adminSavedScrollY + 'px';
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.width = '100%';  // v6.0.0: 너비 고정
-    _adminScrollGuardActive = true;
-    window.addEventListener('scroll', _adminScrollGuard, { passive: false });
-  } else {
-    _adminScrollGuardActive = false;
-    window.removeEventListener('scroll', _adminScrollGuard);
-    closeAllSidePanels();  // v6.0.0: 사이드 패널 모두 닫기
-    var scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.right = '';
-    document.body.style.width = '';
-    window.scrollTo(0, scrollY);
-  }
-
-  // 로그인 안 된 상태면 로그인 화면 표시 (이미 로그인 됐으면 표시 안 함)
-  if (panel.classList.contains('open') && !adminToken && !isMasterMode) {
+  var panel = document.getElementById('adminPanel');
+  var overlay = document.getElementById('overlay');
+  panel.classList.add('open');
+  overlay.classList.add('show');
+  // body 스크롤 잠금
+  _adminSavedScrollY = window.scrollY;
+  document.body.dataset.scrollY = _adminSavedScrollY;
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.top = '-' + _adminSavedScrollY + 'px';
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+  _adminScrollGuardActive = true;
+  window.addEventListener('scroll', _adminScrollGuard, { passive: false });
+  if (!adminToken && !isMasterMode) {
     showAdminLogin();
+  }
+}
+
+function closeAdmin() {
+  var panel = document.getElementById('adminPanel');
+  var overlay = document.getElementById('overlay');
+  // 항상 명시적으로 remove — 상태 어긋남 방지
+  panel.classList.remove('open');
+  overlay.classList.remove('show');
+  _adminScrollGuardActive = false;
+  window.removeEventListener('scroll', _adminScrollGuard);
+  closeAllSidePanels();
+  var scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
+  document.documentElement.style.overflow = '';
+  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, scrollY);
+}
+
+function toggleAdmin() {
+  if (_loginInProgress) return;
+  var panel = document.getElementById('adminPanel');
+  if (panel.classList.contains('open')) {
+    closeAdmin();
+  } else {
+    openAdmin();
   }
 }
 

@@ -3434,10 +3434,12 @@ body.dark-mode .folder-sort-wrap.sort-open {
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-top: none;
   border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0.5px 0 rgba(255,255,255,0.5) inset, 0 -0.5px 0 rgba(0,0,0,0.04) inset;
 }
 body.dark-mode .folder-sort-options {
   background: rgba(255,255,255,0.06);
   border-color: rgba(255,255,255,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 0.5px 0 rgba(255,255,255,0.08) inset;
 }
 .sort-open .folder-sort-options {
   border-color: rgba(255, 255, 255, 0.4);
@@ -3481,7 +3483,7 @@ body.dark-mode .sort-open .folder-sort-options {
 .folder-delete-check {
   position: absolute;
   top: 4px;
-  right: 0px;
+  right: -10px;
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -3510,7 +3512,7 @@ body.dark-mode .sort-open .folder-sort-options {
 .folder-lock-icon {
   position: absolute;
   top: 4px;
-  right: 0px;
+  right: -10px;
   width: 24px;
   height: 29.5px;
   display: none;
@@ -4079,25 +4081,31 @@ body.dark-mode .support-bar-track {
   line-height: 1.1;
   background: linear-gradient(
     135deg,
-    #2a6fa8 0%, #3080be 10%, #3a8fd4 20%, #4aa8de 30%, #5ec3e8 40%,
-    #76d0f0 50%, #8edcf5 60%, #76d0f0 68%, #5ec3e8 76%,
-    #4aa8de 84%, #3a8fd4 92%, #2a6fa8 100%
+    #3080be 0%, #3488c8 4%, #3890d0 8%, #3c98d6 12%, #42a0dc 16%,
+    #48a8e0 20%, #4fb0e4 24%, #56b8e6 28%, #5ec3e8 32%, #66c8ec 36%,
+    #6ecdee 40%, #76d0f0 44%, #7ed5f2 48%, #86d9f4 52%, #8edcf5 56%,
+    #86d9f4 60%, #7ed5f2 64%, #76d0f0 68%, #6ecdee 72%, #66c8ec 76%,
+    #5ec3e8 80%, #56b8e6 84%, #4fb0e4 88%, #48a8e0 92%, #3c98d6 96%,
+    #3080be 100%
   );
-  background-size: 300% 300%;
+  background-size: 400% 400%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: rateDiagonal 5s ease-in-out infinite;
+  animation: rateDiagonal 6s ease-in-out infinite;
 }
 body.dark-mode .stat-satisfaction-value {
   font-weight: 800;
   background: linear-gradient(
     135deg,
-    #3a7fb8 0%, #4a9fd0 10%, #5ec3e8 20%, #76cce8 30%, #8ecfe8 40%,
-    #9ed9f0 50%, #b0e4f5 60%, #9ed9f0 68%, #8ecfe8 76%,
-    #76cce8 84%, #5ec3e8 92%, #3a7fb8 100%
+    #4a9fd0 0%, #50a5d4 4%, #56abd8 8%, #5cb1dc 12%, #62b7e0 16%,
+    #68bde4 20%, #6ec3e8 24%, #74c8ea 28%, #7acced 32%, #80d0ef 36%,
+    #86d4f1 40%, #8cd8f3 44%, #92dcf4 48%, #98e0f5 52%, #9ed4f0 56%,
+    #98e0f5 60%, #92dcf4 64%, #8cd8f3 68%, #86d4f1 72%, #80d0ef 76%,
+    #7acced 80%, #74c8ea 84%, #6ec3e8 88%, #68bde4 92%, #62b7e0 96%,
+    #4a9fd0 100%
   );
-  background-size: 300% 300%;
+  background-size: 400% 400%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -4138,15 +4146,15 @@ body.dark-mode .stat-satisfaction-value {
 .stat-card.stat-clickable:active {
   transform: scale(0.97);
 }
-/* 응답률 숫자 — 정적 색상 (그라데이션 없음) */
+/* 응답률 숫자 — 정적 색상 */
 .stat-rate-value {
   font-size: 36px;
   font-weight: 800;
-  color: #5ec3e8;
+  color: #306fdb;
   line-height: 1.1;
 }
 body.dark-mode .stat-rate-value {
-  color: #8ecfe8;
+  color: #5a9aef;
 }
 /* 만족도 물결 그라데이션 숫자 — 대각선 부드러운 반복 */
 @keyframes rateDiagonal {
@@ -4168,7 +4176,7 @@ body.dark-mode .stat-rate-value {
 .stat-analytics-text {
   font-size: 20px;
   font-weight: 700;
-  color: #5ec3e8;
+  color: #306fdb;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: absolute;
   z-index: 2;

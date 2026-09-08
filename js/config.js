@@ -343,8 +343,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (testModeMonth !== null) {
     var banner = document.createElement('div');
     banner.id = 'testModeBanner';
-    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(255,165,0,0.95);color:#000;text-align:center;padding:6px 12px;font-size:12px;font-weight:600;backdrop-filter:blur(10px);';
+    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:rgba(255,165,0,0.95);color:#000;text-align:center;padding:6px 12px;font-size:12px;font-weight:600;backdrop-filter:blur(10px);';
     banner.textContent = '🧪 테스트 모드: ' + (testModeYear ? testModeYear + '년 ' : '') + testModeMonth + '월' + (testModeDay ? ' ' + testModeDay + '일' : '') + ' 시뮬레이션 중';
-    document.body.prepend(banner);
+    document.body.appendChild(banner);
   }
 });
