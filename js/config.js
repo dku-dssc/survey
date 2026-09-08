@@ -162,9 +162,23 @@ const formData = {};
 var _skipAutoScroll = false; // 페이지 전환 직후 첫 문항 포커스 시 스크롤 방지
 let responses = []; // 관리자 패널에서 서버로부터 불러온 데이터 캐시
 
-// v5.1.0: 테스트 모드 — 날짜 시뮬레이션
+// v5.1.0: 테스트 모드 — 날짜 시뮬레이션 (localStorage 영속)
 var testModeMonth = null; // null이면 비활성
 var testModeDay = null;
+
+// 페이지 로드 시 localStorage에서 테스트 모드 복원
+(function restoreTestMode() {
+  try {
+    var saved = localStorage.getItem('dku_test_mode');
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      if (parsed && parsed.month >= 1 && parsed.month <= 12) {
+        testModeMonth = parsed.month;
+        testModeDay = parsed.day || null;
+      }
+    }
+  } catch(e) { /* localStorage 접근 불가 시 무시 */ }
+})();
 
 // 테스트 모드 또는 실제 날짜 반환 헬퍼
 function getEffectiveDate() {
@@ -184,6 +198,8 @@ function applyTestMode() {
   if (d && (d < 1 || d > 31)) { showToast('일(1~31)을 올바르게 입력하세요.'); return; }
   testModeMonth = m;
   testModeDay = d || null;
+  // localStorage에 저장
+  try { localStorage.setItem('dku_test_mode', JSON.stringify({ month: m, day: testModeDay })); } catch(e) {}
   var label = m + '월' + (d ? ' ' + d + '일' : '');
   document.getElementById('testModeStatus').innerHTML = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
   showToast('테스트 모드 적용: ' + label);
@@ -191,17 +207,37 @@ function applyTestMode() {
   if (typeof updateDeadlineSectionLabel === 'function') updateDeadlineSectionLabel(m);
   // 현재 학기 폴더 자동선택 갱신
   if (typeof updateAdminPanel === 'function') updateAdminPanel();
+  // 랜딩 페이지 버튼 갱신 (수요조사/만족도 조사 전환)
+  if (typeof updateLandingButtons === 'function') updateLandingButtons();
 }
 
 function clearTestMode() {
   testModeMonth = null;
   testModeDay = null;
-  document.getElementById('testModeMonth').value = '';
-  document.getElementById('testModeDay').value = '';
-  document.getElementById('testModeStatus').innerHTML = '';
+  try { localStorage.removeItem('dku_test_mode'); } catch(e) {}
+  var monthEl = document.getElementById('testModeMonth');
+  var dayEl = document.getElementById('testModeDay');
+  var statusEl = document.getElementById('testModeStatus');
+  if (monthEl) monthEl.value = '';
+  if (dayEl) dayEl.value = '';
+  if (statusEl) statusEl.innerHTML = '';
   showToast('테스트 모드 해제됨');
   if (typeof updateDeadlineSectionLabel === 'function') updateDeadlineSectionLabel();
   if (typeof updateAdminPanel === 'function') updateAdminPanel();
+  if (typeof updateLandingButtons === 'function') updateLandingButtons();
+}
+
+// 테스트 모드 UI 복원 (관리자 패널 열렸을 때 호출)
+function restoreTestModeUI() {
+  if (testModeMonth !== null) {
+    var monthEl = document.getElementById('testModeMonth');
+    var dayEl = document.getElementById('testModeDay');
+    var statusEl = document.getElementById('testModeStatus');
+    if (monthEl) monthEl.value = testModeMonth;
+    if (dayEl && testModeDay) dayEl.value = testModeDay;
+    var label = testModeMonth + '월' + (testModeDay ? ' ' + testModeDay + '일' : '');
+    if (statusEl) statusEl.innerHTML = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
+  }
 }
 
 // Edit mode state
@@ -274,3 +310,25 @@ function extendAdminSession() {
 let verifyGender = '';
 
 // ===== Landing Page Functions =====
+
+// 테스트 모드 또는 실제 월에 따라 만족도 조사 버튼 표시/숨김
+function updateLandingButtons() {
+  var effectiveMonth = getEffectiveDate().getMonth() + 1; // 1-12
+  var satBtn = document.getElementById('landingSatisfactionBtn');
+  if (satBtn) {
+    satBtn.style.display = (effectiveMonth === 1 || effectiveMonth === 7) ? '' : 'none';
+  }
+}
+
+// 페이지 로드 시 자동 실행
+document.addEventListener('DOMContentLoaded', function() {
+  updateLandingButtons();
+  // 테스트 모드 상태 표시 (배너)
+  if (testModeMonth !== null) {
+    var banner = document.createElement('div');
+    banner.id = 'testModeBanner';
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(255,165,0,0.95);color:#000;text-align:center;padding:6px 12px;font-size:12px;font-weight:600;backdrop-filter:blur(10px);';
+    banner.textContent = '🧪 테스트 모드: ' + testModeMonth + '월' + (testModeDay ? ' ' + testModeDay + '일' : '') + ' 시뮬레이션 중';
+    document.body.prepend(banner);
+  }
+});

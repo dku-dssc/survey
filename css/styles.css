@@ -3382,16 +3382,18 @@ body.dark-mode .folder-sort-wrap {
 }
 body.dark-mode .folder-sort-wrap:not(.sort-open):hover { background: rgba(255,255,255,0.12); }
 .folder-sort-wrap.sort-open {
-  background: rgba(0, 113, 227, 0.06);
-  border-color: rgba(0, 113, 227, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.4);
+  border-bottom-color: rgba(255, 255, 255, 0.15);
   transform: none;
-  box-shadow: 0 2px 12px rgba(0,113,227,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0.5px 0 rgba(255,255,255,0.5) inset;
   cursor: default;
   border-radius: 12px 12px 0 0;
 }
 body.dark-mode .folder-sort-wrap.sort-open {
-  background: rgba(74, 158, 255, 0.10);
-  border-color: rgba(74, 158, 255, 0.25);
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.1);
+  border-bottom-color: rgba(255,255,255,0.04);
 }
 .folder-sort-trigger {
   border: none !important;
@@ -3426,22 +3428,22 @@ body.dark-mode .folder-sort-wrap.sort-open {
   left: -1px;
   right: -1px;
   z-index: 10;
-  background: rgba(0, 113, 227, 0.06);
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(28px) saturate(200%);
   -webkit-backdrop-filter: blur(28px) saturate(200%);
-  border: 1px solid rgba(0, 113, 227, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-top: none;
   border-radius: 0 0 12px 12px;
 }
 body.dark-mode .folder-sort-options {
-  background: rgba(74, 158, 255, 0.10);
-  border-color: rgba(74, 158, 255, 0.25);
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.1);
 }
 .sort-open .folder-sort-options {
-  border-color: rgba(0, 113, 227, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 body.dark-mode .sort-open .folder-sort-options {
-  border-color: rgba(74, 158, 255, 0.25);
+  border-color: rgba(255,255,255,0.1);
 }
 .folder-sort-options.open {
   max-height: 200px;
@@ -4014,9 +4016,90 @@ body.dark-mode .mapping-preview-table th {
   color: var(--text-tertiary);
   margin-top: 4px;
 }
-/* v4.2.8: 2×2 밭전자 그리드 */
-.stats-grid {
-  grid-template-columns: repeat(2, 1fr);
+/* v5.2.0: 3열 그리드 */
+.stats-grid.stats-row-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 600px) {
+  .stats-grid.stats-row-3 {
+    grid-template-columns: 1fr;
+  }
+}
+/* 지원 요청 현황 카드 */
+.stat-card-support {
+  text-align: left;
+  padding: 12px 14px;
+}
+.support-request-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.support-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+.support-bar-label {
+  min-width: 56px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.support-bar-track {
+  flex: 1;
+  height: 14px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 7px;
+  overflow: hidden;
+  position: relative;
+}
+body.dark-mode .support-bar-track {
+  background: rgba(255,255,255,0.06);
+}
+.support-bar-fill {
+  height: 100%;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #1a5ea6 0%, #3a8fd4 50%, #6db8e8 100%);
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  min-width: 2px;
+}
+.support-bar-count {
+  min-width: 28px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 11px;
+}
+/* 만족도 값 */
+.stat-satisfaction-value {
+  font-size: 28px;
+}
+/* 만족도 조사 항목별 평가 */
+.sat-item-row {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.sat-item-row:last-child {
+  border-bottom: none;
+}
+.sat-item-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.sat-rating-group {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 6px !important;
+}
+.sat-rating-group .sat-score-item {
+  flex: 0 0 auto;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  border-radius: 20px !important;
 }
 .stat-card.stat-clickable {
   cursor: pointer;
@@ -4029,32 +4112,33 @@ body.dark-mode .mapping-preview-table th {
 .stat-card.stat-clickable:active {
   transform: scale(0.97);
 }
-/* 응답률 물결 그라데이션 숫자 — '\' 대각선 방향, 느린 속도 */
+/* 응답률 물결 그라데이션 숫자 — '\' 대각선 한 방향(어두운→밝은) 반복 */
 .stat-rate-value {
   font-size: 36px;
   font-weight: 800;
   background: linear-gradient(
     135deg,
-    #6db8e8 0%, #3a8fd4 25%, #5ec3e8 50%, #6db8e8 75%, #3a8fd4 100%
+    #2a6fa8 0%, #3a8fd4 20%, #5ec3e8 40%, #8edcf5 60%,
+    #2a6fa8 60.01%, #3a8fd4 80%, #5ec3e8 100%
   );
-  background-size: 300% 300%;
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: rateDiagonal 12s ease-in-out infinite;
+  animation: rateDiagonal 4s linear infinite;
   line-height: 1.1;
 }
 @keyframes rateDiagonal {
-  0%   { background-position: 0% 0%; }
-  50%  { background-position: 100% 100%; }
+  0%   { background-position: 100% 100%; }
   100% { background-position: 0% 0%; }
 }
 body.dark-mode .stat-rate-value {
   background: linear-gradient(
     135deg,
-    #8ecfe8 0%, #6db8e8 25%, #5ec3e8 50%, #8ecfe8 75%, #6db8e8 100%
+    #3a7fb8 0%, #5ec3e8 20%, #8ecfe8 40%, #b0e4f5 60%,
+    #3a7fb8 60.01%, #5ec3e8 80%, #8ecfe8 100%
   );
-  background-size: 300% 300%;
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

@@ -1193,6 +1193,63 @@ function getSemesterFromDate(dateStr) {
   return { year: y, semester: (m >= 7) ? 2 : 1 };
 }
 
+// v5.2.0: 지원 요청 현황 막대 그래프
+function renderSupportRequestChart() {
+  var container = document.getElementById('supportRequestChart');
+  if (!container) return;
+  if (responses.length === 0) {
+    container.innerHTML = '<div style="color:var(--text-tertiary);font-size:11px;">응답 데이터 없음</div>';
+    return;
+  }
+  // 지원 유형별 집계 — teachSupport 필드에서 추출
+  var supportCounts = {};
+  responses.forEach(function(r) {
+    var ts = r.teachSupport;
+    if (!ts) return;
+    var items = Array.isArray(ts) ? ts : [ts];
+    items.forEach(function(item) {
+      if (item && item.trim()) {
+        supportCounts[item.trim()] = (supportCounts[item.trim()] || 0) + 1;
+      }
+    });
+  });
+  // 정렬 (많은 순)
+  var sorted = Object.keys(supportCounts).sort(function(a, b) {
+    return supportCounts[b] - supportCounts[a];
+  });
+  if (sorted.length === 0) {
+    container.innerHTML = '<div style="color:var(--text-tertiary);font-size:11px;">지원 요청 데이터 없음</div>';
+    return;
+  }
+  var maxCount = supportCounts[sorted[0]];
+  var top = sorted.slice(0, 5); // 상위 5개
+  var html = '';
+  top.forEach(function(label) {
+    var count = supportCounts[label];
+    var pct = Math.round((count / maxCount) * 100);
+    // 라벨 축약
+    var shortLabel = label.length > 6 ? label.substring(0, 6) + '…' : label;
+    html += '<div class="support-bar-row">';
+    html += '<span class="support-bar-label" title="' + label + '">' + shortLabel + '</span>';
+    html += '<div class="support-bar-track"><div class="support-bar-fill" style="width:' + pct + '%"></div></div>';
+    html += '<span class="support-bar-count">' + count + '명</span>';
+    html += '</div>';
+  });
+  if (sorted.length > 5) {
+    html += '<div style="font-size:10px;color:var(--text-tertiary);text-align:right;margin-top:2px;">외 ' + (sorted.length - 5) + '개</div>';
+  }
+  container.innerHTML = html;
+}
+
+// v5.2.0: 만족도(%) 업데이트
+function updateSatisfactionRate() {
+  var el = document.getElementById('satisfactionRate');
+  if (!el) return;
+  // 만족도 조사 데이터가 별도 테이블에 저장될 예정
+  // 현재는 placeholder — 백엔드 만족도 API 연동 후 실제 데이터 표시
+  el.textContent = '—';
+}
+
 function groupResponsesBySemester() {
   var groups = {};
   responses.forEach(function(r) {
@@ -1237,6 +1294,12 @@ function updateAdminPanel() {
       rateEl.textContent = '—';
     }
   }
+
+  // v5.2.0: 지원 요청 현황 그래프 업데이트
+  renderSupportRequestChart();
+
+  // v5.2.0: 만족도(%) 업데이트
+  updateSatisfactionRate();
 
   const list = document.getElementById('responseList');
 

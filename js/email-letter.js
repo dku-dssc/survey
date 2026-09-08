@@ -703,15 +703,14 @@ var deadlineSettings = { survey_deadline: null, temp_deadline: null };
 // v5.0.2: 월별 기한 설정 이름 동적 변경
 function getDeadlineSemesterLabel(testMonth) {
   var m = testMonth || (typeof getEffectiveDate === 'function' ? getEffectiveDate().getMonth() + 1 : new Date().getMonth() + 1);
-  if (m === 1 || m === 7) return '방학 중 수요조사';
-  if (m >= 2 && m <= 6) return '1학기 수요조사';
-  return '2학기 수요조사';
+  if (m === 1 || m === 7) return '만족도 조사 응답 기한 설정';
+  return '개인별 교육지원계획 수요조사 응답 기한 설정';
 }
 
 function updateDeadlineSectionLabel(testMonth) {
   var label = getDeadlineSemesterLabel(testMonth);
   var el = document.querySelector('#deadlineSection .deadline-section-label');
-  if (el) el.innerHTML = '<span>📅</span> ' + label + ' 응답 기한 설정';
+  if (el) el.innerHTML = '<span>📅</span> ' + label;
 }
 
 async function loadDeadlineSettings() {
