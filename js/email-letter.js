@@ -368,7 +368,7 @@ var mappingLabels = {
   instructorId: '교강사 교번',
   instructorName: '교강사명',
   instructorEmail: '교강사 이메일',
-  instructorPhone: '교강사 휴대폰 번호',
+  instructorPhone: '교강사 연락처',
   skip: '(사용 안 함)'
 };
 
@@ -665,7 +665,7 @@ function viewEnrollmentFile(fileId) {
   var file = enrollmentData.find(function(f) { return f.id === fileId; });
   if (!file || !file.rows) return;
   var allFields = ['studentName','studentId','courseName','instructorId','instructorName','instructorEmail','instructorPhone'];
-  var fieldLabels = {studentName:'학생 성명',studentId:'학번',courseName:'교과목명',instructorId:'교강사 교번',instructorName:'교강사명',instructorEmail:'교강사 이메일',instructorPhone:'교강사 휴대폰 번호'};
+  var fieldLabels = {studentName:'학생 성명',studentId:'학번',courseName:'교과목명',instructorId:'교강사 교번',instructorName:'교강사명',instructorEmail:'교강사 이메일',instructorPhone:'교강사 연락처'};
   var usedFields = allFields.filter(function(f) {
     return file.rows.some(function(r) { return r[f] && String(r[f]).trim(); });
   });

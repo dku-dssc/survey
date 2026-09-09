@@ -325,15 +325,48 @@ let verifyGender = '';
 
 // ===== Landing Page Functions =====
 
-// 테스트 모드 또는 실제 월에 따라 만족도 조사 버튼 표시/숨김
+// 테스트 모드 또는 실제 월에 따라 만족도 조사 버튼 표시/숨김 + 홈화면 멘트 변경
 function updateLandingButtons() {
-  var effectiveMonth = getEffectiveDate().getMonth() + 1; // 1-12
+  var ed = getEffectiveDate();
+  var effectiveMonth = ed.getMonth() + 1; // 1-12
   var isSatPeriod = (effectiveMonth === 1 || effectiveMonth === 7);
   var newBtn = document.getElementById('landingNewSurveyBtn');
   var satBtn = document.getElementById('landingSatisfactionBtn');
   // v6.0.0: 1/7월에는 신규 응답 숨기고 만족도 조사로 완전 대체
   if (newBtn) newBtn.style.display = isSatPeriod ? 'none' : '';
   if (satBtn) satBtn.style.display = isSatPeriod ? '' : 'none';
+
+  // v6.1.3: 만족도 조사 시기 홈화면 멘트 변경
+  var heroTitle = document.querySelector('.intro-hero h1');
+  var introInfo = document.querySelector('.intro-info');
+  if (isSatPeriod && heroTitle && introInfo) {
+    heroTitle.textContent = '교수·학습지원 만족도 조사';
+    var si = window.getSemesterInfo ? window.getSemesterInfo() : null;
+    var semLabel = si ? si.full : '';
+    var vacationType = (effectiveMonth === 7) ? '여름방학' : '겨울방학';
+    introInfo.innerHTML =
+      '<p>안녕하세요! <span class="highlight">[단국대학교 죽전캠퍼스 장애학생지원센터]</span>입니다.</p><br>' +
+      '<p>본 조사는 ' + escapeHtml(semLabel) + ' 교수·학습지원 서비스에 대한 만족도를 평가하기 위한 조사입니다.</p>' +
+      '<p>' + escapeHtml(vacationType) + ' 기간 중 진행되며, 학생 여러분이 이번 학기 받으신 지원에 대한 소중한 의견을 수집합니다.</p>' +
+      '<p>응답해 주신 내용은 <span class="highlight">향후 교육지원 서비스 개선</span>에 적극 반영될 예정입니다.</p>' +
+      '<div class="contact">문의처: 단국대학교 장애학생지원센터<br>📞 031-8005-2481~3</div>';
+  } else if (!isSatPeriod && heroTitle) {
+    // 수요조사 시기로 복원
+    heroTitle.textContent = '개인별 교육지원계획 수요조사';
+    if (introInfo) {
+      var si2 = window.getSemesterInfo ? window.getSemesterInfo() : null;
+      var semLabel2 = si2 ? si2.full : '';
+      introInfo.innerHTML =
+        '<p>안녕하세요! <span class="highlight">[단국대학교 죽전캠퍼스 장애학생지원센터]</span>입니다.</p><br>' +
+        '<p>본 조사는 <span id="semesterIntroText">' + escapeHtml(semLabel2) + '</span> 수업이나 대학 생활에서 필요한 지원을 파악하기 위한 조사입니다.</p>' +
+        '<p>학생 여러분이 작성해 주신 의견은 개인별로 교육지원을 계획하고, 실제로 지원하기 위한 근거 자료로 활용될 예정입니다.</p>' +
+        '<p>답변 내용을 기반으로 <span class="highlight">각 학생별 지원과 수업 교수님에게 안내</span>가 이루어질 예정입니다.</p>' +
+        '<div class="notice"><p><span class="highlight">지원이 필요한 항목에 체크</span>해주시고, 구체적인 지원이 필요한 경우에는 반드시 세부 요청사항에 작성해주시기 바랍니다.</p>' +
+        '<p style="margin-top:6px;font-size:12px">(예: 빨간색 글씨는 잘 보이지 않아서 시험 문제에 사용하지 말아주세요, 시험 강의실 옮길 때 휠체어 자리가 있는 강의실인지 확인해주세요)</p></div>' +
+        '<p>조사에 응하지 않을 경우, 지원이 필요없다고 판단하고 학교에서의 지원이 제한될 수 있습니다.</p>' +
+        '<div class="contact">문의처: 단국대학교 장애학생지원센터<br>📞 031-8005-2481~3</div>';
+    }
+  }
 }
 
 // 페이지 로드 시 자동 실행

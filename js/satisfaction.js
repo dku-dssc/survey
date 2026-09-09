@@ -126,7 +126,7 @@ async function verifySatisfactionStudent() {
     if (result.alreadySubmitted && !satEditMode) {
       // 새로운 제출 시도인데 이미 제출됨 → 에러 표시
       if (errorEl) {
-        errorEl.textContent = '이미 만족도 조사를 제출하셨습니다. "기존 응답 수정" 버튼을 이용해주세요.';
+        errorEl.innerHTML = '이미 만족도 조사를 제출하셨습니다.<br>&quot;기존 응답 수정&quot; 버튼을 이용해주세요.';
         errorEl.style.display = 'block';
       }
       return;

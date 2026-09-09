@@ -1317,6 +1317,30 @@ function renderSupportRequestChart() {
   container.innerHTML = html;
 }
 
+// v6.1.3: 만족도 시기 응답률 업데이트 (만족도 응답 수 / 수요조사 응답 수)
+async function updateSatisfactionResponseRate(rateEl) {
+  if (!adminToken || !rateEl) return;
+  try {
+    var resp = await fetch(API_BASE + '/api/admin/satisfaction', {
+      headers: { 'Authorization': 'Bearer ' + adminToken }
+    });
+    if (!resp.ok) { rateEl.textContent = '—'; return; }
+    var data = await resp.json();
+    if (!data.success) { rateEl.textContent = '—'; return; }
+    var satCount = data.responses ? data.responses.length : 0;
+    // 수요조사 응답 수를 분모로 사용
+    var demandCount = responses.length;
+    if (demandCount > 0 && satCount > 0) {
+      var pct = Math.min(100, Math.round((satCount / demandCount) * 100));
+      rateEl.textContent = pct + '%';
+    } else if (satCount > 0) {
+      rateEl.textContent = satCount + '건';
+    } else {
+      rateEl.textContent = '—';
+    }
+  } catch(e) { rateEl.textContent = '—'; }
+}
+
 // v6.1.2: 만족도(%) 업데이트 — 만족도 조사 API에서 실제 데이터 조회
 async function updateSatisfactionRate() {
   var el = document.getElementById('satisfactionRate');
@@ -1370,7 +1394,7 @@ function getSatisfactionSemesters(demandGroups) {
   return semesters;
 }
 
-// v6.1.2: 만족도 폴더 응답 수 비동기 업데이트
+// v6.1.3: 만족도 폴더 응답 수 비동기 업데이트 + 1건 이상일 때만 표시
 async function updateSatisfactionFolderCounts(semesters) {
   if (!adminToken) return;
   for (var i = 0; i < semesters.length; i++) {
@@ -1383,14 +1407,15 @@ async function updateSatisfactionFolderCounts(semesters) {
       if (resp.ok) {
         var data = await resp.json();
         if (data.success && data.responses) {
-          // DOM에서 해당 폴더의 카운트 업데이트
-          var countEls = document.querySelectorAll('.semester-folder .semester-folder-name');
-          countEls.forEach(function(nameEl) {
-            if (nameEl.textContent.includes('만족도 조사') && nameEl.textContent.includes(s.year + '년 ' + s.semester + '학기')) {
-              var countEl = nameEl.parentElement.querySelector('.semester-folder-count');
-              if (countEl) countEl.textContent = data.responses.length + '건';
-            }
-          });
+          var count = data.responses.length;
+          // DOM에서 해당 폴더 찾기 (data-sat-semester 속성으로)
+          var folderEl = document.querySelector('.semester-folder[data-sat-semester="' + semesterKey + '"]');
+          if (folderEl) {
+            var countEl = folderEl.querySelector('.semester-folder-count');
+            if (countEl) countEl.textContent = count + '건';
+            // v6.1.3: 1건 이상이면 표시, 0건이면 숨김
+            folderEl.style.display = count > 0 ? '' : 'none';
+          }
         }
       }
     } catch(e) { /* 무시 */ }
@@ -1492,14 +1517,29 @@ function updateAdminPanel() {
       (r) =>
         r.submittedAt && new Date(r.submittedAt).toDateString() === today,
     ).length;
-  // v5.0.0: 응답률 업데이트
+  // v6.1.3: 만족도 시기에는 만족도 응답률, 그 외에는 수요조사 응답률
   var rateEl = document.getElementById('responseRate');
+  var rateLabelEl = document.getElementById('responseRateSurveyName');
+  var ed = (typeof getEffectiveDate === 'function' ? getEffectiveDate() : new Date());
+  var em = ed.getMonth() + 1;
+  var isSatPeriod = (em === 1 || em === 7);
+
+  if (rateLabelEl) {
+    rateLabelEl.textContent = isSatPeriod ? '교수·학습지원 만족도 조사' : '개인별 교육지원계획 수요조사';
+  }
+
   if (rateEl) {
-    if (totalRegisteredStudents > 0) {
-      var pct = Math.min(100, Math.round((responses.length / totalRegisteredStudents) * 100));
-      rateEl.textContent = pct + '%';
-    } else {
+    if (isSatPeriod) {
+      // 만족도 시기: 만족도 응답 수 / 수요조사 응답 수 기준 응답률
       rateEl.textContent = '—';
+      updateSatisfactionResponseRate(rateEl);
+    } else {
+      if (totalRegisteredStudents > 0) {
+        var pct = Math.min(100, Math.round((responses.length / totalRegisteredStudents) * 100));
+        rateEl.textContent = pct + '%';
+      } else {
+        rateEl.textContent = '—';
+      }
     }
   }
 
@@ -1523,8 +1563,9 @@ function updateAdminPanel() {
   // STATE 1: No folder selected → show only folders (v4.2.0: + custom folders + mgmt buttons)
   if (!currentSemesterFolder && !selectedCustomFolder && !currentSatisfactionFolder) {
     var folderHtml = '<div class="semester-folders' + (folderDeleteMode ? ' delete-mode' : '') + '">';
-    // Semester folders
+    // Semester folders (v6.1.3: 1건 이상일 때만 표시)
     groups.forEach(function(g) {
+      if (g.responses.length === 0) return; // v6.1.3: 빈 학기 폴더 숨김
       var hasDocs = g.responses.length > 0;
       var folderClass = 'semester-folder ' + (hasDocs ? 'folder-has' : 'folder-empty');
       folderHtml += '<div class="' + folderClass + '">';
@@ -1567,11 +1608,11 @@ function updateAdminPanel() {
       folderHtml += '<div class="semester-folder-count">' + g.responses.length + '건</div>';
       folderHtml += '</div>';
     });
-    // v6.1.2: 만족도 조사 결과 폴더 (시스템 폴더)
+    // v6.1.3: 만족도 조사 결과 폴더 (시스템 폴더, 1건 이상일 때만 표시)
     var satSemesters = getSatisfactionSemesters(groups);
     satSemesters.forEach(function(s) {
       var folderClass = 'semester-folder folder-has';
-      folderHtml += '<div class="' + folderClass + '">';
+      folderHtml += '<div class="' + folderClass + '" data-sat-semester="' + s.year + '-' + s.semester + '" style="display:none;">';
       // 삭제 모드 시 자물쇠 아이콘
       folderHtml += '<div class="folder-lock-icon ' + (folderDeleteMode ? 'visible' : '') + '" onclick="event.stopPropagation();shakeLockIcon(this)">' +
         '<svg width="24" height="29.5" viewBox="0 0 24 27.7" fill="none" xmlns="http://www.w3.org/2000/svg">' +

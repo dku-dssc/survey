@@ -3382,11 +3382,11 @@ body.dark-mode .folder-sort-wrap {
 }
 body.dark-mode .folder-sort-wrap:not(.sort-open):hover { background: rgba(255,255,255,0.12); }
 .folder-sort-wrap.sort-open {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.4);
-  border-bottom-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+  border-bottom-color: transparent;
   transform: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0.5px 0 rgba(255,255,255,0.5) inset;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06), 0 0.5px 0 rgba(255,255,255,0.6) inset;
   cursor: default;
   border-radius: 12px 12px 0 0;
 }
@@ -3428,13 +3428,13 @@ body.dark-mode .folder-sort-wrap.sort-open {
   left: -1px;
   right: -1px;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(28px) saturate(200%);
   -webkit-backdrop-filter: blur(28px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.45);
   border-top: none;
   border-radius: 0 0 12px 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0.5px 0 rgba(255,255,255,0.5) inset, 0 -0.5px 0 rgba(0,0,0,0.04) inset;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06), 0 -0.5px 0 rgba(0,0,0,0.02) inset;
 }
 body.dark-mode .folder-sort-options {
   background: rgba(255,255,255,0.06);
@@ -3442,7 +3442,7 @@ body.dark-mode .folder-sort-options {
   box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 0.5px 0 rgba(255,255,255,0.08) inset;
 }
 .sort-open .folder-sort-options {
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.45);
 }
 body.dark-mode .sort-open .folder-sort-options {
   border-color: rgba(255,255,255,0.1);
@@ -4090,34 +4090,27 @@ body.dark-mode .support-bar-track {
   line-height: 1.1;
   background: linear-gradient(
     135deg,
-    #3080be 0%, #3488c8 4%, #3890d0 8%, #3c98d6 12%, #42a0dc 16%,
-    #48a8e0 20%, #4fb0e4 24%, #56b8e6 28%, #5ec3e8 32%, #66c8ec 36%,
-    #6ecdee 40%, #76d0f0 44%, #7ed5f2 48%, #86d9f4 52%, #8edcf5 56%,
-    #86d9f4 60%, #7ed5f2 64%, #76d0f0 68%, #6ecdee 72%, #66c8ec 76%,
-    #5ec3e8 80%, #56b8e6 84%, #4fb0e4 88%, #48a8e0 92%, #3c98d6 96%,
-    #3080be 100%
+    #3080be 0%, #3c98d6 15%, #4fb0e4 30%, #66c8ec 45%,
+    #86d9f4 60%, #66c8ec 75%, #4fb0e4 85%, #3080be 100%
   );
-  background-size: 400% 400%;
+  background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: rateDiagonal 6s ease-in-out infinite;
+  animation: rateDiagonal 4s ease-in-out infinite alternate;
 }
 body.dark-mode .stat-satisfaction-value {
   font-weight: 800;
   background: linear-gradient(
     135deg,
-    #4a9fd0 0%, #50a5d4 4%, #56abd8 8%, #5cb1dc 12%, #62b7e0 16%,
-    #68bde4 20%, #6ec3e8 24%, #74c8ea 28%, #7acced 32%, #80d0ef 36%,
-    #86d4f1 40%, #8cd8f3 44%, #92dcf4 48%, #98e0f5 52%, #9ed4f0 56%,
-    #98e0f5 60%, #92dcf4 64%, #8cd8f3 68%, #86d4f1 72%, #80d0ef 76%,
-    #7acced 80%, #74c8ea 84%, #6ec3e8 88%, #68bde4 92%, #62b7e0 96%,
-    #4a9fd0 100%
+    #4a9fd0 0%, #56abd8 15%, #68bde4 30%, #7acced 45%,
+    #92dcf4 60%, #7acced 75%, #68bde4 85%, #4a9fd0 100%
   );
-  background-size: 400% 400%;
+  background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: rateDiagonal 4s ease-in-out infinite alternate;
 }
 /* 만족도 조사 항목별 평가 */
 .sat-item-row {
@@ -4169,6 +4162,35 @@ body.dark-mode .stat-rate-value {
 @keyframes rateDiagonal {
   0%   { background-position: 100% 100%; }
   100% { background-position: 0% 0%; }
+}
+/* v6.1.3: 응답률 라벨 호버 롤링 애니메이션 */
+.stat-rate-label-wrap {
+  position: relative;
+  overflow: hidden;
+  height: 1.4em;
+}
+.stat-rate-label-text,
+.stat-rate-label-hover {
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+}
+.stat-rate-label-hover {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  transform: translateY(100%);
+  opacity: 0;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stat-rate-card:hover .stat-rate-label-text {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.stat-rate-card:hover .stat-rate-label-hover {
+  transform: translateY(0);
+  opacity: 1;
 }
 /* ===== 통계 분석 카드 호버 애니메이션 (v6.0.0) ===== */
 .stat-analytics-card {
