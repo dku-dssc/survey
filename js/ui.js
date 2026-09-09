@@ -1,6 +1,17 @@
 // ===== Toast, input handlers, save draft, email domain, accessibility, dark/high-contrast, keyboard nav =====
 // 원본 index.html에서 분리됨 (v5.0.1)
 
+// v6.1.2: XSS 방지용 HTML 이스케이프 유틸리티
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 var toastTimer = null;
 function showToast(msg) {
   const toast = document.getElementById('toast');

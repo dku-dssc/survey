@@ -24,9 +24,9 @@ function generateLetter() {
       const items = Array.isArray(r[field]) ? r[field] : [r[field]];
       supportHtml +=
         '<p><strong>▸ ' +
-        label +
+        escapeHtml(label) +
         '</strong></p><p style="padding-left:16px;">' +
-        items.join(', ') +
+        items.map(function(i) { return escapeHtml(i); }).join(', ') +
         '</p>';
     }
   }
@@ -44,9 +44,9 @@ function generateLetter() {
     if (r[field]) {
       detailHtml +=
         '<p><strong>▸ ' +
-        label +
+        escapeHtml(label) +
         ' 세부 요청:</strong> ' +
-        r[field] +
+        escapeHtml(r[field]) +
         '</p>';
     }
   }
@@ -76,35 +76,35 @@ function generateLetter() {
     '<p>안녕하세요, 단국대학교 장애학생지원센터입니다.</p>' +
     '<br>' +
     '<p>귀 학과(부)에 소속된 <strong>' +
-    (r.name || '○○○') +
+    escapeHtml(r.name || '○○○') +
     '</strong> 학생(학번: ' +
-    (r.studentId || '○○○○○○') +
+    escapeHtml(r.studentId || '○○○○○○') +
     ')은 <strong>' +
-    (disabilityTypeStr || '○○장애') +
+    escapeHtml(disabilityTypeStr || '○○장애') +
     '</strong>(' +
-    (r.disabilityLevel || '장애정도 미기재') +
+    escapeHtml(r.disabilityLevel || '장애정도 미기재') +
     ')으로 등록된 장애학생입니다.</p>' +
     '<br>' +
     '<p>「장애인 등에 대한 특수교육법」제 30조의 2에 의거하여 해당 학생의 개인별 교육지원계획에 따른 학습지원 협조를 요청드립니다.</p>' +
     '<br>' +
     '<p><strong>■ 학생 정보</strong></p>' +
     '<p>· 성명: ' +
-    (r.name || '-') +
+    escapeHtml(r.name || '-') +
     '</p>' +
     '<p>· 학과(부): ' +
-    (r.department || '-') +
+    escapeHtml(r.department || '-') +
     '</p>' +
     '<p>· 학년: ' +
-    (r.grade || '-') +
+    escapeHtml(r.grade || '-') +
     '</p>' +
     '<p>· 장애유형: ' +
-    (disabilityTypeStr || '-') +
+    escapeHtml(disabilityTypeStr || '-') +
     '</p>' +
     '<p>· 장애정도: ' +
-    (r.disabilityLevel || '-') +
+    escapeHtml(r.disabilityLevel || '-') +
     '</p>' +
     (r.assistiveDevice
-      ? '<p>· 사용 보조기기: ' + r.assistiveDevice + '</p>'
+      ? '<p>· 사용 보조기기: ' + escapeHtml(r.assistiveDevice) + '</p>'
       : '') +
     '<br>' +
     '<p><strong>■ 요청 지원 사항</strong></p>' +

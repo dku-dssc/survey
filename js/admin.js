@@ -981,12 +981,12 @@ async function loadFolderFiles(cf) {
         ? '<span class="folder-file-badge survey">설문</span>'
         : '<span class="folder-file-badge upload">업로드</span>';
       var metaText = '';
-      if (meta.disabilityType) metaText += meta.disabilityType + ' · ';
-      if (meta.studentId) metaText += meta.studentId + ' · ';
+      if (meta.disabilityType) metaText += escapeHtml(meta.disabilityType) + ' · ';
+      if (meta.studentId) metaText += escapeHtml(meta.studentId) + ' · ';
       metaText += formatFileSize(f.file_size) + ' · ' + new Date(f.created_at).toLocaleDateString('ko-KR');
       return '<div class="folder-file-item">' +
         '<div class="folder-file-info">' +
-        '<div class="folder-file-name">' + typeIcon + ' ' + f.file_name + badge + '</div>' +
+        '<div class="folder-file-name">' + typeIcon + ' ' + escapeHtml(f.file_name) + badge + '</div>' +
         '<div class="folder-file-meta">' + metaText + '</div>' +
         '</div>' +
         '<button class="folder-file-delete-btn" onclick="deleteFolderFile(' + cf.serverId + ',' + f.id + ',\'' + cf.id + '\')">삭제</button>' +
@@ -1219,6 +1219,8 @@ function selectCustomFolder(folderId) {
 
 function backToFolders() {
   selectedCustomFolder = null;
+  currentSatisfactionFolder = null; // v6.1.2
+  currentSemesterFolder = null;
   updateAdminPanel();
 }
 
@@ -1256,6 +1258,8 @@ function onFolderDragEnd(e) {
 
 // ===== 학기 폴더 관련 =====
 var currentSemesterFolder = null;
+var currentSatisfactionFolder = null; // v6.1.2: 만족도 조사 폴더 선택 상태
+var cachedSatisfactionResponses = null; // v6.1.2: 만족도 응답 캐시
 
 function getSemesterFromDate(dateStr) {
   var d = new Date(dateStr);
@@ -1302,7 +1306,7 @@ function renderSupportRequestChart() {
     // 라벨 축약
     var shortLabel = label.length > 6 ? label.substring(0, 6) + '…' : label;
     html += '<div class="support-bar-row">';
-    html += '<span class="support-bar-label" title="' + label + '">' + shortLabel + '</span>';
+    html += '<span class="support-bar-label" title="' + escapeHtml(label) + '">' + escapeHtml(shortLabel) + '</span>';
     html += '<div class="support-bar-track"><div class="support-bar-fill" style="width:' + pct + '%"></div></div>';
     html += '<span class="support-bar-count">' + count + '명</span>';
     html += '</div>';
@@ -1313,13 +1317,144 @@ function renderSupportRequestChart() {
   container.innerHTML = html;
 }
 
-// v5.2.0: 만족도(%) 업데이트
-function updateSatisfactionRate() {
+// v6.1.2: 만족도(%) 업데이트 — 만족도 조사 API에서 실제 데이터 조회
+async function updateSatisfactionRate() {
   var el = document.getElementById('satisfactionRate');
   if (!el) return;
-  // 만족도 조사 데이터가 별도 테이블에 저장될 예정
-  // 현재는 placeholder — 백엔드 만족도 API 연동 후 실제 데이터 표시
-  el.textContent = '—';
+  if (!adminToken) { el.textContent = '—'; return; }
+  try {
+    var resp = await fetch(API_BASE + '/api/admin/satisfaction', {
+      headers: { 'Authorization': 'Bearer ' + adminToken }
+    });
+    if (!resp.ok) { el.textContent = '—'; return; }
+    var data = await resp.json();
+    if (!data.success || !data.responses || data.responses.length === 0) {
+      el.textContent = '—';
+      return;
+    }
+    // overallScore 평균 계산 (1~5점 → 백분율)
+    var total = 0;
+    var count = 0;
+    data.responses.forEach(function(r) {
+      if (r.overallScore && typeof r.overallScore === 'number') {
+        total += r.overallScore;
+        count++;
+      }
+    });
+    if (count === 0) { el.textContent = '—'; return; }
+    var avg = total / count;
+    var pct = Math.round((avg / 5) * 100);
+    el.textContent = pct + '%';
+  } catch(e) {
+    el.textContent = '—';
+  }
+}
+
+// v6.1.2: 만족도 조사 학기별 그룹 생성 (API 데이터 기반)
+function getSatisfactionSemesters(demandGroups) {
+  // 수요조사 그룹의 학기에서 만족도 조사 학기 유추
+  // 수요조사 1학기(7~12월) → 해당 년도 1학기 만족도 (7월)
+  // 수요조사 2학기(1~6월) → 전년도 2학기 만족도 (1월)
+  var semesters = [];
+  var seen = {};
+  demandGroups.forEach(function(g) {
+    // 해당 학기에 대응하는 만족도 조사 학기 키
+    var key = g.year + '-' + g.semester;
+    if (!seen[key]) {
+      seen[key] = true;
+      semesters.push({ year: g.year, semester: g.semester, count: 0 });
+    }
+  });
+  // 만족도 응답 수는 비동기로 가져오므로 일단 0으로 세팅 (updateSatisfactionFolderCounts에서 갱신)
+  updateSatisfactionFolderCounts(semesters);
+  return semesters;
+}
+
+// v6.1.2: 만족도 폴더 응답 수 비동기 업데이트
+async function updateSatisfactionFolderCounts(semesters) {
+  if (!adminToken) return;
+  for (var i = 0; i < semesters.length; i++) {
+    var s = semesters[i];
+    var semesterKey = s.year + '-' + s.semester;
+    try {
+      var resp = await fetch(API_BASE + '/api/admin/satisfaction?semester=' + encodeURIComponent(semesterKey), {
+        headers: { 'Authorization': 'Bearer ' + adminToken }
+      });
+      if (resp.ok) {
+        var data = await resp.json();
+        if (data.success && data.responses) {
+          // DOM에서 해당 폴더의 카운트 업데이트
+          var countEls = document.querySelectorAll('.semester-folder .semester-folder-name');
+          countEls.forEach(function(nameEl) {
+            if (nameEl.textContent.includes('만족도 조사') && nameEl.textContent.includes(s.year + '년 ' + s.semester + '학기')) {
+              var countEl = nameEl.parentElement.querySelector('.semester-folder-count');
+              if (countEl) countEl.textContent = data.responses.length + '건';
+            }
+          });
+        }
+      }
+    } catch(e) { /* 무시 */ }
+  }
+}
+
+function selectSatisfactionFolder(year, semester) {
+  if (folderDeleteMode) return;
+  currentSemesterFolder = null;
+  selectedCustomFolder = null;
+  currentSatisfactionFolder = { year: year, semester: semester };
+  updateAdminPanel();
+}
+
+// v6.1.2: 만족도 조사 폴더 내 응답 로딩
+async function loadSatisfactionFolderData(year, semester) {
+  var list = document.getElementById('responseList');
+  if (!list || !adminToken) return;
+  var semesterKey = year + '-' + semester;
+  try {
+    var resp = await fetch(API_BASE + '/api/admin/satisfaction?semester=' + encodeURIComponent(semesterKey), {
+      headers: { 'Authorization': 'Bearer ' + adminToken }
+    });
+    if (!resp.ok) {
+      list.innerHTML = '<div class="folder-breadcrumb"><span class="bc-link" onclick="backToFolders()">📂 응답 목록</span><span class="bc-sep"> › </span><span>만족도 조사 — ' + year + '년 ' + semester + '학기</span></div>' +
+        '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">만족도 데이터를 불러올 수 없습니다.</p>';
+      return;
+    }
+    var data = await resp.json();
+    if (!data.success || !data.responses || data.responses.length === 0) {
+      list.innerHTML = '<div class="folder-breadcrumb"><span class="bc-link" onclick="backToFolders()">📂 응답 목록</span><span class="bc-sep"> › </span><span>만족도 조사 — ' + year + '년 ' + semester + '학기</span></div>' +
+        '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">이 학기에는 만족도 조사 응답이 없습니다.</p>';
+      return;
+    }
+    var bcHtml = '<div class="folder-breadcrumb"><span class="bc-link" onclick="backToFolders()">📂 응답 목록</span><span class="bc-sep"> › </span><span>만족도 조사 — ' + year + '년 ' + semester + '학기</span></div>';
+    var cardsHtml = data.responses.map(function(r, idx) {
+      var scoreText = r.overallScore ? (r.overallScore + '/5점') : '-';
+      var submittedDate = r.submittedAt ? new Date(r.submittedAt).toLocaleDateString('ko-KR') : '-';
+      var itemCount = r.itemRatings ? r.itemRatings.length : 0;
+      // 항목별 평균
+      var itemAvg = '-';
+      if (r.itemRatings && r.itemRatings.length > 0) {
+        var sum = 0;
+        r.itemRatings.forEach(function(ir) { sum += ir.score; });
+        itemAvg = (sum / r.itemRatings.length).toFixed(1);
+      }
+      return '<div class="glass-card" style="margin-bottom:12px;padding:16px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+        '<strong>응답 #' + (idx + 1) + '</strong>' +
+        '<span style="font-size:12px;color:var(--text-tertiary);">' + escapeHtml(submittedDate) + '</span>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;">' +
+        '<div>전반적 만족도: <strong>' + escapeHtml(scoreText) + '</strong></div>' +
+        '<div>항목별 평균: <strong>' + escapeHtml(itemAvg) + '</strong>점 (' + itemCount + '개)</div>' +
+        '</div>' +
+        (r.additionalSupport ? '<div style="margin-top:8px;font-size:12px;color:var(--text-secondary);"><strong>실제 지원 내용:</strong> ' + escapeHtml(r.additionalSupport).substring(0, 100) + (r.additionalSupport.length > 100 ? '...' : '') + '</div>' : '') +
+        (r.suggestions ? '<div style="margin-top:4px;font-size:12px;color:var(--text-secondary);"><strong>개선사항:</strong> ' + escapeHtml(r.suggestions).substring(0, 100) + (r.suggestions.length > 100 ? '...' : '') + '</div>' : '') +
+        '</div>';
+    }).join('');
+    list.innerHTML = bcHtml + cardsHtml;
+  } catch(e) {
+    list.innerHTML = '<div class="folder-breadcrumb"><span class="bc-link" onclick="backToFolders()">📂 응답 목록</span><span class="bc-sep"> › </span><span>만족도 조사 — ' + year + '년 ' + semester + '학기</span></div>' +
+      '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">서버 연결에 실패했습니다.</p>';
+  }
 }
 
 function groupResponsesBySemester() {
@@ -1337,6 +1472,7 @@ function groupResponsesBySemester() {
 
 function selectSemesterFolder(year, semester) {
   if (folderDeleteMode) return;
+  currentSatisfactionFolder = null; // v6.1.2
   if (year === null) {
     currentSemesterFolder = null;
   } else {
@@ -1385,7 +1521,7 @@ function updateAdminPanel() {
   var groups = groupResponsesBySemester();
 
   // STATE 1: No folder selected → show only folders (v4.2.0: + custom folders + mgmt buttons)
-  if (!currentSemesterFolder && !selectedCustomFolder) {
+  if (!currentSemesterFolder && !selectedCustomFolder && !currentSatisfactionFolder) {
     var folderHtml = '<div class="semester-folders' + (folderDeleteMode ? ' delete-mode' : '') + '">';
     // Semester folders
     groups.forEach(function(g) {
@@ -1427,8 +1563,36 @@ function updateAdminPanel() {
         gearSvg +
         '</svg>' +
         '</div>';
-      folderHtml += '<div class="semester-folder-name">' + g.year + '년<br>' + g.semester + '학기</div>';
+      folderHtml += '<div class="semester-folder-name"><span class="folder-category-label">교육지원계획</span>' + g.year + '년 ' + g.semester + '학기</div>';
       folderHtml += '<div class="semester-folder-count">' + g.responses.length + '건</div>';
+      folderHtml += '</div>';
+    });
+    // v6.1.2: 만족도 조사 결과 폴더 (시스템 폴더)
+    var satSemesters = getSatisfactionSemesters(groups);
+    satSemesters.forEach(function(s) {
+      var folderClass = 'semester-folder folder-has';
+      folderHtml += '<div class="' + folderClass + '">';
+      // 삭제 모드 시 자물쇠 아이콘
+      folderHtml += '<div class="folder-lock-icon ' + (folderDeleteMode ? 'visible' : '') + '" onclick="event.stopPropagation();shakeLockIcon(this)">' +
+        '<svg width="24" height="29.5" viewBox="0 0 24 27.7" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M8 10.5V7.5a4 4 0 0 1 8 0V10.5" stroke="#4a4a4a" stroke-width="2.5" stroke-linecap="round" fill="none"/>' +
+        '<rect x="4.5" y="10" width="15" height="13.28" rx="2.2" fill="#4a4a4a"/>' +
+        '<circle cx="12" cy="15.5" r="1.6" fill="#d0d0d0"/>' +
+        '<rect x="11.25" y="15.5" width="1.5" height="3.6" rx="0.5" fill="#d0d0d0"/>' +
+        '</svg></div>';
+      var docsSvg = '<rect class="folder-docs" x="6" y="12" width="52" height="7" rx="1.5" fill="white"/>';
+      var starSvg = '<polygon points="32,26 35.5,31 41,32 37,36 38,42 32,39 26,42 27,36 23,32 28.5,31" fill="rgba(20,120,70,0.55)" stroke="none"/>';
+      folderHtml += '<div class="semester-folder-icon" onclick="' + (folderDeleteMode ? 'shakeParentLock(this)' : 'selectSatisfactionFolder(' + s.year + ',' + s.semester + ')') + '">' +
+        '<svg viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path class="folder-tab-shape" d="M1 14 L1 8 C1 6 2.5 5 4.5 5 L20 5 C22 5 23 6 24 7.5 L27.5 14 Z" fill="#5EDE8A"/>' +
+        '<rect class="folder-back-shape" x="1" y="10" width="62" height="20" rx="4" ry="4" fill="#5EDE8A"/>' +
+        docsSvg +
+        '<rect class="folder-front-shape" x="0.5" y="15" width="63" height="36.5" rx="4.5" ry="4.5" fill="#7CEAA5"/>' +
+        starSvg +
+        '</svg>' +
+        '</div>';
+      folderHtml += '<div class="semester-folder-name"><span class="folder-category-label">만족도 조사</span>' + s.year + '년 ' + s.semester + '학기</div>';
+      folderHtml += '<div class="semester-folder-count">' + s.count + '건</div>';
       folderHtml += '</div>';
     });
     // Custom folders (v4.2.0)
@@ -1515,6 +1679,21 @@ function updateAdminPanel() {
     }
   }
 
+  // STATE 1.7: 만족도 조사 폴더 선택 (v6.1.2)
+  if (currentSatisfactionFolder) {
+    var satBcHtml = '<div class="folder-breadcrumb">';
+    satBcHtml += '<span class="bc-link" onclick="backToFolders()">📂 응답 목록</span>';
+    satBcHtml += '<span class="bc-sep"> › </span>';
+    satBcHtml += '<span>만족도 조사 — ' + currentSatisfactionFolder.year + '년 ' + currentSatisfactionFolder.semester + '학기</span>';
+    satBcHtml += '</div>';
+
+    list.innerHTML = satBcHtml + '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;">만족도 조사 응답 로딩 중...</p>';
+    // 비동기 로딩
+    loadSatisfactionFolderData(currentSatisfactionFolder.year, currentSatisfactionFolder.semester);
+    updateLetterSelect();
+    return;
+  }
+
   // STATE 2: Folder selected → breadcrumb + response cards only
   var bcHtml = '<div class="folder-breadcrumb">';
   bcHtml += '<span class="bc-link" onclick="selectSemesterFolder(null)">📂 응답 목록</span>';
@@ -1541,8 +1720,8 @@ function updateAdminPanel() {
           else xrefBadge = '<span class="match-badge">검증완료</span>';
         }
         return '<div class="response-card" onclick="viewResponse(' + i + ')" style="position:relative;">' +
-          '<div class="name">' + (r.name || '이름 없음') + modBadge + xrefBadge + '</div>' +
-          '<div class="meta">' + (r.department || '') + ' · ' + (r.grade || '') + ' · ' +
+          '<div class="name">' + escapeHtml(r.name || '이름 없음') + modBadge + xrefBadge + '</div>' +
+          '<div class="meta">' + escapeHtml(r.department || '') + ' · ' + escapeHtml(r.grade || '') + ' · ' +
           (r.submittedAt ? new Date(r.submittedAt).toLocaleDateString('ko-KR') : '') +
           (r.modifiedAt ? ' (수정: ' + new Date(r.modifiedAt).toLocaleDateString('ko-KR') + ')' : '') + '</div>' +
           '<button onclick="event.stopPropagation();deleteResponse(' + i + ')" ' +
@@ -1566,9 +1745,9 @@ function updateLetterSelect() {
           '<option value="' +
           i +
           '">' +
-          r.name +
+          escapeHtml(r.name) +
           ' (' +
-          (r.studentId || '') +
+          escapeHtml(r.studentId || '') +
           ')</option>',
       )
       .join('');

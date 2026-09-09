@@ -339,6 +339,10 @@ function updateLandingButtons() {
 // 페이지 로드 시 자동 실행
 document.addEventListener('DOMContentLoaded', function() {
   updateLandingButtons();
+  // v6.1.2: 테스트 모드 복원 시 학기 라벨 갱신 (getEffectiveDate 사용)
+  if (testModeMonth !== null && typeof refreshSemesterDisplay === 'function') {
+    refreshSemesterDisplay();
+  }
   // 테스트 모드 상태 표시 (배너)
   if (testModeMonth !== null) {
     var banner = document.createElement('div');
