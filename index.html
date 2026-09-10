@@ -32,7 +32,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "6.1.3";
+      window.APP_VERSION = "6.1.4";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -52,12 +52,33 @@
           label: y + '년 ' + semester + '학기'
         };
       };
+      // ===== v6.1.4: 만족도 조사 대상 학기 =====
+      // 만족도 조사는 '직전에 끝난 학기'를 평가한다.
+      //   1~6월(1월 조사)  → 직전년도 2학기  (2027-01 → 2026학년도 2학기)
+      //   7~12월(7월 조사) → 당해년도 1학기  (2026-07 → 2026학년도 1학기)
+      // 백엔드 satisfaction.js의 getCurrentSatisfactionSemester()와 동일한 규칙.
+      window.getSatisfactionSemesterInfo = function(date) {
+        var d = date || (typeof getEffectiveDate === 'function' ? getEffectiveDate() : new Date());
+        var m = d.getMonth() + 1;
+        var y = d.getFullYear();
+        var year = (m <= 6) ? (y - 1) : y;
+        var semester = (m <= 6) ? 2 : 1;
+        return {
+          year: year,
+          semester: semester,
+          full: year + '학년도 ' + semester + '학기',
+          short: year + '-' + semester + '학기',
+          label: year + '년 ' + semester + '학기'
+        };
+      };
+
       // v6.1: 학기 정보 전체 갱신 함수 (테스트 모드 변경 시 호출)
       window.refreshSemesterDisplay = function() {
-        var si = window.getSemesterInfo();
         var ed = typeof getEffectiveDate === 'function' ? getEffectiveDate() : new Date();
         var em = ed.getMonth() + 1;
         var isSatPeriod = (em === 1 || em === 7);
+        // v6.1.4: 만족도 조사 시기에는 '직전에 끝난 학기'를 표시 (수요조사 시기에는 당해 학기)
+        var si = isSatPeriod ? window.getSatisfactionSemesterInfo(ed) : window.getSemesterInfo(ed);
         // v6.1.3: 만족도 조사 시기에는 타이틀도 변경
         document.title = si.full + (isSatPeriod ? ' 교수·학습지원 만족도 조사' : ' 개인별 교육지원계획 수요조사');
         var badge = document.getElementById('semesterBadge');

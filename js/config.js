@@ -193,6 +193,35 @@ function getEffectiveDate() {
   return now;
 }
 
+// v6.1.4: 테스트 날짜를 서버에도 동기화
+// 백엔드(만족도 학기 검증)는 실제 서버 날짜를 쓰므로, 동기화하지 않으면
+// 프론트가 2027-01을 시뮬레이션해도 서버는 2026-1학기로 판정해 검증에 실패한다.
+// 저장 경로는 PUT /api/admin/settings (관리자 인증 필수)이므로 학생은 조작할 수 없다.
+// 반환값: true(동기화 성공) / false(실패) / null(관리자 토큰 없음)
+async function syncTestModeToServer(dateStr) {
+  if (typeof adminToken === 'undefined' || !adminToken) return null;
+  try {
+    var payload = dateStr
+      ? { date: dateStr, setAt: new Date().toISOString() }
+      : null;
+    var resp = await fetch(API_BASE + '/api/admin/settings', {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ settings: { test_mode_date: payload } })
+    });
+    return resp.ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+// getEffectiveDate() 결과를 'YYYY-MM-DD'로 변환
+function formatEffectiveDate(d) {
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+}
+
 function applyTestMode() {
   var yr = parseInt(document.getElementById('testModeYear').value);
   var m = parseInt(document.getElementById('testModeMonth').value);
@@ -208,6 +237,14 @@ function applyTestMode() {
   var label = (yr ? yr + '년 ' : '') + m + '월' + (d ? ' ' + d + '일' : '');
   document.getElementById('testModeStatus').innerHTML = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
   showToast('테스트 모드 적용: ' + label);
+  // v6.1.4: 백엔드 학기 판정도 같은 날짜를 쓰도록 서버에 동기화 (24시간 후 자동 만료)
+  syncTestModeToServer(formatEffectiveDate(getEffectiveDate())).then(function(ok) {
+    if (ok === null) {
+      showToast('서버 동기화 생략 — 관리자 로그인 상태에서만 만족도 조사 학기까지 시뮬레이션됩니다.');
+    } else if (ok === false) {
+      showToast('서버 테스트 날짜 동기화 실패 — 만족도 조사 학기는 실제 날짜로 판정됩니다.');
+    }
+  });
   // 학기 라벨 갱신
   if (typeof updateDeadlineSectionLabel === 'function') updateDeadlineSectionLabel(m);
   // 현재 학기 폴더 자동선택 갱신
@@ -232,6 +269,8 @@ function clearTestMode() {
   if (dayEl) dayEl.value = '';
   if (statusEl) statusEl.innerHTML = '';
   showToast('테스트 모드 해제됨');
+  // v6.1.4: 서버 측 시뮬레이션 날짜도 함께 해제
+  syncTestModeToServer(null);
   if (typeof updateDeadlineSectionLabel === 'function') updateDeadlineSectionLabel();
   if (typeof updateAdminPanel === 'function') updateAdminPanel();
   if (typeof updateLandingButtons === 'function') updateLandingButtons();
@@ -341,7 +380,9 @@ function updateLandingButtons() {
   var introInfo = document.querySelector('.intro-info');
   if (isSatPeriod && heroTitle && introInfo) {
     heroTitle.textContent = '교수·학습지원 만족도 조사';
-    var si = window.getSemesterInfo ? window.getSemesterInfo() : null;
+    // v6.1.4: 만족도 조사는 '직전에 끝난 학기'가 대상 (2027년 1월 → 2026학년도 2학기)
+    var si = window.getSatisfactionSemesterInfo ? window.getSatisfactionSemesterInfo(ed)
+           : (window.getSemesterInfo ? window.getSemesterInfo() : null);
     var semLabel = si ? si.full : '';
     var vacationType = (effectiveMonth === 7) ? '여름방학' : '겨울방학';
     introInfo.innerHTML =
