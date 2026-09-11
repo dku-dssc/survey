@@ -657,6 +657,8 @@ function showAdminTab(tab) {
     renderEnrollmentFiles();
     renderCurrentMapping();
     loadDeadlineSettings();
+    // v6.1.5: 테스트 모드 입력값 복원 + 서버 동기화 상태 표시
+    if (typeof restoreTestModeUI === 'function') restoreTestModeUI();
   }
 }
 

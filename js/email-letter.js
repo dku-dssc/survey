@@ -723,6 +723,13 @@ async function loadDeadlineSettings() {
     if (resp.ok && result.settings) {
       deadlineSettings = result.settings;
       populateDeadlineUI();
+      // v6.1.5: 서버가 적용 중인 테스트 모드 상태를 함께 반영
+      // (테스트 모드가 켜져 있으면 아래 기한 설정이 시뮬레이션 날짜 기준으로 판정됨)
+      if (result.serverTestMode) {
+        window.serverTestModeState = result.serverTestMode;
+        if (typeof renderTestModeStatus === 'function') renderTestModeStatus();
+        if (typeof refreshSemesterDisplay === 'function') refreshSemesterDisplay();
+      }
     }
   } catch(e) { /* silent */ }
 }

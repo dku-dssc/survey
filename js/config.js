@@ -194,10 +194,15 @@ function getEffectiveDate() {
 }
 
 // v6.1.4: 테스트 날짜를 서버에도 동기화
-// 백엔드(만족도 학기 검증)는 실제 서버 날짜를 쓰므로, 동기화하지 않으면
-// 프론트가 2027-01을 시뮬레이션해도 서버는 2026-1학기로 판정해 검증에 실패한다.
+// 백엔드(만족도 학기 검증 + v6.1.5 수요조사 제출 기한 검증)는 실제 서버 날짜를 쓰므로,
+// 동기화하지 않으면 프론트가 2027-01을 시뮬레이션해도 서버는 2026-1학기로 판정해 실패한다.
 // 저장 경로는 PUT /api/admin/settings (관리자 인증 필수)이므로 학생은 조작할 수 없다.
 // 반환값: true(동기화 성공) / false(실패) / null(관리자 토큰 없음)
+
+// v6.1.5: 서버가 실제로 적용 중인 테스트 모드 상태 (GET/PUT 설정 응답으로 갱신)
+// { active, date, expiresAt } 또는 null(아직 확인 전)
+window.serverTestModeState = null;
+
 async function syncTestModeToServer(dateStr) {
   if (typeof adminToken === 'undefined' || !adminToken) return null;
   try {
@@ -209,10 +214,60 @@ async function syncTestModeToServer(dateStr) {
       headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json' },
       body: JSON.stringify({ settings: { test_mode_date: payload } })
     });
-    return resp.ok;
+    if (!resp.ok) return false;
+    // 저장 직후 서버가 실제로 적용 중인 상태를 다시 읽어 표시 (만료 규칙 포함)
+    await refreshServerTestModeState();
+    return true;
   } catch (e) {
     return false;
   }
+}
+
+// v6.1.5: 서버 측 테스트 모드 상태 조회 → 상태줄/배너 갱신
+async function refreshServerTestModeState() {
+  if (typeof adminToken === 'undefined' || !adminToken) return null;
+  try {
+    var resp = await fetch(API_BASE + '/api/admin/settings', {
+      headers: { 'Authorization': 'Bearer ' + adminToken }
+    });
+    if (!resp.ok) return null;
+    var data = await resp.json();
+    window.serverTestModeState = data.serverTestMode || { active: false };
+  } catch (e) {
+    window.serverTestModeState = null;
+  }
+  renderTestModeStatus();
+  if (typeof refreshSemesterDisplay === 'function') refreshSemesterDisplay();
+  return window.serverTestModeState;
+}
+
+// v6.1.5: 테스트 모드 상태줄 렌더링 (로컬 시뮬레이션 + 서버 동기화 여부)
+// 서버 동기화가 켜져 있으면 실제 학생의 제출 기한 검증까지 시뮬레이션 날짜를 따르므로,
+// 해제를 깜빡하지 않도록 만료 시각을 함께 노출한다.
+function renderTestModeStatus() {
+  var statusEl = document.getElementById('testModeStatus');
+  if (!statusEl) return;
+  if (testModeMonth === null) { statusEl.innerHTML = ''; return; }
+
+  var label = (testModeYear ? testModeYear + '년 ' : '') + testModeMonth + '월' +
+              (testModeDay ? ' ' + testModeDay + '일' : '');
+  var html = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
+
+  var st = window.serverTestModeState;
+  if (st && st.active) {
+    var until = '';
+    if (st.expiresAt) {
+      var exp = new Date(st.expiresAt);
+      if (!isNaN(exp.getTime())) {
+        until = ' · 자동 해제 ' + (exp.getMonth() + 1) + '/' + exp.getDate() + ' ' +
+                String(exp.getHours()).padStart(2, '0') + ':' + String(exp.getMinutes()).padStart(2, '0');
+      }
+    }
+    html += '<br><span style="color:var(--warning);">⚠️ 서버 동기화됨 — 실제 제출 기한·학기 판정도 이 날짜를 따릅니다' + until + '</span>';
+  } else if (st) {
+    html += '<br><span style="color:var(--text-tertiary);">서버 미동기화 — 제출 기한·만족도 학기는 실제 날짜로 판정됩니다</span>';
+  }
+  statusEl.innerHTML = html;
 }
 
 // getEffectiveDate() 결과를 'YYYY-MM-DD'로 변환
@@ -235,14 +290,15 @@ function applyTestMode() {
   // localStorage에 저장
   try { localStorage.setItem('dku_test_mode', JSON.stringify({ year: testModeYear, month: m, day: testModeDay })); } catch(e) {}
   var label = (yr ? yr + '년 ' : '') + m + '월' + (d ? ' ' + d + '일' : '');
-  document.getElementById('testModeStatus').innerHTML = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
+  renderTestModeStatus();
   showToast('테스트 모드 적용: ' + label);
-  // v6.1.4: 백엔드 학기 판정도 같은 날짜를 쓰도록 서버에 동기화 (24시간 후 자동 만료)
+  // v6.1.4~v6.1.5: 백엔드(만족도 학기 + 수요조사 제출 기한)도 같은 날짜를 쓰도록
+  // 서버에 동기화한다. 24시간 후 서버 측에서 자동 만료된다.
   syncTestModeToServer(formatEffectiveDate(getEffectiveDate())).then(function(ok) {
     if (ok === null) {
-      showToast('서버 동기화 생략 — 관리자 로그인 상태에서만 만족도 조사 학기까지 시뮬레이션됩니다.');
+      showToast('서버 동기화 생략 — 관리자 로그인 상태에서만 제출 기한·만족도 학기까지 시뮬레이션됩니다.');
     } else if (ok === false) {
-      showToast('서버 테스트 날짜 동기화 실패 — 만족도 조사 학기는 실제 날짜로 판정됩니다.');
+      showToast('서버 테스트 날짜 동기화 실패 — 제출 기한·만족도 학기는 실제 날짜로 판정됩니다.');
     }
   });
   // 학기 라벨 갱신
@@ -268,9 +324,14 @@ function clearTestMode() {
   if (monthEl) monthEl.value = '';
   if (dayEl) dayEl.value = '';
   if (statusEl) statusEl.innerHTML = '';
+  window.serverTestModeState = { active: false };
   showToast('테스트 모드 해제됨');
-  // v6.1.4: 서버 측 시뮬레이션 날짜도 함께 해제
-  syncTestModeToServer(null);
+  // v6.1.4: 서버 측 시뮬레이션 날짜도 함께 해제 (제출 기한 검증을 실제 날짜로 복귀)
+  syncTestModeToServer(null).then(function(ok) {
+    if (ok === false) {
+      showToast('서버 테스트 날짜 해제 실패 — 24시간 내 자동 만료되지만 다시 시도해주세요.');
+    }
+  });
   if (typeof updateDeadlineSectionLabel === 'function') updateDeadlineSectionLabel();
   if (typeof updateAdminPanel === 'function') updateAdminPanel();
   if (typeof updateLandingButtons === 'function') updateLandingButtons();
@@ -278,19 +339,19 @@ function clearTestMode() {
   if (typeof refreshSemesterDisplay === 'function') refreshSemesterDisplay();
 }
 
-// 테스트 모드 UI 복원 (관리자 패널 열렸을 때 호출)
+// 테스트 모드 UI 복원 (관리자 패널 설정 탭 진입 시 호출 — v6.1.5부터 실제 연결됨)
 function restoreTestModeUI() {
   if (testModeMonth !== null) {
     var yearEl = document.getElementById('testModeYear');
     var monthEl = document.getElementById('testModeMonth');
     var dayEl = document.getElementById('testModeDay');
-    var statusEl = document.getElementById('testModeStatus');
     if (yearEl && testModeYear) yearEl.value = testModeYear;
     if (monthEl) monthEl.value = testModeMonth;
     if (dayEl && testModeDay) dayEl.value = testModeDay;
-    var label = (testModeYear ? testModeYear + '년 ' : '') + testModeMonth + '월' + (testModeDay ? ' ' + testModeDay + '일' : '');
-    if (statusEl) statusEl.innerHTML = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
   }
+  renderTestModeStatus();
+  // v6.1.5: 서버가 실제로 시뮬레이션 중인지 확인해 상태줄에 반영
+  refreshServerTestModeState();
 }
 
 // Edit mode state

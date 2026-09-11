@@ -32,7 +32,7 @@
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
       //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "6.1.4";
+      window.APP_VERSION = "6.1.5";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -99,7 +99,13 @@
             document.body.appendChild(banner);
           }
           banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:rgba(255,165,0,0.95);color:#000;text-align:center;padding:6px 12px;font-size:12px;font-weight:600;backdrop-filter:blur(10px);';
-          banner.textContent = '🧪 테스트 모드: ' + label + ' 시뮬레이션 중 (' + si.short + ')';
+          // v6.1.5: 서버 동기화 여부 표시 — 동기화 중이면 실제 제출 기한 검증도
+          // 시뮬레이션 날짜를 따르므로 반드시 눈에 보여야 한다.
+          var srv = window.serverTestModeState;
+          var srvTag = '';
+          if (srv && srv.active) srvTag = ' · 서버 동기화됨(기한 검증 포함)';
+          else if (srv) srvTag = ' · 서버 미동기화(실제 날짜)';
+          banner.textContent = '🧪 테스트 모드: ' + label + ' 시뮬레이션 중 (' + si.short + ')' + srvTag;
         } else {
           if (banner) banner.remove();
         }
