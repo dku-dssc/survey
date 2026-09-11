@@ -116,7 +116,22 @@ async function verifySatisfactionStudent() {
 
     if (!resp.ok || !result.success) {
       if (errorEl) {
-        errorEl.textContent = result.error || '수요조사에 참여한 학생 정보와 일치하지 않습니다.';
+        var msg = escapeHtml(result.error || '수요조사에 참여한 학생 정보와 일치하지 않습니다.');
+        // v6.1.7: 서버가 어떤 날짜/학기로 판정했는지 함께 노출한다.
+        // 테스트 모드가 서버에 반영되지 않으면 여기서 '테스트 모드 미적용'으로 드러난다.
+        var d = result.diagnostic;
+        if (d) {
+          msg += '<br><span style="font-size:11px;opacity:0.85;display:inline-block;margin-top:4px;">' +
+                 '서버 기준일 ' + escapeHtml(String(d.serverDate)) +
+                 ' · 판정 학기 ' + escapeHtml(String(d.semester)) +
+                 ' · 조회 범위 ' + escapeHtml(String(d.rangeStart)) + '~' + escapeHtml(String(d.rangeEnd)) +
+                 '<br>' +
+                 (d.testModeActive
+                   ? '🧪 서버 테스트 모드 적용됨 (' + escapeHtml(String(d.testModeDate)) + ')'
+                   : '⚠️ 서버 테스트 모드 <strong>미적용</strong> — 실제 날짜로 판정 중입니다') +
+                 '</span>';
+        }
+        errorEl.innerHTML = msg;
         errorEl.style.display = 'block';
       }
       return;

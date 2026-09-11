@@ -201,7 +201,7 @@ function getEffectiveDate() {
 
 // v6.1.6: 이 파일의 버전 — index.html의 APP_VERSION과 대조해 캐시된 구버전 JS를 감지한다.
 // ⚠️ APP_VERSION을 올릴 때 이 값과 index.html의 ?v= 쿼리도 함께 올려야 한다.
-window.CONFIG_JS_VERSION = '6.1.6';
+window.CONFIG_JS_VERSION = '6.1.7';
 
 // v6.1.5: 서버가 실제로 적용 중인 테스트 모드 상태 (GET/PUT 설정 응답으로 갱신)
 // { active, date, expiresAt } 또는 null(아직 확인 전)
@@ -244,7 +244,14 @@ async function syncTestModeToServer(dateStr) {
 
 // v6.1.5: 서버 측 테스트 모드 상태 조회 → 상태줄/배너 갱신
 async function refreshServerTestModeState() {
-  if (typeof adminToken === 'undefined' || !adminToken) return null;
+  // v6.1.7: 토큰이 없으면 '확인 불가'를 명시한다.
+  // 기존에는 null로 두어 '아직 확인 전'과 구분되지 않았고, 상태줄에 아무것도
+  // 표시되지 않아 동기화가 안 된 사실이 드러나지 않았다.
+  if (typeof adminToken === 'undefined' || !adminToken) {
+    window.serverTestModeState = { noToken: true, active: false };
+    renderTestModeStatus();
+    return window.serverTestModeState;
+  }
   try {
     var resp = await fetch(API_BASE + '/api/admin/settings', {
       headers: { 'Authorization': 'Bearer ' + adminToken }
@@ -278,6 +285,11 @@ function renderTestModeStatus() {
   var html = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
 
   var st = window.serverTestModeState;
+  if (st && st.noToken) {
+    html += '<br><span style="color:var(--danger,#e5484d);">⛔ 관리자 세션이 없어 서버에 동기화하지 못했습니다 — 다시 로그인 후 적용해주세요.</span>';
+    statusEl.innerHTML = html;
+    return;
+  }
   if (st && st.unsupported) {
     html += '<br><span style="color:var(--danger,#e5484d);">⛔ 백엔드 구버전 — 서버가 테스트 날짜를 저장하지 못합니다. ' +
             'survey-backend에서 <code>npx wrangler deploy</code> 후 다시 적용해주세요.</span>';
@@ -298,6 +310,52 @@ function renderTestModeStatus() {
     html += '<br><span style="color:var(--text-tertiary);">서버 미동기화 — 제출 기한·만족도 학기는 실제 날짜로 판정됩니다</span>';
   }
   statusEl.innerHTML = html;
+}
+
+// v6.1.7: 서버 상태 진단 — 버튼 한 번으로 서버의 실제 판정 근거를 상태줄에 출력
+async function checkServerTestMode() {
+  var statusEl = document.getElementById('testModeStatus');
+  if (!statusEl) return;
+  if (typeof adminToken === 'undefined' || !adminToken) {
+    statusEl.innerHTML = '<span style="color:var(--danger,#e5484d);">⛔ 관리자 세션 없음 — 다시 로그인해주세요.</span>';
+    return;
+  }
+  statusEl.innerHTML = '서버 상태 확인 중…';
+  try {
+    var resp = await fetch(API_BASE + '/api/admin/settings', {
+      headers: { 'Authorization': 'Bearer ' + adminToken }
+    });
+    var data = null;
+    try { data = await resp.json(); } catch (e) {}
+    if (!resp.ok) {
+      statusEl.innerHTML = '<span style="color:var(--danger,#e5484d);">⛔ 설정 조회 실패 (HTTP ' + resp.status + ')</span>';
+      return;
+    }
+    if (!data || typeof data.serverTestMode === 'undefined') {
+      window.serverTestModeState = { unsupported: true, active: false };
+      statusEl.innerHTML = '<span style="color:var(--danger,#e5484d);">⛔ 백엔드 구버전 — serverTestMode 응답 없음.' +
+        '<br>survey-backend에서 <code>npx wrangler deploy</code> 실행이 필요합니다.</span>';
+      return;
+    }
+    window.serverTestModeState = data.serverTestMode;
+    var st = data.serverTestMode;
+    var lines = [];
+    lines.push('서버 기준일: <strong>' + escapeHtml(String(data.serverEffectiveDate || '').slice(0, 10)) + '</strong>');
+    lines.push('서버 판정 학기: <strong>' + escapeHtml(String(data.serverSatisfactionSemester || '-')) + '</strong>');
+    lines.push('서버 테스트 모드: <strong>' + (st.active ? '적용됨 (' + escapeHtml(String(st.date)) + ')' : '미적용') + '</strong>');
+    if (st.active && st.expiresAt) {
+      var exp = new Date(st.expiresAt);
+      if (!isNaN(exp.getTime())) {
+        lines.push('자동 해제: ' + (exp.getMonth() + 1) + '/' + exp.getDate() + ' ' +
+          String(exp.getHours()).padStart(2, '0') + ':' + String(exp.getMinutes()).padStart(2, '0'));
+      }
+    }
+    lines.push('로컬 시뮬레이션 날짜: ' + (testModeMonth === null ? '해제됨' : escapeHtml(formatEffectiveDate(getEffectiveDate()))));
+    statusEl.innerHTML = '<span style="color:' + (st.active ? 'var(--warning)' : 'var(--danger,#e5484d)') + ';">' +
+      lines.join('<br>') + '</span>';
+  } catch (e) {
+    statusEl.innerHTML = '<span style="color:var(--danger,#e5484d);">⛔ 서버 연결 실패: ' + escapeHtml(String(e.message || e)) + '</span>';
+  }
 }
 
 // getEffectiveDate() 결과를 'YYYY-MM-DD'로 변환
