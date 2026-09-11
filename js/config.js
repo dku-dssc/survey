@@ -199,10 +199,15 @@ function getEffectiveDate() {
 // 저장 경로는 PUT /api/admin/settings (관리자 인증 필수)이므로 학생은 조작할 수 없다.
 // 반환값: true(동기화 성공) / false(실패) / null(관리자 토큰 없음)
 
+// v6.1.6: 이 파일의 버전 — index.html의 APP_VERSION과 대조해 캐시된 구버전 JS를 감지한다.
+// ⚠️ APP_VERSION을 올릴 때 이 값과 index.html의 ?v= 쿼리도 함께 올려야 한다.
+window.CONFIG_JS_VERSION = '6.1.6';
+
 // v6.1.5: 서버가 실제로 적용 중인 테스트 모드 상태 (GET/PUT 설정 응답으로 갱신)
 // { active, date, expiresAt } 또는 null(아직 확인 전)
 window.serverTestModeState = null;
 
+// 반환값: true(성공) / false(실패) / null(관리자 토큰 없음) / 'unsupported'(백엔드 구버전)
 async function syncTestModeToServer(dateStr) {
   if (typeof adminToken === 'undefined' || !adminToken) return null;
   try {
@@ -215,8 +220,22 @@ async function syncTestModeToServer(dateStr) {
       body: JSON.stringify({ settings: { test_mode_date: payload } })
     });
     if (!resp.ok) return false;
-    // 저장 직후 서버가 실제로 적용 중인 상태를 다시 읽어 표시 (만료 규칙 포함)
-    await refreshServerTestModeState();
+
+    // v6.1.6: 구버전 백엔드는 test_mode_date를 화이트리스트에서 걸러 버리면서도
+    // 200 OK를 반환한다. 응답으로 실제 저장 여부를 확인해 '성공'으로 오인하지 않는다.
+    var result = null;
+    try { result = await resp.json(); } catch (e) { /* 본문 없음 → 아래 재조회로 판정 */ }
+    if (result && Array.isArray(result.ignoredKeys) &&
+        result.ignoredKeys.indexOf('test_mode_date') !== -1) {
+      window.serverTestModeState = { unsupported: true, active: false };
+      renderTestModeStatus();
+      return 'unsupported';
+    }
+
+    // 서버가 실제로 적용 중인 상태를 다시 읽어 검증 (만료 규칙 포함)
+    var st = await refreshServerTestModeState();
+    if (st && st.unsupported) return 'unsupported';
+    if (dateStr && (!st || !st.active)) return false; // 저장은 됐다는데 반영이 안 된 경우
     return true;
   } catch (e) {
     return false;
@@ -232,7 +251,12 @@ async function refreshServerTestModeState() {
     });
     if (!resp.ok) return null;
     var data = await resp.json();
-    window.serverTestModeState = data.serverTestMode || { active: false };
+    // v6.1.6: serverTestMode 필드 자체가 없으면 구버전 백엔드 (배포 필요)
+    if (typeof data.serverTestMode === 'undefined') {
+      window.serverTestModeState = { unsupported: true, active: false };
+    } else {
+      window.serverTestModeState = data.serverTestMode;
+    }
   } catch (e) {
     window.serverTestModeState = null;
   }
@@ -254,6 +278,12 @@ function renderTestModeStatus() {
   var html = '🧪 <strong style="color:var(--warning);">테스트 모드 활성화</strong> — 시뮬레이션 날짜: ' + label;
 
   var st = window.serverTestModeState;
+  if (st && st.unsupported) {
+    html += '<br><span style="color:var(--danger,#e5484d);">⛔ 백엔드 구버전 — 서버가 테스트 날짜를 저장하지 못합니다. ' +
+            'survey-backend에서 <code>npx wrangler deploy</code> 후 다시 적용해주세요.</span>';
+    statusEl.innerHTML = html;
+    return;
+  }
   if (st && st.active) {
     var until = '';
     if (st.expiresAt) {
@@ -297,6 +327,8 @@ function applyTestMode() {
   syncTestModeToServer(formatEffectiveDate(getEffectiveDate())).then(function(ok) {
     if (ok === null) {
       showToast('서버 동기화 생략 — 관리자 로그인 상태에서만 제출 기한·만족도 학기까지 시뮬레이션됩니다.');
+    } else if (ok === 'unsupported') {
+      showToast('백엔드가 구버전입니다 — npx wrangler deploy 후 테스트 모드를 다시 적용해주세요.');
     } else if (ok === false) {
       showToast('서버 테스트 날짜 동기화 실패 — 제출 기한·만족도 학기는 실제 날짜로 판정됩니다.');
     }
@@ -351,7 +383,16 @@ function restoreTestModeUI() {
   }
   renderTestModeStatus();
   // v6.1.5: 서버가 실제로 시뮬레이션 중인지 확인해 상태줄에 반영
-  refreshServerTestModeState();
+  // v6.1.6: 로컬은 테스트 모드인데 서버는 아니면 자동으로 재동기화한다.
+  //   → 백엔드 배포 전에 테스트 모드를 적용해 서버에 값이 안 들어간 경우,
+  //     배포 후 설정 탭만 열면 스스로 복구된다 (수동 재적용 불필요).
+  refreshServerTestModeState().then(function(st) {
+    if (testModeMonth === null) return;
+    if (!st || st.unsupported || st.active) return;
+    syncTestModeToServer(formatEffectiveDate(getEffectiveDate())).then(function(ok) {
+      if (ok === true) showToast('서버 테스트 날짜를 다시 동기화했습니다.');
+    });
+  });
 }
 
 // Edit mode state

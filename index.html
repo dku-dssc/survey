@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://dku-survey-api.dku-dssc.workers.dev; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
     <title>개인별 교육지원계획 수요조사</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=6.1.6">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
   </head>
@@ -31,8 +31,10 @@
       //  X  = 대규모 패치(막대한 기능 추가 등)
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
-      //  버전을 올릴 땐 이 값 하나만 수정하면 됩니다.
-      window.APP_VERSION = "6.1.5";
+      //  버전을 올릴 땐 이 값 + 아래 <script src="js/*.js?v=">/<link href="css/*.css?v=">
+      //  쿼리값을 함께 수정합니다. (v6.1.6: GitHub Pages 캐시로 구버전 JS가 남는 문제 방지)
+      //  불일치 시 페이지 하단에서 자동으로 경고 배너를 띄웁니다.
+      window.APP_VERSION = "6.1.6";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -103,7 +105,8 @@
           // 시뮬레이션 날짜를 따르므로 반드시 눈에 보여야 한다.
           var srv = window.serverTestModeState;
           var srvTag = '';
-          if (srv && srv.active) srvTag = ' · 서버 동기화됨(기한 검증 포함)';
+          if (srv && srv.unsupported) srvTag = ' · ⛔ 백엔드 구버전(배포 필요)';
+          else if (srv && srv.active) srvTag = ' · 서버 동기화됨(기한 검증 포함)';
           else if (srv) srvTag = ' · 서버 미동기화(실제 날짜)';
           banner.textContent = '🧪 테스트 모드: ' + label + ' 시뮬레이션 중 (' + si.short + ')' + srvTag;
         } else {
@@ -2527,13 +2530,31 @@
 
 
     <!-- Application Scripts -->
-    <script src="js/config.js"></script>
-    <script src="js/survey.js"></script>
-    <script src="js/admin.js"></script>
-    <script src="js/email-letter.js"></script>
-    <script src="js/analytics.js"></script>
-    <script src="js/satisfaction.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/gradient.js"></script>
+    <script src="js/config.js?v=6.1.6"></script>
+    <script src="js/survey.js?v=6.1.6"></script>
+    <script src="js/admin.js?v=6.1.6"></script>
+    <script src="js/email-letter.js?v=6.1.6"></script>
+    <script src="js/analytics.js?v=6.1.6"></script>
+    <script src="js/satisfaction.js?v=6.1.6"></script>
+    <script src="js/ui.js?v=6.1.6"></script>
+    <script src="js/gradient.js?v=6.1.6"></script>
+    <script>
+      // v6.1.6: 캐시된 구버전 JS 감지
+      // GitHub Pages/브라우저 캐시 때문에 index.html만 갱신되고 js/*.js는 예전 것이
+      // 로드되는 경우가 있다. 그러면 수정한 기능이 "적용 안 된 것처럼" 조용히 실패하므로
+      // config.js가 선언한 버전과 APP_VERSION을 대조해 불일치를 눈에 보이게 알린다.
+      (function () {
+        var loaded = window.CONFIG_JS_VERSION;
+        if (loaded === window.APP_VERSION) return;
+        var bar = document.createElement('div');
+        bar.style.cssText =
+          'position:fixed;top:0;left:0;right:0;z-index:100000;background:#e5484d;color:#fff;' +
+          'text-align:center;padding:8px 12px;font-size:13px;font-weight:600;line-height:1.5;';
+        bar.textContent =
+          '⚠️ 캐시된 구버전 스크립트가 로드되었습니다 (JS ' + (loaded || '알 수 없음') +
+          ' / 페이지 ' + window.APP_VERSION + '). 강력 새로고침(Mac: Cmd+Shift+R) 해주세요.';
+        document.body.appendChild(bar);
+      })();
+    </script>
   </body>
 </html>
