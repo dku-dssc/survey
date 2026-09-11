@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://dku-survey-api.dku-dssc.workers.dev; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
     <title>개인별 교육지원계획 수요조사</title>
-    <link rel="stylesheet" href="css/styles.css?v=6.1.7">
+    <link rel="stylesheet" href="css/styles.css?v=6.1.5-b4">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
   </head>
@@ -31,10 +31,13 @@
       //  X  = 대규모 패치(막대한 기능 추가 등)
       //  Y  = 큰 수정(핵심 변경 등)
       //  ZZ = 해당 버전의 세부 수정
-      //  버전을 올릴 땐 이 값 + 아래 <script src="js/*.js?v=">/<link href="css/*.css?v=">
-      //  쿼리값을 함께 수정합니다. (v6.1.6: GitHub Pages 캐시로 구버전 JS가 남는 문제 방지)
-      //  불일치 시 페이지 하단에서 자동으로 경고 배너를 띄웁니다.
-      window.APP_VERSION = "6.1.7";
+      //  표시 버전과 별개로, 아래 <script src="js/*.js?v=">/<link href="css/*.css?v="> 의
+      //  쿼리값은 순수한 캐시 키입니다. GitHub Pages/브라우저가 구버전 JS를 계속 쓰는 것을
+      //  막으려면 배포할 때마다 반드시 값을 바꿔야 합니다(뒤의 -bN 숫자를 올리면 됨).
+      //  ⚠️ 이미 배포된 적 있는 값으로 되돌리면 브라우저가 그때 캐시한 옛 파일을 재사용합니다.
+      //  또한 js/config.js의 CONFIG_JS_VERSION을 APP_VERSION과 같게 유지해야 합니다.
+      //  (불일치 시 페이지 상단에 캐시 경고 배너가 자동으로 뜹니다)
+      window.APP_VERSION = "6.1.5";
       (function () {
         var v = document.getElementById("appVersion");
         if (v) v.textContent = window.APP_VERSION;
@@ -2335,6 +2338,7 @@
               <button class="deadline-save-btn" style="margin:0;padding:8px 14px;font-size:12px;" onclick="applyTestMode()">✅ 적용</button>
               <button class="btn btn-secondary" style="margin:0;padding:8px 14px;font-size:12px;border-radius:10px;" onclick="clearTestMode()">↩️ 해제</button>
               <button class="btn btn-secondary" style="margin:0;padding:8px 14px;font-size:12px;border-radius:10px;" onclick="checkServerTestMode()">🔍 서버 상태 확인</button>
+              <button class="btn btn-secondary" style="margin:0;padding:8px 14px;font-size:12px;border-radius:10px;" onclick="clearVerifyLockout()">🔓 본인확인 잠금 해제</button>
             </div>
             <div id="testModeStatus" style="margin-top:6px;font-size:11px;color:var(--text-tertiary);"></div>
           </div>
@@ -2531,14 +2535,14 @@
 
 
     <!-- Application Scripts -->
-    <script src="js/config.js?v=6.1.7"></script>
-    <script src="js/survey.js?v=6.1.7"></script>
-    <script src="js/admin.js?v=6.1.7"></script>
-    <script src="js/email-letter.js?v=6.1.7"></script>
-    <script src="js/analytics.js?v=6.1.7"></script>
-    <script src="js/satisfaction.js?v=6.1.7"></script>
-    <script src="js/ui.js?v=6.1.7"></script>
-    <script src="js/gradient.js?v=6.1.7"></script>
+    <script src="js/config.js?v=6.1.5-b4"></script>
+    <script src="js/survey.js?v=6.1.5-b4"></script>
+    <script src="js/admin.js?v=6.1.5-b4"></script>
+    <script src="js/email-letter.js?v=6.1.5-b4"></script>
+    <script src="js/analytics.js?v=6.1.5-b4"></script>
+    <script src="js/satisfaction.js?v=6.1.5-b4"></script>
+    <script src="js/ui.js?v=6.1.5-b4"></script>
+    <script src="js/gradient.js?v=6.1.5-b4"></script>
     <script>
       // v6.1.6: 캐시된 구버전 JS 감지
       // GitHub Pages/브라우저 캐시 때문에 index.html만 갱신되고 js/*.js는 예전 것이

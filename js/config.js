@@ -201,22 +201,30 @@ function getEffectiveDate() {
 
 // v6.1.6: 이 파일의 버전 — index.html의 APP_VERSION과 대조해 캐시된 구버전 JS를 감지한다.
 // ⚠️ APP_VERSION을 올릴 때 이 값과 index.html의 ?v= 쿼리도 함께 올려야 한다.
-window.CONFIG_JS_VERSION = '6.1.7';
+window.CONFIG_JS_VERSION = '6.1.5';
 
 // v6.1.5: 서버가 실제로 적용 중인 테스트 모드 상태 (GET/PUT 설정 응답으로 갱신)
 // { active, date, expiresAt } 또는 null(아직 확인 전)
 window.serverTestModeState = null;
 
+// 관리자/마스터 토큰 중 사용 가능한 것을 반환 (둘 다 백엔드 verifyAdmin을 통과함)
+function getAdminAuthToken() {
+  if (typeof adminToken !== 'undefined' && adminToken) return adminToken;
+  if (typeof masterToken !== 'undefined' && masterToken) return masterToken;
+  return null;
+}
+
 // 반환값: true(성공) / false(실패) / null(관리자 토큰 없음) / 'unsupported'(백엔드 구버전)
 async function syncTestModeToServer(dateStr) {
-  if (typeof adminToken === 'undefined' || !adminToken) return null;
+  var authToken = getAdminAuthToken();
+  if (!authToken) return null;
   try {
     var payload = dateStr
       ? { date: dateStr, setAt: new Date().toISOString() }
       : null;
     var resp = await fetch(API_BASE + '/api/admin/settings', {
       method: 'PUT',
-      headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
       body: JSON.stringify({ settings: { test_mode_date: payload } })
     });
     if (!resp.ok) return false;
@@ -247,14 +255,15 @@ async function refreshServerTestModeState() {
   // v6.1.7: 토큰이 없으면 '확인 불가'를 명시한다.
   // 기존에는 null로 두어 '아직 확인 전'과 구분되지 않았고, 상태줄에 아무것도
   // 표시되지 않아 동기화가 안 된 사실이 드러나지 않았다.
-  if (typeof adminToken === 'undefined' || !adminToken) {
+  var authToken = getAdminAuthToken();
+  if (!authToken) {
     window.serverTestModeState = { noToken: true, active: false };
     renderTestModeStatus();
     return window.serverTestModeState;
   }
   try {
     var resp = await fetch(API_BASE + '/api/admin/settings', {
-      headers: { 'Authorization': 'Bearer ' + adminToken }
+      headers: { 'Authorization': 'Bearer ' + authToken }
     });
     if (!resp.ok) return null;
     var data = await resp.json();
@@ -316,14 +325,15 @@ function renderTestModeStatus() {
 async function checkServerTestMode() {
   var statusEl = document.getElementById('testModeStatus');
   if (!statusEl) return;
-  if (typeof adminToken === 'undefined' || !adminToken) {
+  var authToken = getAdminAuthToken();
+  if (!authToken) {
     statusEl.innerHTML = '<span style="color:var(--danger,#e5484d);">⛔ 관리자 세션 없음 — 다시 로그인해주세요.</span>';
     return;
   }
   statusEl.innerHTML = '서버 상태 확인 중…';
   try {
     var resp = await fetch(API_BASE + '/api/admin/settings', {
-      headers: { 'Authorization': 'Bearer ' + adminToken }
+      headers: { 'Authorization': 'Bearer ' + authToken }
     });
     var data = null;
     try { data = await resp.json(); } catch (e) {}
@@ -379,16 +389,30 @@ function applyTestMode() {
   try { localStorage.setItem('dku_test_mode', JSON.stringify({ year: testModeYear, month: m, day: testModeDay })); } catch(e) {}
   var label = (yr ? yr + '년 ' : '') + m + '월' + (d ? ' ' + d + '일' : '');
   renderTestModeStatus();
-  showToast('테스트 모드 적용: ' + label);
-  // v6.1.4~v6.1.5: 백엔드(만족도 학기 + 수요조사 제출 기한)도 같은 날짜를 쓰도록
-  // 서버에 동기화한다. 24시간 후 서버 측에서 자동 만료된다.
+
+  // 서버 동기화가 실패하면 로컬 테스트 모드도 되돌린다.
+  // 로컬만 켜진 상태를 허용하면 배너는 2027년을 가리키는데 서버는 실제 날짜로
+  // 판정하는 어긋남이 생기고, 그 사실이 화면에 드러나지 않아 원인 추적이 불가능했다.
+  // → "로컬이 켜져 있다 == 서버도 켜져 있다"를 구조적으로 보장한다.
   syncTestModeToServer(formatEffectiveDate(getEffectiveDate())).then(function(ok) {
+    if (ok === true) {
+      showToast('테스트 모드 적용: ' + label + ' (서버 동기화 완료)');
+      return;
+    }
+    var reason;
     if (ok === null) {
-      showToast('서버 동기화 생략 — 관리자 로그인 상태에서만 제출 기한·만족도 학기까지 시뮬레이션됩니다.');
+      reason = '관리자 세션이 없습니다. 다시 로그인 후 적용해주세요.';
     } else if (ok === 'unsupported') {
-      showToast('백엔드가 구버전입니다 — npx wrangler deploy 후 테스트 모드를 다시 적용해주세요.');
-    } else if (ok === false) {
-      showToast('서버 테스트 날짜 동기화 실패 — 제출 기한·만족도 학기는 실제 날짜로 판정됩니다.');
+      reason = '백엔드가 구버전입니다. npx wrangler deploy 후 다시 적용해주세요.';
+    } else {
+      reason = '서버 저장에 실패했습니다. 잠시 후 다시 시도해주세요.';
+    }
+    rollbackTestMode();
+    showToast('테스트 모드 적용 취소 — ' + reason);
+    var statusEl = document.getElementById('testModeStatus');
+    if (statusEl) {
+      statusEl.innerHTML = '<span style="color:var(--danger,#e5484d);">⛔ 테스트 모드가 적용되지 않았습니다 — ' +
+        escapeHtml(reason) + '</span>';
     }
   });
   // 학기 라벨 갱신
@@ -399,6 +423,40 @@ function applyTestMode() {
   if (typeof updateLandingButtons === 'function') updateLandingButtons();
   // v6.0.0: 학기 라벨 전체 갱신
   if (typeof refreshSemesterDisplay === 'function') refreshSemesterDisplay();
+}
+
+// v6.1.5 빌드: 서버 동기화 실패 시 로컬 테스트 모드만 되돌린다 (서버 호출 없음)
+function rollbackTestMode() {
+  testModeYear = null;
+  testModeMonth = null;
+  testModeDay = null;
+  try { localStorage.removeItem('dku_test_mode'); } catch (e) {}
+  if (typeof updateDeadlineSectionLabel === 'function') updateDeadlineSectionLabel();
+  if (typeof updateAdminPanel === 'function') updateAdminPanel();
+  if (typeof updateLandingButtons === 'function') updateLandingButtons();
+  if (typeof refreshSemesterDisplay === 'function') refreshSemesterDisplay();
+}
+
+// v6.1.5 빌드: 본인확인 실패 잠금 해제 (5회 실패 → 30분 잠김 상태를 관리자가 해제)
+async function clearVerifyLockout() {
+  var authToken = getAdminAuthToken();
+  if (!authToken) { showToast('관리자 세션이 없습니다. 다시 로그인해주세요.'); return; }
+  try {
+    var resp = await fetch(API_BASE + '/api/admin/clear-lockout', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ actions: ['verify', 'sat_verify'] })
+    });
+    var data = null;
+    try { data = await resp.json(); } catch (e) {}
+    if (!resp.ok || !data || !data.success) {
+      showToast((data && data.error) || '잠금 해제 실패 (HTTP ' + resp.status + ')');
+      return;
+    }
+    showToast(data.message || '잠금이 해제되었습니다.');
+  } catch (e) {
+    showToast('서버 연결 실패 — 잠금 해제를 완료하지 못했습니다.');
+  }
 }
 
 function clearTestMode() {
